@@ -25,6 +25,7 @@ local hurtAmountBlack = 0
 local forest = {}
 local spiderGroup = {}
 
+luaDebugMode = true
 function onCreate()
     makeLuaSprite('forestSky', path..'forestSky', -1600, -3800)
     setProperty('forestSky.antialiasing', true)
@@ -139,26 +140,6 @@ function onCreate()
     setProperty('forestBf.velocity.x', -2570)
 
     if not lowQuality then
-        createInstance('forestFront', 'flixel.addons.display.FlxBackdrop', {nil, 0x01})
-        loadGraphic('forestFront', path..'forestFront', false)
-        screenCenter('forestFront')
-        setProperty('forestFront.antialiasing', true)
-        setProperty('forestFront.x', -1000)
-        setProperty('forestFront.y', -3252)
-        addInstance('forestFront', true)
-        setProperty('forestFront.velocity.x', -3500)
-
-        createInstance('forestForeground', 'flixel.addons.display.FlxBackdrop', {nil, 0x01})
-        loadGraphic('forestForeground', path..'forestForeground', false)
-        screenCenter('forestForeground')
-        setProperty('forestForeground.antialiasing', true)
-        setScrollFactor('forestForeground', 1.2, 1.2)
-        setProperty('forestForeground.x', -750)
-        scaleObject('forestForeground', 1.35, 1.1, false)
-        setProperty('forestForeground.y', -4860)
-        addInstance('forestForeground', true)
-        setProperty('forestForeground.velocity.x', -5000)
-    else
         createInstance('forestFront', 'flixel.addons.display.FlxBackdrop', {nil, 0x01})
         loadGraphic('forestFront', path..'forestFront', false)
         screenCenter('forestFront')
@@ -316,7 +297,7 @@ function onCreate()
 
     if not lowQuality then
         createInstance('momCorruptBlack', 'objects.Character', {0, 0, 'momCorruptBlack'})
-        callMethod('momCorruptBlack.setPosition', {getProperty('dad.x'), getProperty('dad.y')})
+        setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
         setProperty('momCorruptBlack.alpha', 0.001)
         setProperty('momCorruptBlack.blend', 0)
 
@@ -456,7 +437,6 @@ function onCreate()
     playAnim('gfSleep', 'idle', true)
     setProperty('gfSleep.antialiasing', true)
     setProperty('gfSleep.visible', false)
-    setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
     addLuaSprite('gfSleep', true)
 
     -- after some videos are added, remember raly
@@ -468,6 +448,7 @@ end
 
 function onCreatePost()
     setPosition('dad', 420, -165)
+    setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
 
     setProperty('camGame.bgColor', getColorFromHex('808080')) -- gray color in flxcolor
 
@@ -553,7 +534,7 @@ function onCreatePost()
     setProperty('bfShadow.alpha', 0.6)
     addBehindBF('bfShadow')
 
-    makeLuaSprite('dadShadow', path..'shadow', -382, 549)
+    makeLuaSprite('dadShadow', path..'shadow', 465,555)
     scaleObject('dadShadow', 1.5, 1.4, false)
     setProperty('dadShadow.antialiasing', true)
     setProperty('dadShadow.alpha', 0.6)
