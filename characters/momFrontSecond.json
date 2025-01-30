@@ -1,0 +1,186 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				40,
+				-156
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "down-alt"
+		},
+		{
+			"offsets": [
+				-10,
+				0
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "idle",
+			"indices": [],
+			"name": "idle-alt"
+		},
+		{
+			"offsets": [
+				21,
+				8
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "up-alt"
+		},
+		{
+			"offsets": [
+				98,
+				-41
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "right-alt"
+		},
+		{
+			"offsets": [
+				60,
+				-110
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "left-alt"
+		},
+		{
+			"offsets": [
+				60,
+				-110
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "singLEFT-loop",
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			],
+			"name": "left-alt"
+		},
+		{
+			"offsets": [
+				40,
+				-156
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "singDOWN-loop",
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			],
+			"name": "down-alt"
+		},
+		{
+			"offsets": [
+				21,
+				8
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "singUP-loop",
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			],
+			"name": "up-alt"
+		},
+		{
+			"offsets": [
+				98,
+				-41
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": true,
+			"fps": 24,
+			"anim": "singRIGHT-loop",
+			"indices": [
+				4,
+				5,
+				6,
+				7,
+				8,
+				9
+			],
+			"name": "right-alt"
+		}
+	],
+	"no_antialiasing": false,
+	"image": "characters/mmFrontViewSecond",
+	"position": [
+		140,
+		110
+	],
+	"healthicon": "senpai",
+	"flip_x": false,
+	"healthbar_colors": [
+		0,
+		0,
+		0
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"sing_duration": 4,
+	"scale": 2
+}

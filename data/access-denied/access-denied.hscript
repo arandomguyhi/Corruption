@@ -1,0 +1,1687 @@
+import flixel.math.FlxMath;
+import openfl.filters.ShaderFilter;
+import openfl.Lib;
+
+// TRIVIA: here is a real dm exchange between me and GRYSCL during the development of this song
+// Phantom: i think i will be crucified if glitch doesnt return LOL
+// GRYSCL: The community will have your head on a stick lmfao
+// Phantom: there are some DIE HARD glitch fans
+// Phantom: which is probably YOUR FAULT for making roots such a banger
+// Phantom: :index_pointing_at_the_viewer:
+
+// sorry for so many video players im lazy
+var video; // wireframe bg
+var video2; // thunder bg
+var video3; // glitch appears
+var video4; // cutscene - bg scroll
+var video5; // cutscene - tv section
+var video6; // cutscene - ending
+var video7; // glitch bf background
+var video8:MP4Sprite; // 
+
+var object:FlxSprite;
+var game;
+var curBg:Int = 0;
+var glitchBump:FlxSprite;
+var school:FlxSprite;
+var bgField:ProxyField;
+
+var codeSection:Bool = false; // event where code text appears in the bg
+
+//Text BG
+var longText:String = "";
+var curDialogue:Int = -1;
+var dialogueArray:Array<String> = [
+    "?110TEST--NULL///32$$..--?110TEST--NULL///32$$..--",
+    "TransferOwnership('Boyfriend')",
+    "--NULL///32$$..-NULL-NULL///32$$..--NULL/32$$/32$$",
+    "TransferOwnership('Boyfriend')",
+    "!!!!!!!!!!!!!!!///32$$..--?110TEST--NULL///32$$..--",
+    "TransferOwnership('Boyfriend')",
+    "?110TEST--NULL///32$$..--?110TEST--NULL///32$$..--",
+    "TransferOwnership('Boyfriend')",
+    "ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. ACCESS DENIED. "
+];
+var textDisplay:FlxText;
+var currentIndex:Int = 0;
+
+//Normal BG
+var nullSky:FlxSprite;
+var nullSky2:FlxSprite;
+var nullDebris:FlxSprite;
+var nullDebris2:FlxSprite;
+var nullBuilding:FlxSprite;
+var nullPlatform:FlxSprite;
+var hands:FlxSpriteGroup;
+var handTime:Bool = false;
+var handWhich:Bool = false;
+
+//REPLAY SHIT
+var replayBgSky:FlxSprite;
+var replayBgSchool:FlxSprite;
+var replayBgStreet:FlxSprite;
+var replayFgTrees:FlxSprite;
+var replayBgTrees:FlxSprite;
+var replayTreeLeaves:FlxSprite;
+var replayBgSkyGray:FlxSprite;
+var replayBgSchoolGray:FlxSprite;
+var replayBgStreetGray:FlxSprite;
+var replayFgTreesGray:FlxSprite;
+var replayBgTreesGray:FlxSprite;
+var replayTreeLeavesGray:FlxSprite;
+var bgGirls:FlxSprite;
+var danceDir:Bool;
+var replayHud:FlxSprite;
+var glitchappears:FlxSprite;
+var glitchTrail:FlxSprite;
+
+var hasGameOvered:Bool = false;
+
+// Glitch bf Background
+var glitchFloor:FlxSprite;
+var glitchBg:FlxSprite;
+var glitchDebris:FlxSprite;
+var glitchSky:FlxSprite;
+var senpaiFace:FlxSprite;
+var spiritFace:FlxSprite;
+
+var hideJudge:Bool = false;
+
+var black:FlxSprite;
+var black2:FlxSprite;
+var staticOverlay:FlxSprite;
+var staticOverlay2:FlxSprite; // doubled up cuz looks cooler
+
+var numAccX = 200;
+var numAccY = 0;
+var numScale = 5;
+
+var playNullGlitch:Bool = false;
+var hurtBlack:FlxSprite; // red, im still lazy
+
+var realScanline:Bool = true;
+
+var tweenStarted:Bool = false; // only play tween shit once
+
+var bfSigh:FlxSprite;
+var bfCradle:FlxSprite;
+
+var flyTime:Bool = false;
+
+var chroma = newShader("null-and-void/chroma");
+function setChroma(chromeOffset){
+    chroma.data.rOffset.value = [chromeOffset];
+    chroma.data.gOffset.value = [0.0];
+    chroma.data.bOffset.value = [chromeOffset * -1];
+}
+
+var scanline = newShader("scanlines", "", 130);
+/* scanline.data.lockAlpha.value = false;
+scanline.data.scale.value = [1.0];
+scanline.data.realAlpha.value = [1.0];
+ */
+var bloom = newShader("null-and-void/bloom");
+bloom.data.blurSize.value = [0.01];
+bloom.data.intensity.value = [0.1];
+
+var nullGlitch = newShader("null-and-void/nullglitchshader");
+nullGlitch.data.glitchAmplitude.value = [2.0]; // increase this
+nullGlitch.data.glitchNarrowness.value = [1.0];
+nullGlitch.data.glitchBlockiness.value = [4.0];
+nullGlitch.data.glitchMinimizer.value = [5.0]; // decrease this
+nullGlitch.data.iResolution.value = [Lib.current.stage.stageWidth,Lib.current.stage.stageHeight];
+nullGlitch.data.iTime.value=[0.0];
+
+
+var barrel = newShader("barrel");
+barrel.data.chromaticIntensity.value = [0.25];
+barrel.data.distortionIntensity.value = [-0.25];
+barrel.data.offset.value = [0, 0];
+barrel.data.angle.value = [0];
+barrel.data.mirrorX.value = [false];
+barrel.data.mirrorY.value = [false];
+barrel.data.zoom.value=[1.0];
+var schoolShader = newShader("fuckywucky", "", 130);
+schoolShader.data.time.value = [250];
+schoolShader.data.prob.value = [0.15];
+schoolShader.data.glitchScale.value = [0.025];
+
+var vignette = newShader("fuckywuckymask", "", 130);
+vignette.data.time.value = [250];
+vignette.data.prob.value = [0.75];
+vignette.data.glitchScale.value = [0.5];
+vignette.data.maskMix.value = [true];
+vignette.data.mask.input = Paths.image("vignette").bitmap;
+
+var bigGlitch = newShader("fuckywucky", "", 130);
+bigGlitch.data.time.value = [250];
+bigGlitch.data.prob.value = [0.0];
+bigGlitch.data.glitchScale.value = [0.9];
+
+var pixelate = newShader("pixelate", "", 130);
+pixelate.data.pixelSize.value = [1];
+
+var pixelateAmount:Float = 1;
+var hurtAmountBlack:Float = 0; // actually red, yes im that lazy
+
+/* var iconShader = newShader("glitchcolorswap");
+iconShader.data.uTime.value = [0, 0, 0];
+iconShader.data.flashColor.value = [1, 1, 1, 1];
+iconShader.data.daAlpha.value = [1];
+iconShader.data.flash.value = [0];
+iconShader.data.binaryIntensity.value = [4.0]; */
+
+var iconShader = newShader("fuckywucky", "", 130);
+iconShader.data.time.value = [250];
+iconShader.data.prob.value = [0.75];
+iconShader.data.glitchScale.value = [0.75];
+game = PlayState.instance;
+/* function onAddSpriteGroups(){
+    game.hud = hud = HScriptedHUD.fromFile(
+		game.boyfriend.healthIcon,
+        game.dad.healthIcon, 
+        PlayState.SONG.song,
+		game.stats, 
+		"VanillaHUD"
+	);
+}
+ */
+function addTrail(who:Character, which:Int = 0, ?length:Int = 4, ?delay:Int = 24, ?alpha:Float = 0.4, ?diff:Float = 0.069){
+    if(length==null)length = 4;
+    if(delay==null)delay = 24;
+    if(alpha==null)alpha = 0.4;
+    if(diff==null)diff = 0.069;
+
+    if (which == 0){
+        bfTrail = new FlxTrail(who, null, length, delay, alpha, diff);
+        game.addBehindBF(bfTrail);
+    } else if (which == 1) {
+        evilTrail = new FlxTrail(who, null, length, delay, alpha, diff);
+        game.addBehindGF(evilTrail);
+    }
+}
+
+function onCreatePost() {
+    FlxSprite.defaultAntialiasing = false;
+	game.judgeScale = 6;
+	game.comboScale = 10;
+	game.worldComboOrigin.x -= 211;
+	game.worldComboOrigin.y += 58;
+
+    game.instaRespawn = true;
+
+    // if (realScanline){
+    //     scanline.data.lockAlpha.value = false;
+    //     scanline.data.scale.value = [1.0];
+    //     scanline.data.realAlpha.value = [1.0];
+    // }
+    
+    game.addCharacterToList("senpai", 1);
+    game.addCharacterToList("senpai-angry", 1);
+    game.addCharacterToList("spiritBackGray", 1);
+    game.addCharacterToList("nullAccess", 1);
+    game.addCharacterToList("glitchBf", 0);
+
+    if(hxvlc != "0"){
+        video8 = new MP4Sprite();
+        video8.bitmap.onFormatSetup.add(function():Void
+		{
+            video8.setPosition(-130,-110);
+            video8.scale.set(1.4,1.4);
+		});
+        video8.bitmap.onEndReached.add(function(){
+			video8.destroy();
+			game.remove(video8);
+		});
+		video8.antialiasing = false;
+
+        video2 = new MP4Sprite();
+        video2.bitmap.onFormatSetup.add(function():Void
+		{
+            video2.setPosition(-30,0);
+            video2.scale.set(1.2,1.3);
+            video2.scrollFactor.set(0,0);
+		});
+        video2.bitmap.onEndReached.add(function(){
+			video2.destroy();
+			game.remove(video2);
+		});
+		video2.antialiasing = false;
+        video2.alpha = 1;
+        video2.blend = 0;
+
+        video = new MP4Sprite();
+        video.bitmap.onFormatSetup.add(function():Void
+		{
+			video.setGraphicSize(1920, 1080);
+			video.updateHitbox();
+
+            video.scale.x *= 0.9;
+			video.scale.y *= 0.9;
+			
+            video.setPosition(-350,-130);
+            video.scrollFactor.set(0.2,0.2);
+		});
+        video.bitmap.onEndReached.add(function(){
+			video.destroy();
+			game.remove(video);
+		});
+		video.antialiasing = false;
+        video.alpha = 0.9;
+        video.blend = 12;
+
+        video4 = new MP4Sprite();
+        video4.bitmap.onFormatSetup.add(function():Void
+		{
+            video4.setPosition(0,0);
+            video4.scale.set(1.44,1.44);
+            video4.scrollFactor.set(0,0);
+		});
+        video4.bitmap.onEndReached.add(function(){
+			video4.destroy();
+			game.remove(video4);
+		});
+		video4.antialiasing = false;
+
+
+        video5 = new MP4Sprite();
+        video5.bitmap.onFormatSetup.add(function():Void
+		{
+            video5.setPosition(0,0);
+            video5.scale.set(1.44,1.44);
+            video5.scrollFactor.set(0,0);
+		});
+        video5.bitmap.onEndReached.add(function(){
+			video5.destroy();
+			game.remove(video5);
+		});
+		video5.antialiasing = false;
+
+        video7 = new MP4Sprite();
+        video7.bitmap.onFormatSetup.add(function():Void
+		{
+            video7.scale.set(1,1);
+            video7.setPosition(0,0);
+            video7.scrollFactor.set(0,0);
+		});
+        video7.bitmap.onEndReached.add(function(){
+			video7.destroy();
+			game.remove(video7);
+		});
+		video7.antialiasing = false;
+        game.addBehindBF(video7);
+
+
+        video3 = new MP4Sprite();
+        video3.bitmap.onFormatSetup.add(function():Void
+		{
+            video3.setPosition(0,0);
+            video3.scale.set(1,1);
+            video3.scrollFactor.set(0,0);
+		});
+        video3.bitmap.onEndReached.add(function(){
+			video3.destroy();
+			game.remove(video3);
+		});
+		video3.antialiasing = false;
+        video3.blend = 2;
+        video3.cameras = [game.camHUD];
+
+        video6 = new MP4Sprite();
+        video6.bitmap.onFormatSetup.add(function():Void
+		{
+            video6.setPosition(0,0);
+            video6.scale.set(1,1);
+            video6.scrollFactor.set(0,0);
+		});
+        video6.bitmap.onEndReached.add(video6.destroy);
+		video6.antialiasing = false;
+
+        video.load(Paths.video('gridOverlay'), [':input-repeat=65545']);
+        video2.load(Paths.video('thunder'), [':input-repeat=65545']);
+        video3.load(Paths.video('glitch overlay'));
+        video4.load(Paths.video('cutsceneBgScroll'));
+        video5.load(Paths.video('cutsceneTv', [':input-repeat=65545']));
+        video8.load(Paths.video('glitch intermission', [':input-repeat=65545']));
+    }else{
+        video8 = new MP4Sprite();
+        video8.scale.set(1,1);
+        video8.screenCenter();
+        if(hxcodec == "3.0.0"){
+            video8.bitmap.onEndReached.add(function(){
+                video8.bitmap.dispose();
+            });
+        }
+        video2 = new MP4Sprite();
+        video2.scale.set(1.2,1.3);
+        video2.setPosition(-30,0);
+        video2.scrollFactor.set(0,0);
+        if(hxcodec == "3.0.0"){
+            video2.bitmap.onEndReached.add(function(){
+                video2.bitmap.dispose();
+            });
+        }
+        video2.alpha = 1;
+        video2.blend = 0;
+        video = new MP4Sprite();
+        video.scale.set(0.9,0.9);
+        video.setPosition(-350,-130);
+        if(hxcodec == "3.0.0"){
+            video.bitmap.onEndReached.add(function(){
+                video.bitmap.dispose();
+            });
+        }
+        video.scrollFactor.set(0.2,0.2);
+
+        video.alpha = 0.9;
+        video.blend = 12;
+        
+        video4 = new MP4Sprite();
+        video4.setPosition(-321,-180);
+        video4.scale.set(0.95,0.95);
+        video4.scrollFactor.set(0,0);
+        if(hxcodec == "3.0.0"){
+            video4.bitmap.onEndReached.add(function(){
+                video4.bitmap.dispose();
+            });
+        }
+
+        video5 = new MP4Sprite();
+        video5.setPosition(-321,-180);
+        video5.scale.set(0.95,0.95);
+        video5.scrollFactor.set(0,0);
+        if(hxcodec == "3.0.0"){
+            video5.bitmap.onEndReached.add(function(){
+                video5.bitmap.dispose();
+            });
+        }
+
+        video7 = new MP4Sprite();
+        video7.scale.set(1,1);
+        video7.setPosition(0,0);
+        video7.scrollFactor.set(0,0);
+        if(hxcodec == "3.0.0"){
+            video7.bitmap.onEndReached.add(function(){
+                video7.bitmap.dispose();
+            });
+        }
+        video3 = new MP4Sprite();
+        
+        video3.setPosition(0,0);
+        video3.scale.set(1,1);
+        if(hxcodec == "3.0.0"){
+            video3.bitmap.onEndReached.add(function(){
+                video3.bitmap.dispose();
+            });
+        }
+        video3.scrollFactor.set(0,0);
+        video3.blend = 2;
+        
+        video3.cameras = [game.camHUD];
+        video6 = new MP4Sprite();
+        video6.setPosition(-321,-180);
+        video6.scale.set(0.7,0.7);
+        video6.scrollFactor.set(0,0);
+        if(hxcodec == "3.0.0"){
+            video6.bitmap.onEndReached.add(function(){
+                video6.bitmap.dispose();
+            });
+        }
+    }
+
+
+    game.boyfriend.setPosition(790, 741);
+    game.boyfriend.scale.set(6,6);
+    game.boyfriend.alpha = 0;
+    game.dad.setPosition(30, 524);
+    game.dad.scale.set(6,6);
+
+    //game.customCamera.set(810, 420);
+    //game.addCameraPoint(game.customCamera);
+
+    game.defaultCamZoom = 0.7;
+    game.camGame.zoom = game.defaultCamZoom;
+    
+    bgField = new ProxyField(game.dadField.noteField);
+	bgField.cameras = [game.camGame];
+	bgField.scrollFactor.set(0.8, 0.8);
+    game.addBehindBF(bgField);
+
+    nullSky = new FlxSprite(400 - 200,-60).loadGraphic(Paths.image('nullSky'));
+    nullSky.scale.set(10,10);
+    nullSky.antialiasing = false;
+    nullSky.scrollFactor.set(0.1, 0.1);
+    game.addBehindGF(nullSky);
+
+    nullSky2 = new FlxSprite(400 + 200,-60).loadGraphic(Paths.image('nullSky2'));
+    nullSky2.scale.set(10,10);
+    nullSky2.antialiasing = false;
+    nullSky2.scrollFactor.set(0.4, 0.4);
+    nullSky2.alpha = 0.4;
+    nullSky2.blend = 12;
+    game.addBehindGF(nullSky2);
+
+    game.addBehindGF(video2);
+
+    nullDebris2 = new FlxSprite(340,2884).loadGraphic(Paths.image('nullDebris2'));
+    nullDebris2.scale.set(6,6);
+    nullDebris2.antialiasing = false;
+    nullDebris2.scrollFactor.set(0.3, 0.3);
+    game.addBehindGF(nullDebris2);
+
+    nullDebris = new FlxSprite(340,2884).loadGraphic(Paths.image('nullDebris'));
+    nullDebris.scale.set(6,6);
+    nullDebris.antialiasing = false;
+    nullDebris.scrollFactor.set(0.3, 0.3);
+    game.addBehindGF(nullDebris);
+
+    nullBuilding = new FlxSprite(340,12884).loadGraphic(Paths.image('nullBuilding'));
+    nullBuilding.scale.set(6,6);
+    nullBuilding.antialiasing = false;
+    nullBuilding.scrollFactor.set(0.3, 0.3);
+    game.addBehindGF(nullBuilding);
+
+    // bg hand shit
+    hands = new FlxSpriteGroup();
+    hands.setPosition(-100,-100);
+    game.addBehindGF(hands);
+    hands.scrollFactor.set(0.5, 0.5);
+    hands.blend = 0;
+    hands.alpha = 0;
+
+    var startX:Array<Float> = [-100, 80];
+    var startY:Array<Float> = [200, 400];
+    var offsetX:Float = 360;
+    var offsetY:Float = 360;
+    var rows:Int = 6;
+    var cols:Int = 12;
+
+    for (row in 0...rows) {
+        for (col in 0...cols) {
+            var baseX:Float = startX[col >= 6 ? 1 : 0];
+            var baseY:Float = startY[col >= 6 ? 1 : 0];
+
+            var x:Float = baseX + (col % 6) * offsetX;
+            var y:Float = baseY + row * offsetY;
+
+            var handSprite:FlxSprite = new FlxSprite(x, y);
+            handSprite.frames = Paths.getSparrowAtlas("bgHand");
+            handSprite.animation.addByPrefix("Left", "Left", 24, false);
+            handSprite.animation.addByPrefix("Right", "Right", 24, false);
+            handSprite.animation.play("Left", true);
+            handSprite.updateHitbox();
+            handSprite.scale.set(4.5,4.5);
+            handSprite.antialiasing = false;
+            handSprite.alpha = 0.8;
+            handSprite.blend = 0;
+
+            hands.add(handSprite);
+        }
+    }
+    // end of bg hand shit
+
+    nullPlatform = new FlxSprite();
+    nullPlatform.frames = Paths.getSparrowAtlas("platform");
+    nullPlatform.animation.addByPrefix("platform", "platform", 24, true);
+    nullPlatform.animation.play("platform", true);
+    nullPlatform.updateHitbox();
+    nullPlatform.scale.set(5.2,6);
+    nullPlatform.antialiasing = false;
+    nullPlatform.scrollFactor.set(0.95, 0.95);
+    nullPlatform.setPosition(310,1240);
+    nullPlatform.blend = 12;
+    nullPlatform.alpha = 1;
+    game.addBehindGF(nullPlatform);
+    FlxTween.tween(nullPlatform, {alpha: 0.1}, 2.0, {ease: FlxEase.sineInOut, type: FlxTween.PINGPONG});
+    game.addBehindGF(video);
+        
+
+    school = new FlxSprite();
+    school.frames = Paths.getSparrowAtlas('animatedEvilSchool');
+    school.animation.addByIndices("idle", 'background 2 instance 1', [1], 12, true);
+    school.animation.play("idle", true);
+    school.scrollFactor.set(1, 1);
+    school.scale.set(8, 8);
+    school.antialiasing = false;
+    school.updateHitbox();
+    school.shader = schoolShader;
+    school.x = -1220;
+    school.y = -1790;
+    game.addBehindGF(school);
+
+    glitchBump = new FlxSprite();
+    glitchBump.frames = Paths.getSparrowAtlas('spiritBumpWhite');
+    glitchBump.animation.addByPrefix('anim', 'SenpaiBump', 12, true);
+    glitchBump.animation.play('anim', true);
+    glitchBump.scrollFactor.set();
+    glitchBump.alpha = 0;
+    glitchBump.updateHitbox();
+    glitchBump.screenCenter();
+    glitchBump.scale.set(1.9,1.9);
+    game.add(glitchBump);
+
+    bgField.visible = false;
+
+    // Shader shit
+    setChroma(0.002);
+    bloom.data.blurSize.value = [0.01];
+	bloom.data.intensity.value = [0.1];
+    nullGlitch.data.glitchNarrowness.value = [25.0];
+
+	if(ClientPrefs.shaders == 'All'){
+		game.camGame.setFilters([new ShaderFilter(barrel), new ShaderFilter(vignette), new ShaderFilter(bigGlitch), new ShaderFilter(chroma),new ShaderFilter(bloom),new ShaderFilter(nullGlitch), new ShaderFilter(pixelate)]);
+		game.camHUD.setFilters([new ShaderFilter(chroma),new ShaderFilter(bloom),new ShaderFilter(nullGlitch)]);
+	}else if(ClientPrefs.shaders == 'Minimal')
+		game.camGame.setFilters([new ShaderFilter(barrel), new ShaderFilter(pixelate)]);
+    
+    //FlxG.game.setFilters([
+    //     new ShaderFilter(scanline)
+    //]);
+    // ^ scan lines will be used in demo, but they fuck up the bitrate of the video so leaving them out
+
+    iconP2 = game.hud.iconP2;
+	
+	game.hud.remove(iconP2);
+	game.hud.remove(game.hud.iconP1);
+
+/*     game.camHUD.setFilters([new ShaderFilter(vignette)]); */
+    
+    game.add(video4);
+    game.add(video5);
+    game.addBehindBF(video7);
+
+    modManager.queueEaseFunc(896, 916, FlxEase.elasticOut, function(ev, val, step){
+    barrel.data.zoom.value[0] = FlxMath.lerp(2, 1, val);
+    barrel.data.distortionIntensity.value[0] = FlxMath.lerp(-1.5, -0.25, val);
+    });
+
+    black = new FlxSprite(-1012,-833).loadGraphic(Paths.image('black'));
+    black.scale.set(9.1,9.1);
+    black.antialiasing = true;
+    black.scrollFactor.set(0.95, 1);
+    black.active = false;
+    black.alpha = 1;
+    game.add(black);
+
+    black2 = new FlxSprite(-1012,-833).loadGraphic(Paths.image('black'));
+    black2.scale.set(9.1,9.1);
+    black2.antialiasing = true;
+    black2.scrollFactor.set(0.95, 1);
+    black2.active = false;
+    black2.alpha = 1;
+    game.addBehindGF(black2);
+
+    bfCradle = new FlxSprite(570,340).loadGraphic(Paths.image('bfCradle'));
+    bfCradle.scale.set(10,10);
+    bfCradle.antialiasing = false;
+    bfCradle.scrollFactor.set(0, 0);
+    bfCradle.active = false;
+    bfCradle.alpha = 0;
+    
+    bfCradle.angle = 64.9;
+    game.add(bfCradle);
+
+    textDisplay = new FlxText(294,204, Std.int(FlxG.width * 0.7), "", 32);
+    textDisplay.font = 'Pixel Arial 11 Bold';
+    textDisplay.color = 0xFFFFFF;
+    textDisplay.scale.set(1.5,1.5);
+    textDisplay.scrollFactor.set(0,0);
+    textDisplay.antialiasing = false;
+    game.add(textDisplay);
+    textDisplay.cameras = [game.camHUD];
+    //274,114
+
+    game.gf.setPosition(-8000, 130 + 300);
+
+    staticOverlay = new FlxSprite();
+    staticOverlay.frames = Paths.getSparrowAtlas("tv_static");
+    staticOverlay.animation.addByPrefix("anim", "tv_static idle", 25, true);
+    staticOverlay.animation.play("anim", true);
+    staticOverlay.updateHitbox();
+    staticOverlay.scale.set(1,1);
+    staticOverlay.antialiasing = false;
+    staticOverlay.alpha = 1;
+    staticOverlay.blend = 0;
+    staticOverlay.setPosition(-9000,130);
+    staticOverlay.scale.set(1.7,1.7);
+    staticOverlay.scrollFactor.set(0,0);
+    staticOverlay.cameras = [game.camHUD];
+    game.add(staticOverlay);
+
+    staticOverlay2 = new FlxSprite();
+    staticOverlay2.frames = Paths.getSparrowAtlas("tv_static");
+    staticOverlay2.animation.addByPrefix("anim", "tv_static idle", 25, true);
+    staticOverlay2.animation.play("anim", true);
+    staticOverlay2.updateHitbox();
+    staticOverlay2.scale.set(1,1);
+    staticOverlay2.antialiasing = false;
+    staticOverlay2.alpha = 1;
+    staticOverlay2.blend = 0;
+    staticOverlay2.setPosition(-9000,130);
+    staticOverlay2.scale.set(1.7,1.7);
+    staticOverlay2.scrollFactor.set(0,0);
+    staticOverlay2.cameras = [game.camHUD];
+    game.add(staticOverlay2);
+
+    game.isPixelPrefix = "pixel";
+
+    nextText();
+
+    addReplayShit();
+    addGlitchBg();
+
+    var scanlinesFake = new FlxSprite();
+    scanlinesFake.frames = Paths.getSparrowAtlas("ScanlinesThin");
+    scanlinesFake.animation.addByPrefix("anim", "ScanlinesThin idle", 24, true);
+    scanlinesFake.animation.play("anim", true);
+    scanlinesFake.updateHitbox();
+    scanlinesFake.antialiasing = true;
+    scanlinesFake.alpha = 0.1;
+    scanlinesFake.blend = 9;
+    scanlinesFake.setPosition(280,170);
+    scanlinesFake.scale.set(1.9,1.9);
+    scanlinesFake.scrollFactor.set(0,0);
+    scanlinesFake.cameras = [game.camOverlay];
+    game.add(scanlinesFake);
+
+    hurtBlack = new FlxSprite(0,0).makeGraphic(1, 1, FlxColor.RED);
+    hurtBlack.scale.set(1280 * 3, 720 * 3);
+	hurtBlack.updateHitbox();
+    hurtBlack.scrollFactor.set(0,0);
+	hurtBlack.screenCenter();
+    hurtBlack.alpha = 0;
+    game.add(hurtBlack);
+
+    lowVin = new FlxSprite(-300,-170).loadGraphic(Paths.image('lowHealthPixel'));
+    lowVin.scale.set(0.7,0.7);
+    lowVin.antialiasing = true;
+    lowVin.scrollFactor.set(0, 0);
+    lowVin.alpha = 0;
+    lowVin.screenCenter();
+	lowVin.blend = 0;
+	lowVin.cameras = [game.camOverlay];
+	game.add(lowVin);
+
+    game.add(video6);
+
+    object = video2;
+    FlxG.debugger.track(object);
+
+}
+
+function onSongTransition(cause, callback){
+    if (PlayState.isStoryMode){
+        var state = new HScriptState("endDialogue");
+        FlxG.switchState(state);
+    }
+
+	FlxSprite.defaultAntialiasing = true;
+	
+	if(PlayState.isStoryMode)
+		return Function_Stop;
+}
+
+function destroy()
+    FlxG.game.setFilters([]);
+
+function switchingState()
+    FlxG.game.setFilters([]);
+
+function opponentNoteHit(){
+    //nullGlitch.data.glitchAmplitude.value = [FlxG.random.float(0.0,1.0)];
+    //if (curBg == 2){return;}
+    //video.x = -5000;
+    //game.dad.x = 640;
+
+    if (codeSection){
+        var ranInt:Int = FlxG.random.int(0,4);
+        switch(ranInt){
+            case 0:
+                textDisplay.color = 0xff00ff08; // green
+            case 1:
+                textDisplay.color = FlxColor.RED;
+            case 2:
+                textDisplay.color = FlxColor.BLUE;
+            case 3:
+                textDisplay.color = FlxColor.YELLOW;
+            case 4:
+                textDisplay.color = FlxColor.WHITE;
+        }
+        progressText();
+    }
+
+    // if (curBg == 0){
+    //     game.dad.x = FlxG.random.float(-30, 1570);
+    //     game.dad.y = FlxG.random.float(-175, 355);
+    //     var scaleLol:Float = FlxG.random.float(1, 4);
+    //     game.dad.scale.set(scaleLol,scaleLol);
+    // }
+    
+}
+
+function goodNoteHit(note:Note, field:PlayField){
+    if (codeSection){
+        textDisplay.color = FlxColor.WHITE;
+        progressText();
+    }
+}
+
+function noteMiss(note:Note, field:PlayField){
+    pixelateAmount += 2.0;
+    hurtAmountBlack += 0.05;
+}
+
+function noteMissPress(direction:Int){
+    pixelateAmount += 2.0;
+    hurtAmountBlack += 0.05;
+}
+
+/* function onStepHit(){
+    iconShader.data.binaryIntensity.value[0]= FlxG.random.float(4, 12);
+} */
+
+function onPause(){
+    FlxG.game.setFilters([]);
+    video.pause();
+    video2.pause();
+    video4.pause();
+    video5.pause();
+    video6.pause();
+    video7.pause();
+    video8.pause();
+}
+
+function onResume(){
+    //FlxG.game.setFilters([new ShaderFilter(scanline)]);
+    video.resume();
+    video2.resume();
+    video4.resume();
+    video5.resume();
+    video6.resume();
+    video7.resume();
+    video8.resume();
+}
+
+function onDestroy(){
+    video.destroy();
+    video2.destroy();
+    video3.destroy();
+    video4.destroy();
+    video5.destroy();
+    video6.destroy();
+    video7.destroy();
+    video8.destroy();
+}
+
+function generateModchart(){
+    modManager.queueEase(990, 992, "curve", 2);
+    modManager.queueSet(1248, "curve", 0);
+    modManager.queueEaseFunc(284, 288, FlxEase.linear, function(ev, val, step){
+        game.camHUD.alpha = val;
+    });
+}
+
+
+function onDisplayJudgment(image)
+	return 'pixelUI/' + image + "-pixel";
+
+function onDisplayComboNumber(image, num)
+	return 'pixelUI/num' + num + "-pixel";
+
+var storedCombo:Int = 0;
+
+function onApplyJudgmentDataPost(judgeData, diff, bot, show){
+    if(judgeData.comboBehaviour == -1)storedCombo = 0;
+}
+var playing = false;
+var playing2 = false;
+var alpha:Float =0.0;
+
+function onEvent(eventName, value1, value2, time){
+    if (game.endingSong == true){return;}
+    switch(eventName){
+        case 'storecombo':
+            storedCombo += game.stats.combo;
+            game.stats.combo = 0;
+        case 'restorecombo':
+            game.stats.combo += storedCombo;
+            storedCombo = 0;
+        case 'Song Event':
+            if(value1 == 'zoom'){
+               // barrel.data.offset.value = [640, 360];
+               // barrel.data.zoom.value[0] = 1 / Std.parseFloat(value2);
+            }
+        case 'removechars':
+            glitchBump.alpha = 0.25;
+            FlxG.camera.zoom += 0.08;
+			game.camHUD.zoom += 0.10;
+            
+            FlxTween.tween(game.dad, {alpha: 0}, 1.0);
+            FlxTween.tween(game.boyfriend, {alpha: 0}, 1.0);
+        case 'playendanim':
+            //senpaiEvil.animation.play('idle',true);
+            //FlxTween.tween(senpaiEvil, {alpha: 1}, 0.3);
+        case 'prob': // prob value of bigglitch shader
+            bigGlitch.data.prob.value = [value1]; // 0 = off, 1 = max
+            bigGlitch.data.time.value[0] = FlxG.random.float(0.0, 999.0);
+        case 'shock': // face overlay for glitch bf section
+            if (value1 == "senpai"){
+                senpaiFace.alpha = 1;
+            } else if (value1 == "spirit"){
+                spiritFace.alpha = 1;
+            }
+        case 'nexttext':
+            nextText();
+        case 'finishtext':
+            showRemainingText();
+        case 'finishandnexttext':
+            codeSection = false;
+            textDisplay.color = 0xff00ff08;
+            textDisplay.setPosition(274,114);
+            nextText();
+            showRemainingText();
+        case 'cradle':
+            switch(value1){
+                case "0":
+                    FlxTween.tween(bfCradle,{alpha: 1}, 1);
+                case "1":
+                    bfCradle.setPosition(570,340);
+                    bfCradle.scale.set(7,7);
+                    bfCradle.angle = 23.9;
+                    bfCradle.alpha = 0;
+                    FlxTween.tween(bfCradle,{alpha: 0.8}, 0.4);
+                case "2":
+                    bfCradle.setPosition(570,340);
+                    bfCradle.scale.set(5,5);
+                    bfCradle.angle = -30.1;
+                    bfCradle.alpha = 0;
+                    FlxTween.tween(bfCradle,{alpha: 0.7}, 0.4);
+                case "3":
+                    bfCradle.setPosition(460,410);
+                    bfCradle.scale.set(3,3);
+                    bfCradle.angle = -105.1;
+                    bfCradle.alpha = 0;
+                    FlxTween.tween(bfCradle,{alpha: 0.5}, 0.4);
+                case "4":
+                    bfCradle.setPosition(700,310);
+                    bfCradle.scale.set(2,2);
+                    bfCradle.angle = -177.1;
+                    bfCradle.alpha = 0;
+                    FlxTween.tween(bfCradle,{alpha: 0.4}, 0.4);
+                case "5":
+                    bfCradle.setPosition(570,320);
+                    bfCradle.scale.set(1,1);
+                    bfCradle.angle = -277.1;
+                    bfCradle.alpha = 0;
+                    FlxTween.tween(bfCradle,{alpha: 0.3}, 0.4);
+                case "6":
+                    bfCradle.setPosition(-11570,320);
+                case "7":
+                    FlxTween.tween(black,{alpha: 0}, 1);
+                case "8":
+                    FlxTween.tween(game.boyfriend,{alpha: 1}, 1);
+            }
+        case 'specialbump':
+            if((Conductor.songPosition - 2000) > time)return;
+            switch (value1){
+                case "small":
+                    FlxG.camera.zoom += 0.03;
+                    game.camHUD.zoom += 0.05;
+                case "big":
+                    glitchBump.alpha = 0.5;
+                    FlxG.camera.zoom += 0.16;
+                    game.camHUD.zoom += 0.20;
+                case "glitch":
+                    bigGlitch.data.time.value[0] = FlxG.random.float(0.0, 999.0);
+            }
+        case 'scene':
+            switch(value1){
+                case "building":
+                    nullDebris2.y = 2884;
+                    nullDebris.y = 2884;
+                    nullSky.x = 400;
+                    nullSky2.x = 400;
+                    nullBuilding.setPosition(-1552, 368);
+                    textDisplay.x = 9000;
+                    glitchBump.alpha = 0.75;
+                    FlxG.camera.zoom += 0.08;
+			        game.camHUD.zoom += 0.10;
+                    black2.alpha = 0;
+
+                    if((Conductor.songPosition - 2000) > time)return;
+                    if(hxvlc != "0"){
+                        video2.play();
+                    }else{
+                        if(hxcodec == "3.0.0"){
+                            video2.play(Paths.video('thunder'), true);
+                        }    
+                        else{
+                            video2.playVideo(Paths.video('thunder'), true);
+                        }  
+                    }
+
+                case "code":
+                    black2.alpha = 1;
+                    // remove video4 (prior cutscene)
+                    video4.x = 8000;
+
+                    codeSection = true;
+                    showShaders();
+                    glitchBump.alpha = 0.75;
+                    FlxG.camera.zoom += 0.08;
+			        game.camHUD.zoom += 0.10;
+                case "replay":
+                    game.changeCharacter("senpai", 1);
+
+                    game.dad.setPosition(250, 460);
+                    game.boyfriend.setPosition(970, 670);
+
+                    game.dad.scale.set(6,6);
+                    game.boyfriend.scale.set(6,6);
+                    game.defaultCamZoom = 1;
+                    game.gf.x = 580;
+
+                    replayBgSky.x = -20;
+                    replayBgSchool.x = -200;
+                    replayBgStreet.x = -200;
+                    replayFgTrees.x = -66;
+                    replayBgTrees.x = -624;
+                    replayTreeLeaves.x = -200;
+                    bgGirls.x = -100;
+                    replayHud.x = 31;
+                case "glitchappears": 
+                    game.customCamera.set(789,589);
+                    game.addCameraPoint(game.customCamera); 
+                    glitchappears.setPosition(1602,610);
+                    game.add(video3);
+                    video3.cameras = [game.camOverlay];
+                    game.gf.x = 8000;
+                    bgGirls.x = 8000;
+                    game.boyfriend.x = 8000;
+                    glitchTrail = new FlxTrail(glitchappears, null, 12, 8, 0.4, 0.030);
+                    game.addBehindBF(glitchTrail);
+                    
+                    game.changeCharacter("senpai-angry", 1);
+                    game.dad.setPosition(250, 460);
+                    game.dad.scale.set(6,6);
+
+                    replayBgSkyGray.x = -20;
+                    replayBgSchoolGray.x = -200;
+                    replayBgStreetGray.x = -200;
+                    replayFgTreesGray.x = -66;
+                    replayBgTreesGray.x = -624;
+                    replayTreeLeaves.x = 9000;
+
+                    if((Conductor.songPosition - 2000) > time)return;
+                    if(hxvlc != "0"){
+                        video3.play();
+                    }else{
+                        if(hxcodec == "3.0.0"){
+                            video3.play(Paths.video('glitch overlay'), false);
+                        }    
+                        else{
+                            video3.playVideo(Paths.video('glitch overlay'), false);
+                        }  
+                    }
+                case "spiritgray":
+                    game.customCamera.set(620,630);
+                    game.addCameraPoint(game.customCamera); 
+                    black2.alpha = 1;
+                    game.changeCharacter("spiritBackGray", 1);
+                    game.dad.setPosition(500,480);
+                    game.dad.scale.set(5,5);
+                    game.boyfriend.alpha = 0;
+                case "hidespirit":
+                    black2.alpha = 0;
+                    game.addCameraPoint(game.sectionCamera); 
+                    game.changeCharacter("nullAccess", 1);
+                    game.dad.scale.set(6,6);
+                    game.dad.setPosition(30, 524);
+                    game.boyfriend.alpha = 1;
+                case "front":   // senpai pov
+                    staticOverlay.alpha = 1;
+                    staticOverlay2.alpha = 1;
+                    FlxTween.tween(staticOverlay, {alpha: 0}, 4, {ease: FlxEase.quadOut});
+                    FlxTween.tween(staticOverlay2, {alpha: 0}, 4, {ease: FlxEase.quadOut});
+                    game.remove(glitchTrail);
+                    video3.x = 8000;
+                    glitchappears.y = 2000;
+
+					game.worldComboOrigin.x = FlxG.width * 0.55;
+					game.worldComboOrigin.y = FlxG.camera.height / 2.0 - FlxG.camera.height * 0.1;
+
+					game.worldComboOrigin.x += 400;
+					game.worldComboOrigin.y += 250;
+                    // remove prev bg
+                    replayBgSky.x = 8000;
+                    replayBgSchool.x = 8000;
+                    replayBgStreet.x = 8000;
+                    replayFgTrees.x = 8000;
+                    replayBgTrees.x = 8000;
+                    replayTreeLeaves.x = 8000;
+                    replayBgSchoolGray.x = 8000;
+                    replayBgStreetGray.x = 8000;
+                    replayFgTreesGray.x = 8000;
+                    replayBgTreesGray.x = 8000;
+                    game.changeCharacter("glitchBf", 0);
+                    game.boyfriend.flipX = false;
+                    game.boyfriend.setPosition(720,550);
+                    game.dad.x = -4000;
+                    glitchDebris.y = 2884;
+                    glitchDebris.x = 540;
+                    glitchSky.x = 563;
+                    glitchBg.x = 563;
+                    glitchFloor.x = 560;
+            }
+            
+        case 'playvideo':
+            if (value1 == "grid"){
+                nullDebris2.y = 2884;
+                nullDebris.y = 2884;
+                black2.alpha = 0;
+
+                glitchBump.alpha = 0.75;
+                FlxG.camera.zoom += 0.08;
+			    game.camHUD.zoom += 0.10;
+
+                if((Conductor.songPosition - 2000) > time)return;
+                if(playing)return;
+                playing = true;
+                if(hxvlc != "0"){
+                    video.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video.play(Paths.video('gridOverlay'), true);
+                    }    
+                    else{
+                        video.playVideo(Paths.video('gridOverlay'), true);
+                    }   
+                }
+            }
+            else if (value1 == "bgscroll"){
+                //video4.setPosition(-130,-110);
+                hideShaders();
+
+                hands.alpha = 0;
+                handTime = false;
+                game.remove(hands);
+
+                if((Conductor.songPosition - 2000) > time)return;
+                FlxG.sound.play(Paths.sound('senpai type'));
+
+                if(hxvlc != "0"){
+                    video4.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video4.play(Paths.video('cutsceneBgScroll'));
+                    }    
+                    else{
+                        video4.playVideo(Paths.video('cutsceneBgScroll'));
+                    }
+                }
+            }else if (value1 == "tvcutscene"){ 
+                hideShaders();
+                // hide previous bg elements
+                nullSky.y = 5000;
+                nullSky2.y = 5000;         
+                nullDebris.x = 8000;
+                nullDebris2.x = 8000;
+                nullBuilding.y = 5000;
+                nullPlatform.y = -5000;
+                video2.bitmap.dispose();
+                video.bitmap.dispose();
+
+                if((Conductor.songPosition - 2000) > time)return;
+                if(hxvlc != "0"){
+                    video5.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video5.play(Paths.video('cutsceneTv', true));
+                    }    
+                    else{
+                        video5.playVideo(Paths.video('cutsceneTv', true));
+                    }    
+                }
+
+
+            }
+            else if (value1 == "glitchbg"){ 
+                senpaiFace.alpha = 0.8;
+
+                flyTime = true;
+                
+                if((Conductor.songPosition - 2000) > time)return;
+
+                if(hxvlc != "0"){
+                    video7.load(Paths.video('glitchBg', [':input-repeat=65545']));
+                    video7.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video7.play(Paths.video('glitchBg', true));
+                    }    
+                    else{
+                        video7.playVideo(Paths.video('glitchBg', true));
+                    } 
+                }   
+            }
+            else if (value1 == "endcutscene"){ 
+
+                if((Conductor.songPosition - 2000) > time)return;
+                if(hxvlc != "0"){
+                    video6.load(Paths.video('cutsceneEnd', [':input-repeat=65545']));
+                    video6.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video6.play(Paths.video('cutsceneEnd', true));
+                    }    
+                    else{
+                        video6.playVideo(Paths.video('cutsceneEnd', true));
+                    }    
+                }
+            }
+            else if (value1 == "cutsceneend"){ // glitch intermission
+                if((Conductor.songPosition - 2000) > time)return;
+                if(hxvlc != "0"){
+                    video8.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video8.play(Paths.video('glitch intermission', true));
+                    }    
+                    else{
+                        video8.playVideo(Paths.video('glitch intermission', true));
+                    }  
+                }
+                game.add(video8);
+                //game.boyfriend.alpha = 0;
+                FlxG.debugger.track(object);
+            }
+            else if (value1 == "tunnel2"){ // second free fall tunnel
+                if(playing2)return;
+                playing2 = true;
+
+                game.addBehindBF(video6);
+                game.addBehindGF(video7);
+
+                video.x = 4000; // hide off screen lol
+                video2.x = 4000; // prolly bad for low end pcs so oopsy
+
+                // IOT IS!!! dont worry once we get around to makin da demo i'll do da optimizations <3
+
+                // thank u uwu
+
+                if((Conductor.songPosition - 2000) > time)return;
+                if(hxvlc != "0"){
+                    video6.load(Paths.video('SecondTunnel'), [':input-repeat=65545']);
+                    video7.load(Paths.video('SecondTunnel'), [':input-repeat=65545']);
+                        
+                    video6.play();
+                    video7.play();
+                }else{
+                    if(hxcodec == "3.0.0"){
+                        video6.play(Paths.video('SecondTunnel'), true);
+                        video7.play(Paths.video('SecondTunnel'), true);
+                    }    
+                    else{
+                        video6.playVideo(Paths.video('SecondTunnel'), true);
+                        video7.playVideo(Paths.video('SecondTunnel'), true);
+                    }  
+                }
+            }else if (value1 == "remove"){ // remove intermission vids
+                if (value2 == "4"){
+                    video4.visible = false;
+                    video4.x = 8000;
+                    video4.bitmap.dispose();
+                }
+                else if (value2 == "5"){
+                    video5.visible = false;
+                    video5.x = 8000;
+                    video5.bitmap.dispose();
+
+                    staticOverlay.alpha = 1;
+                    staticOverlay2.alpha = 1;
+                    staticOverlay.x = 200;
+                    staticOverlay2.x = 200;
+                    FlxTween.tween(staticOverlay, {alpha: 0}, 4, {ease: FlxEase.quadOut});
+                    FlxTween.tween(staticOverlay2, {alpha: 0}, 4, {ease: FlxEase.quadOut});
+
+                }
+                else if (value2 == "6"){
+                    video6.visible = false;
+                    video6.x = 8000;
+                    video6.bitmap.dispose();
+                }
+            
+            }
+        case 'addtrail':
+            addTrail(game.boyfriend, 0, 4, 2);
+            bfTrail.color = FlxColor.fromRGB(0,142,255,255);
+        case 'removetrail':
+            game.remove(bfTrail);
+            
+        case 'changeBf': // ig im just using this as a general function now teehee oopsy o///o
+            switch(value1){
+                case "replay":
+
+                case "handtime":
+                    handTime = true;
+                    hands.alpha = 0.7;
+            }
+            
+            //glitchBump.alpha = 0.75;
+            //FlxG.camera.zoom += 0.08;
+			//game.camHUD.zoom += 0.10;
+            //iconP2.shader = iconShader;
+            
+    }
+}
+
+function addReplayShit(){
+    replayBgSky = new FlxSprite(-8000,0).loadGraphic(Paths.image('weeb/weebSky'));
+    replayBgSky.scrollFactor.set(0.1, 0.1);
+    game.addBehindGF(replayBgSky);
+    replayBgSky.antialiasing = false;
+    
+    replayBgSkyGray = new FlxSprite(-8000,0).loadGraphic(Paths.image('weeb/weebSkyGray'));
+    replayBgSkyGray.scrollFactor.set(0.1, 0.1);
+    game.addBehindGF(replayBgSkyGray);
+    replayBgSkyGray.antialiasing = false;
+
+    replayBgSchool = new FlxSprite(-8000, 0).loadGraphic(Paths.image('weeb/weebSchool'));
+    replayBgSchool.scrollFactor.set(0.6, 0.90);
+    game.addBehindGF(replayBgSchool);
+    replayBgSchool.antialiasing = false;
+
+    replayBgSchoolGray = new FlxSprite(-8000, 0).loadGraphic(Paths.image('weeb/weebSchoolGray'));
+    replayBgSchoolGray.scrollFactor.set(0.6, 0.90);
+    game.addBehindGF(replayBgSchoolGray);
+    replayBgSchoolGray.antialiasing = false;
+
+    replayBgStreet = new FlxSprite(-8000).loadGraphic(Paths.image('weeb/weebStreet'));
+    replayBgStreet.scrollFactor.set(0.95, 0.95);
+    game.addBehindGF(replayBgStreet);
+    replayBgStreet.antialiasing = false;
+
+    replayBgStreetGray = new FlxSprite(-8000).loadGraphic(Paths.image('weeb/weebStreetGray'));
+    replayBgStreetGray.scrollFactor.set(0.95, 0.95);
+    game.addBehindGF(replayBgStreetGray);
+    replayBgStreetGray.antialiasing = false;
+
+    replayFgTrees = new FlxSprite(-8000, 130).loadGraphic(Paths.image('weeb/weebTreesBack'));
+    replayFgTrees.scrollFactor.set(0.9, 0.9);
+    game.addBehindGF(replayFgTrees);
+    replayFgTrees.antialiasing = false;
+
+    replayFgTreesGray = new FlxSprite(-8000, 130).loadGraphic(Paths.image('weeb/weebTreesBackGray'));
+    replayFgTreesGray.scrollFactor.set(0.9, 0.9);
+    game.addBehindGF(replayFgTreesGray);
+    replayFgTreesGray.antialiasing = false;
+
+    replayBgTrees = new FlxSprite(-8000, -800);
+    var treetex = Paths.getPackerAtlas('weeb/weebTrees');
+    replayBgTrees.frames = treetex;
+    replayBgTrees.animation.add('treeLoop', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], 12);
+    replayBgTrees.animation.play('treeLoop');
+    replayBgTrees.scrollFactor.set(0.85, 0.85);
+    game.addBehindGF(replayBgTrees);
+    replayBgTrees.antialiasing = false;
+
+    replayBgTreesGray = new FlxSprite(-8000, -800);
+    var treetex = Paths.getPackerAtlas('weeb/weebTreesGray');
+    replayBgTreesGray.frames = treetex;
+    replayBgTreesGray.animation.add('treeLoop', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], 12);
+    replayBgTreesGray.animation.play('treeLoop');
+    replayBgTreesGray.scrollFactor.set(0.85, 0.85);
+    game.addBehindGF(replayBgTreesGray);
+    replayBgTreesGray.antialiasing = false;
+
+    replayTreeLeaves = new FlxSprite(-8000, -40);
+    replayTreeLeaves.frames = Paths.getSparrowAtlas('weeb/petals');
+    replayTreeLeaves.animation.addByPrefix('leaves', 'PETALS ALL', 24, true);
+    replayTreeLeaves.animation.play('leaves');
+    replayTreeLeaves.scrollFactor.set(0.85, 0.85);
+    game.addBehindGF(replayTreeLeaves);
+    replayTreeLeaves.antialiasing = false;
+
+    var widShit = Std.int(replayBgSky.width * 6);
+
+    replayBgSky.setGraphicSize(widShit);
+    replayBgSchool.setGraphicSize(widShit);
+    replayBgStreet.setGraphicSize(widShit);
+    replayBgTrees.setGraphicSize(Std.int(widShit * 1.4));
+    replayFgTrees.setGraphicSize(Std.int(widShit * 0.8));
+    replayTreeLeaves.setGraphicSize(widShit);
+    replayTreeLeaves.antialiasing = false;
+
+    replayFgTrees.updateHitbox();
+    replayBgSky.updateHitbox();
+    replayBgSchool.updateHitbox();
+    replayBgStreet.updateHitbox();
+    replayBgTrees.updateHitbox();
+    replayTreeLeaves.updateHitbox();
+
+    replayBgSkyGray.setGraphicSize(widShit);
+    replayBgSchoolGray.setGraphicSize(widShit);
+    replayBgStreetGray.setGraphicSize(widShit);
+    replayBgTreesGray.setGraphicSize(Std.int(widShit * 1.4));
+    replayFgTreesGray.setGraphicSize(Std.int(widShit * 0.8));
+
+    replayFgTreesGray.updateHitbox();
+    replayBgSkyGray.updateHitbox();
+    replayBgSchoolGray.updateHitbox();
+    replayBgStreetGray.updateHitbox();
+    replayBgTreesGray.updateHitbox();
+
+    bgGirls = new FlxSprite(-8000, 190);
+    bgGirls.frames = Paths.getSparrowAtlas('weeb/bgFreaks');
+    bgGirls.animation.addByIndices('danceLeft', 'BG girls group', CoolUtil.numberArray(14), "", 24, false);
+    bgGirls.animation.addByIndices('danceRight', 'BG girls group', CoolUtil.numberArray(30, 15), "", 24, false);
+    bgGirls.scrollFactor.set(0.9, 0.9);
+    bgGirls.setGraphicSize(Std.int(bgGirls.width * 6));
+    bgGirls.updateHitbox();
+    bgGirls.antialiasing = false;
+    bgGirls.animation.play('danceLeft');
+    game.addBehindGF(bgGirls);
+
+    glitchappears = new FlxSprite(1602,6000).loadGraphic(Paths.image('glitchappears'));
+    glitchappears.scrollFactor.set(1,1);
+    game.addBehindBF(glitchappears);
+    glitchappears.scale.set(6,6);
+    glitchappears.antialiasing = false;
+    //770
+}
+
+function addGlitchBg(){
+    glitchSky = new FlxSprite(8000,487).loadGraphic(Paths.image('glitchSky'));
+    glitchSky.scrollFactor.set(0.95, 0.95);
+    glitchSky.scale.set(7,7);
+    game.addBehindDad(glitchSky);
+    glitchSky.antialiasing = false;
+
+    glitchDebris = new FlxSprite(8000,2884).loadGraphic(Paths.image('glitchDebris'));
+    glitchDebris.scale.set(6,6);
+    glitchDebris.antialiasing = false;
+    glitchDebris.scrollFactor.set(0.3, 0.3);
+    game.addBehindDad(glitchDebris);
+
+    glitchBg = new FlxSprite(8000,687).loadGraphic(Paths.image('glitchBg'));
+    glitchBg.scrollFactor.set(0.95, 0.95);
+    glitchBg.scale.set(6,6);
+    game.addBehindDad(glitchBg);
+    glitchBg.antialiasing = false;
+
+    glitchFloor = new FlxSprite(8000,954).loadGraphic(Paths.image('glitchFloor'));
+    glitchFloor.scrollFactor.set(0.95, 0.95);
+    glitchFloor.scale.set(6,6);
+    game.addBehindDad(glitchFloor);
+    glitchFloor.antialiasing = false;
+
+    senpaiFace = new FlxSprite(600,470).loadGraphic(Paths.image('senpaiShock'));
+    senpaiFace.scale.set(19,19);
+    senpaiFace.antialiasing = false;
+    senpaiFace.scrollFactor.set(0, 0);
+    senpaiFace.alpha = 0;
+    senpaiFace.blend = 12;
+    senpaiFace.cameras = [game.camHUD];
+    game.add(senpaiFace);
+
+    spiritFace = new FlxSprite(590,210).loadGraphic(Paths.image('spiritShock'));
+    spiritFace.scale.set(17,17);
+    spiritFace.antialiasing = false;
+    spiritFace.scrollFactor.set(0, 0);
+    spiritFace.alpha = 0;
+    spiritFace.blend = 12;
+    spiritFace.cameras = [game.camHUD];
+    game.add(spiritFace);
+
+    replayHud = new FlxSprite(-8000,16);
+    replayHud.frames = Paths.getSparrowAtlas('replay');
+    replayHud.animation.addByPrefix('replay', 'replay', 24, true);
+    replayHud.animation.play('replay');
+    replayHud.scrollFactor.set(0,0);
+    replayHud.scale.set(6,6);
+    replayHud.updateHitbox();
+    replayHud.antialiasing = false;
+    game.add(replayHud);
+
+}
+
+function onBeatHit(){
+    bgGirlDance();
+    if (curBeat % 4 == 0 && playNullGlitch){
+        nullGlitch.data.glitchAmplitude.value = [FlxG.random.float(1.0,5.0)];
+    } else {
+        nullGlitch.data.glitchAmplitude.value = 0;
+    }
+
+    if (curBeat % 4 == 0 && handTime){
+        for (sprite in hands.members) {
+            if (sprite != null) {
+                if (handWhich){
+                    sprite.animation.play("Left", true);
+                } else {
+                    sprite.animation.play("Right", true);
+                }
+            }
+        }
+        handWhich = !handWhich;
+    }
+    
+}
+
+function onGameOver(){
+    lowVin.alpha = 0;
+    hurtAmountBlack = 0;
+    hasGameOvered = true;
+
+    trace("pre   onEndSong set alpha!!!!!!!!!!!!!!");
+    game.camGame.setFilters([]);
+    game.camHUD.setFilters([]);
+    scanlinesFake.alpha = 0;
+    trace("onEndSong set alpha!!!!!!!!!!!!!!");
+}
+
+var trans = false;
+function onStartCountdown(){
+    if(trans)return;
+    game.camHUD.visible = false;
+    trans = true;
+    
+    game.boyfriend.visible = true;
+    game.boyfriend.animation.curAnim.curFrame = 0;
+    game.camHUD.visible = true;
+    game.startCountdown();
+
+    return Function_Stop; 
+}
+
+var timer:Float = 0;
+var t:Float = 0;
+
+function onUpdate(elapsed){
+    nullSky.x += 20 * elapsed;
+    nullSky2.x -= 40 * elapsed;
+    nullDebris.y -= 40* elapsed;
+    glitchDebris.y -= 80* elapsed;
+    nullDebris2.y -= 80* elapsed;
+    nullBuilding.x += 80* elapsed;
+    nullBuilding.y -= 10* elapsed;
+    glitchappears.x -= 90 * elapsed;
+
+    if (handTime){
+        hands.y -= 60 *elapsed;
+    }
+
+    if (hurtAmountBlack > 0){
+        hurtAmountBlack -= 0.2 * elapsed;
+    } else if (hurtAmountBlack < 0){
+        hurtAmountBlack = 0;
+    }
+
+    if (!hasGameOvered){
+        if (game.health <= 0.4){
+            if (lowVin.alpha < 0.8){
+                lowVin.alpha += 0.4 * elapsed;
+            } else {
+                lowVin.alpha = 0.8;
+            }
+        } else {
+            if (lowVin.alpha > 0){
+                lowVin.alpha -= 0.4 * elapsed;
+            }
+        }
+    }
+
+    hurtBlack.alpha = hurtAmountBlack;
+
+    pixelate.data.pixelSize.value = [Std.int(pixelateAmount)];
+
+    if (pixelateAmount > 1){
+        pixelateAmount -= 2 * elapsed;
+    } else if (pixelateAmount < 1){
+        pixelateAmount = 1;
+    }
+	
+	if(game.boyfriend.curCharacter == 'glitchBf'){
+        if (flyTime){
+            var m = 2;
+            if(curBeat >= 488 && curStep < 2106)
+                m = 1.5;			
+            
+            if(curBeat >= 528 && curBeat < 568 || curStep >= 2278 && curStep < 2432)
+                m = 2;		
+    
+            if(curStep >= 2106 && curStep < 2112)
+                t = 0;
+            else
+                t += elapsed * m;
+            
+            
+            // 720, 550
+            game.boyfriend.x = FlxMath.lerp(game.boyfriend.x, 720 + (100 * FlxMath.fastCos(t)), 0.3 * (elapsed * 60));
+            game.boyfriend.y = FlxMath.lerp(game.boyfriend.y, 550 + (25 * FlxMath.fastSin(t * 2)), 0.3 * (elapsed * 60));
+        } else {
+            game.boyfriend.setPosition(720,550);
+        }
+		
+	}
+
+    if( Conductor.songPosition <= 0){
+        schoolShader.data.time.value[0] += elapsed * 0.25;
+        iconShader.data.time.value[0] += elapsed * 0.75;
+        vignette.data.time.value[0] += elapsed * 0.5;
+        //bigGlitch.data.time.value[0] += elapsed * 0.5;
+        if (playNullGlitch){
+            nullGlitch.data.iTime.value[0] += elapsed;
+        } else {
+            nullGlitch.data.iTime.value[0] = 0;
+        }
+        
+    }else{
+        schoolShader.data.time.value[0] = Conductor.songPosition * 0.001 * 0.25;
+        iconShader.data.time.value[0] = Conductor.songPosition * 0.001 * 0.75;
+        if (playNullGlitch){
+            nullGlitch.data.iTime.value[0] = Conductor.songPosition * 0.001;
+        } else {
+            nullGlitch.data.iTime.value[0] = 0;
+        }
+        vignette.data.time.value[0] = Conductor.songPosition * 0.001 * 0.5;
+        //bigGlitch.data.time.value[0] = Conductor.songPosition * 0.001 * 0.5;
+    }
+
+    if(curBg == 2){
+        timer += elapsed * 0.35;
+        school.alpha = ((FlxMath.fastSin(timer) * 0.5) + (glitchBump.alpha * 0.75)) * game.dad.alpha;
+    }else{
+        timer = 0;
+        school.alpha = 0;
+    }
+
+    if (glitchBump.alpha > 0){
+        glitchBump.alpha -= elapsed;
+    }
+
+    if (spiritFace.alpha > 0){
+        spiritFace.alpha -= 0.5 *elapsed;
+    }
+    if (senpaiFace.alpha > 0){
+        senpaiFace.alpha -= 0.5 *elapsed;
+    }
+    
+    
+    if (playNullGlitch){
+        nullGlitch.data.glitchAmplitude.value -= [0.001 * elapsed];
+    } else {
+        nullGlitch.data.glitchAmplitude.value = 0;
+    }
+    
+    //PlayState.instance.camFollow.set(object.x,object.y);
+    //video.playVideo(Paths.video('SenpaiIdle'));
+}
+
+function progressText()
+{
+    if (currentIndex < longText.length)
+    {
+        if (longText.charAt(currentIndex) == " ") {
+            textDisplay.text += " ";
+            currentIndex++;
+        }
+        
+        textDisplay.text += longText.charAt(currentIndex);
+
+        currentIndex++;
+    }
+}
+
+function showRemainingText()
+{
+    textDisplay.text += longText.substring(currentIndex);
+    currentIndex = longText.length;
+}
+
+function nextText(){
+    curDialogue++;
+    longText = dialogueArray[curDialogue];
+    currentIndex = 0;
+    textDisplay.text = "";
+}
+
+function hideShaders(){
+    game.camGame.setFilters([]);
+    game.camHUD.setFilters([]);
+    playNullGlitch = false;
+}
+function showShaders(){
+
+	if(ClientPrefs.shaders == 'All'){
+		game.camGame.setFilters([new ShaderFilter(barrel), new ShaderFilter(vignette), new ShaderFilter(bigGlitch), new ShaderFilter(chroma),new ShaderFilter(bloom),new ShaderFilter(nullGlitch), new ShaderFilter(pixelate)]);
+		game.camHUD.setFilters([new ShaderFilter(chroma),new ShaderFilter(bloom),new ShaderFilter(nullGlitch)]);
+	}else if(ClientPrefs.shaders == 'Minimal')
+		game.camGame.setFilters([new ShaderFilter(barrel), new ShaderFilter(pixelate)]);
+    playNullGlitch = true;
+}
+
+function bgGirlDance()
+{
+    danceDir = !danceDir;
+
+    if (danceDir)
+        bgGirls.animation.play('danceRight', true);
+    else
+        bgGirls.animation.play('danceLeft', true);
+}
+
+function convertToGreyscale(mySprite:FlxSprite)
+    {
+        for (y in 0...mySprite.pixels.height)
+        {
+            for (x in 0...mySprite.pixels.width)
+            {
+                var pixelColor:Int = mySprite.pixels.getPixel(x, y);
+                var greyColor:Int = (0.2126 * ((pixelColor >> 16) & 0xFF)) + (0.7152 * ((pixelColor >> 8) & 0xFF)) + (0.0722 * (pixelColor & 0xFF));
+                var greyPixel:Int = (greyColor << 16) | (greyColor << 8) | greyColor;
+                mySprite.pixels.setPixel(x, y, greyPixel);
+            }
+        }
+        mySprite.dirty = true;
+    }

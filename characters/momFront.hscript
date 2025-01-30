@@ -1,0 +1,6 @@
+function playNote(note, field){
+	if(note.isSustainNote){
+		this.holdTimer = 0;
+		return Function_Stop;
+	}
+}

@@ -1,0 +1,24 @@
+{
+	"songs": [
+		["Null and Void", "senpai", [146, 113, 253]],
+		["CHKDSK", "spirit", [146, 113, 253]],
+		["Bloodlust", "mom", [146, 113, 253]],
+		["Access Denied", "senpai", [146, 113, 253]]
+	],
+
+	"weekCharacters": [
+		"dad",
+		"bf",
+		"gf"
+	],
+	"weekBackground": "stage",
+
+	"storyName": "Daddy Dearest",
+	"weekBefore": "tutorial",
+	"difficulties": "Normal",
+	"weekName": "Week 1",
+	"startUnlocked": true,
+
+	"hideStoryMode": false,
+	"hideFreeplay": false
+}

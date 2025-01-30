@@ -1,0 +1,128 @@
+{
+	"animations": [
+		{
+			"offsets": [
+				20,
+				40
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singUP",
+			"indices": [],
+			"name": "RageUp"
+		},
+		{
+			"offsets": [
+				-40,
+				-30
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singDOWN",
+			"indices": [],
+			"name": "RageDown"
+		},
+		{
+			"offsets": [
+				130,
+				3
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singLEFT",
+			"indices": [],
+			"name": "RageLeft"
+		},
+		{
+			"offsets": [
+				-20,
+				6
+			],
+			"cameraOffset": [
+				0,
+				0
+			],
+			"loop": false,
+			"fps": 24,
+			"anim": "singRIGHT",
+			"indices": [],
+			"name": "RageRight"
+		},
+		{
+			"loop": false,
+			"cameraOffset": [
+				0,
+				0
+			],
+			"offsets": [
+				10,
+				0
+			],
+			"anim": "buildSecond",
+			"fps": 24,
+			"name": "RageBuildSecond",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"cameraOffset": [
+				0,
+				0
+			],
+			"offsets": [
+				0,
+				0
+			],
+			"anim": "idle",
+			"fps": 24,
+			"name": "RageIdle",
+			"indices": []
+		},
+		{
+			"loop": false,
+			"cameraOffset": [
+				0,
+				0
+			],
+			"offsets": [
+				50,
+				10
+			],
+			"anim": "buildFirst",
+			"fps": 24,
+			"name": "RageBuildFirst",
+			"indices": []
+		}
+	],
+	"no_antialiasing": false,
+	"image": "characters/gfRageBlack",
+	"position": [
+		90,
+		133
+	],
+	"healthicon": "senpai",
+	"flip_x": true,
+	"healthbar_colors": [
+		0,
+		0,
+		0
+	],
+	"camera_position": [
+		0,
+		0
+	],
+	"sing_duration": 4,
+	"scale": 2
+}
