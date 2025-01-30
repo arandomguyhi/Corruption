@@ -541,6 +541,74 @@ function onCreatePost()
     addBehindBF('dadShadow')
 end
 
+function noteMiss()
+    hurtAmount = hurtAmount + 0.2
+    hurtAmountBlack = hurtAmountBlack + 0.2
+
+    if curStep >= 631 and curStep < 648 then
+        hurtRedAmount = hurtRedAmount + 0.4
+        setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
+        setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.15)
+        setProperty('health', getProperty('health') - 0.35)
+    end
+end
+
+function altFloor()
+    local scaleX = getProperty('floor.scale.x')
+    local scaleY = getProperty('floor.scale.y')
+    loadGraphic('floor', altFloorGraphic, false)
+    setProperty('floor.scale.x', scaleX) setProperty('floor.scale.y', scaleY)
+    updateHitbox('floor')
+end
+
+function altWall()
+    local scaleX = getProperty('wall.scale.x')
+    local scaleY = getProperty('wall.scale.y')
+    loadGraphic('wall', altWallGraphic, false)
+    setProperty('wall.scale.x', scaleX) setProperty('wall.scale.y', scaleY)
+    updateHitbox('wall')
+end
+
+function normalFloor()
+    local scaleX = getProperty('floor.scale.x')
+    local scaleY = getProperty('floor.scale.y')
+    loadGraphic('floor', floorGraphic, false)
+    setProperty('floor.scale.x', scaleX) setProperty('floor.scale.y', scaleY)
+    updateHitbox('floor')
+end
+
+function normalWall()
+    local scaleX = getProperty('wall.scale.x')
+    local scaleY = getProperty('wall.scale.y')
+    loadGraphic('wall', wallGraphic, false)
+    setProperty('wall.scale.x', scaleX) setProperty('wall.scale.y', scaleY)
+    updateHitbox('wall')
+end
+
+local boyfX = 0
+local boyfY = 0
+
+local dadfX = 0
+local dadfY = 0
+
+local currentBG = -1
+
+local daBG = -1
+
+function changeBG(id)
+    daBG = id
+    setProperty('dad.x', dadfX)
+    setProperty('dad.y', dadfY)
+    setProperty('boyfriend.x', boyfX)
+    setProperty('boyfriend.y', boyfY)
+
+    setProperty('camHUD.alpha', 1)
+
+    setProperty('stringPrep.alpha', 0.001)
+    setProperty('stringPrep2.alpha', 0.001)
+    setProperty('stringsBg.alpha', 0.001)
+end
+
 function setPosition(obj,x,y)
     setProperty(obj..'.x', x)
     setProperty(obj..'.y', y)
