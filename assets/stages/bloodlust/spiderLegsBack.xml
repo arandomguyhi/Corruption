@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="spiderLegsBack.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="BackLegs0000" x="8" y="8" width="531" height="440" frameX="-190" frameY="-28" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0001" x="547" y="8" width="616" height="447" frameX="-135" frameY="-15" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0002" x="1171" y="8" width="747" height="448" frameX="-82" frameY="-10" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0003" x="1926" y="8" width="837" height="454" frameX="-33" frameY="-14" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0004" x="2771" y="8" width="902" height="449" frameX="0" frameY="-16" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0005" x="8" y="470" width="930" height="480" frameX="-27" frameY="-4" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0006" x="946" y="470" width="783" height="487" frameX="-116" frameY="0" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0007" x="1737" y="470" width="590" height="473" frameX="-224" frameY="-1" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0008" x="2335" y="470" width="560" height="477" frameX="-225" frameY="-10" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0009" x="2903" y="470" width="504" height="453" frameX="-226" frameY="-18" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0010" x="3415" y="470" width="488" height="438" frameX="-223" frameY="-31" frameWidth="957" frameHeight="487"/>
+	<SubTexture name="BackLegs0011" x="8" y="965" width="488" height="439" frameX="-223" frameY="-30" frameWidth="957" frameHeight="487"/>
+</TextureAtlas>

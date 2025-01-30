@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="spiderLegsFront.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="front leg finished0000" x="8" y="8" width="1318" height="679" frameX="-39" frameY="-6" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0001" x="1334" y="8" width="1108" height="690" frameX="-166" frameY="0" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0002" x="2450" y="8" width="835" height="671" frameX="-319" frameY="-1" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0003" x="3293" y="8" width="793" height="674" frameX="-320" frameY="-15" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0004" x="8" y="706" width="715" height="642" frameX="-321" frameY="-25" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0005" x="731" y="706" width="691" height="621" frameX="-317" frameY="-44" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0006" x="1430" y="706" width="691" height="621" frameX="-317" frameY="-43" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0007" x="2129" y="706" width="753" height="623" frameX="-270" frameY="-40" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0008" x="2890" y="706" width="873" height="634" frameX="-192" frameY="-21" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0009" x="8" y="1356" width="1058" height="634" frameX="-117" frameY="-15" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0010" x="1074" y="1356" width="1187" height="642" frameX="-47" frameY="-21" frameWidth="1357" frameHeight="690"/>
+	<SubTexture name="front leg finished0011" x="2269" y="1356" width="1279" height="636" frameX="0" frameY="-23" frameWidth="1357" frameHeight="690"/>
+</TextureAtlas>

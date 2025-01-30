@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="spidermm.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="body0000" x="8" y="8" width="663" height="468" frameX="-4" frameY="-6" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0001" x="8" y="8" width="663" height="468" frameX="-4" frameY="-6" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0002" x="679" y="8" width="671" height="462" frameX="0" frameY="-11" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0003" x="679" y="8" width="671" height="462" frameX="0" frameY="-11" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0004" x="1358" y="8" width="670" height="466" frameX="-2" frameY="-6" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0005" x="1358" y="8" width="670" height="466" frameX="-2" frameY="-6" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0006" x="8" y="484" width="666" height="467" frameX="-7" frameY="-3" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0007" x="8" y="484" width="666" height="467" frameX="-7" frameY="-3" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0008" x="682" y="484" width="660" height="469" frameX="-13" frameY="0" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0009" x="682" y="484" width="660" height="469" frameX="-13" frameY="0" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0010" x="1350" y="484" width="655" height="468" frameX="-15" frameY="-2" frameWidth="673" frameHeight="474"/>
+	<SubTexture name="body0011" x="1350" y="484" width="655" height="468" frameX="-15" frameY="-2" frameWidth="673" frameHeight="474"/>
+</TextureAtlas>
