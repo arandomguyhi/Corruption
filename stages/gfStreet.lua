@@ -27,6 +27,26 @@ local spiderGroup = {}
 
 luaDebugMode = true
 function onCreate()
+    if shadersEnabled then
+        initLuaShader('null-and-void/bloom')
+        initLuaShader('overlay')
+        initLuaShader('zoomblur')
+
+        makeLuaSprite('bloom')
+        setSpriteShader('bloom', 'null-and-void/bloom')
+        setShaderFloat('bloom', 'blurSize', 0.01)
+        setShaderFloat('bloom', 'intensity', 0.0)
+
+        makeLuaSprite('overlay')
+        setSpriteShader('overlay', 'overlay')
+
+        makeLuaSprite('blur')
+        setSpriteShader('blur', 'zoomblur')
+        setShaderFloat('blur', 'posX', 0.5)
+        setShaderFloat('blur', 'posY', 0.5)
+        setShaderFloat('blur', 'focusPower', 15.0)
+    end
+
     makeLuaSprite('forestSky', path..'forestSky', -1600, -3800)
     setProperty('forestSky.antialiasing', true)
     scaleObject('forestSky', 1.25, 1.25)
@@ -273,25 +293,25 @@ function onCreate()
 
     makeLuaSprite('henchmanLight', path..'henchmanLight', -1750, -377+45)
     setProperty('henchmanLight.antialiasing', true)
-    setProperty('henchmanLight.alpha', 0.001)
+    setProperty('henchmanLight.alpha', 0)
     setProperty('henchmanLight.blend', 0)
     addLuaSprite('henchmanLight')
 
     makeLuaSprite('henchmanLight2', path..'henchmanLight', -900, -377+45)
     setProperty('henchmanLight2.antialiasing', true)
-    setProperty('henchmanLight2.alpha', 0.001)
+    setProperty('henchmanLight2.alpha', 0)
     setProperty('henchmanLight2.blend', 0)
     addLuaSprite('henchmanLight2')
 
     makeLuaSprite('henchmanLight3', path..'henchmanLight', -1750, -377+45)
     setProperty('henchmanLight3.antialiasing', true)
-    setProperty('henchmanLight3.alpha', 0.001)
+    setProperty('henchmanLight3.alpha', 0)
     setProperty('henchmanLight3.blend', 0)
     addLuaSprite('henchmanLight3')
 
     makeLuaSprite('henchmanLight4', path..'henchmanLight', -900, -377+45)
     setProperty('henchmanLight4.antialiasing', true)
-    setProperty('henchmanLight4.alpha', 0.001)
+    setProperty('henchmanLight4.alpha', 0)
     setProperty('henchmanLight4.blend', 0)
     addLuaSprite('henchmanLight4')
 
@@ -447,10 +467,30 @@ function onCreate()
 end
 
 function onCreatePost()
+    addOverlay({35.0,16.0,62.0},{203.0, 21.0, 122.0},0.175)
+
     setPosition('dad', 420, -165)
     setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
 
     setProperty('camGame.bgColor', getColorFromHex('808080')) -- gray color in flxcolor
+
+
+    -- LE VIDEOS
+    makeVideoSprite('lightSnow', 'snow light', 0, 0, 'camGame', true)
+    scaleObject('lightSnow', 2.5, 2.5, false)
+    setScrollFactor('lightSnow', 1.2, 1.2)
+    setProperty('lightSnow.blend', 12)
+    setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
+
+    makeVideoSprite('waveEfx', 'waveEffect', 0, 0, 'camGame', true)
+    setProperty('waveEfx.blend', 0)
+    setProperty('waveEfx.alpha', 0.001)
+    scaleObject('waveEfx', 1.1, 1.1)
+    setScrollFactor('waveEfx', 0, 0)
+    setProperty('waveEfx.x', -35)
+    setProperty('waveEfx.y', -25)
+    setObjectCamera('waveEfx', 'camOther')
+    setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
 
     makeLuaSprite('blackTop')
     makeGraphic('blackTop', 1, 1, '000000')
@@ -607,6 +647,229 @@ function changeBG(id)
     setProperty('stringPrep.alpha', 0.001)
     setProperty('stringPrep2.alpha', 0.001)
     setProperty('stringsBg.alpha', 0.001)
+
+    if id == 0 then
+        addOverlay({79.0,15.0,33.0}, {203.0, 21.0, 122.0}, 0.175)
+        normalWall()
+        normalFloor()
+        setProperty('waveEfx.alpha', 0.1)
+        setProperty('gfSleep.alpha', 0.001)
+        setProperty('boyfriend.alpha', 1)
+        setProperty('heavySnow.alpha', 0.001)
+        setProperty('smokeVin.alpha', 0.001)
+        setProperty('scopeVin.alpha', 0.4)
+    elseif id == 1 then
+        setProperty('waveEfx.alpha', 0.001)
+
+        makeVideoSprite('heavySnow', 'snow heavy', 0, 0, 'camGame', true)
+        scaleObject('heavySnow', 2.5, 2.5)
+        setScrollFactor('heavySnow', 1.2, 1.2)
+        screenCenter('heavySnow')
+        setProperty('heavySnow.blend', 12)
+        setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
+
+        addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+
+        setProperty('camHUD.alpha', 0.5)
+        if shadersEnabled then
+            runHaxeCode("game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);")
+        end
+        setProperty('stringPrep.alpha', 1)
+        setProperty('stringPrep2.alpha', 1)
+        altWall()
+        altFloor()
+        setProperty('stringsBg.alpha', 1)
+        setProperty('boyfriend.alpha', 0.001)
+        setProperty('gfSleep.alpha', 1)
+        setProperty('scopeVin.alpha', 0.001)
+    elseif id == 2 then
+        addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+
+        setProperty('smokeVin.alpha', 0.001)
+        setProperty('waveEfx.alpha', 0.1)
+
+        setProperty('forestForeground.alpha', 0.001)
+        setProperty('forestFront.alpha', 0.001)
+        setProperty('forestBf.alpha', 0.001)
+        setProperty('forestHench.alpha', 0.001)
+        setProperty('boyfriend.alpha', 1)
+        setProperty('boyfriend.y', -3400+25)
+        setProperty('dad.y', -3400)
+        setProperty('scopeVin.alpha', 0.4)
+    end
+end
+
+local bgs = {2,0,2,1,2,0}
+
+function onEvent(name, v1, v2)
+    if name == 'swapbg' then
+        setProperty('black2.alpha', 1)
+        startTween('blackie2', 'black2', {alpha = 0.001}, 0.8, {ease = 'quadOut'})
+
+        if dadfX == 0 then
+            dadfX = getProperty('dad.x')
+            dadfY = getProperty('dad.y')
+        end
+
+        currentBG = currentBG + 1
+
+        if currentBG >= #bgs then
+            currentBG = 0 end
+
+        changeBG(bgs[currentBG])
+    end
+
+    if name == 'addelement' then
+        if v1 == 'fadeout' then
+            if v2 == '1' then
+                setProperty('blackTop.alpha', 1)
+                startTween('unblack', 'blackTop', {alpha = 0.001}, 2, {ease = 'quadOut'})
+            elseif v2 == '2' then
+                setProperty('blackTop.alpha', 1)
+                startTween('unblack', 'blackTop', {alpha = 0.001}, 1, {ease = 'quadOut'})
+            end
+        end
+
+        if v1 == 'camfilters' then
+            if shadersEnabled then
+                runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader)), new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+            end
+        end
+    end
+
+    if name == 'changeBf' then
+        if v1 == 'gfnorm' then
+            triggerEvent('Change Character', 'bf', 'gfNorm')
+        elseif v1 == 'gfrage' then
+            triggerEvent('Change Character', 'bf', 'gfRage')
+        end
+    end
+
+    if name == 'playvideo' then
+        if v1 == 'smokevin' then
+            makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
+            setProperty('smokeVin.blend', 9)
+            scaleObject('smokeVin', 1.4, 1.4)
+            setScrollFactor('smokeVin', 0, 0)
+            setProperty('smokeVin.x', -270)
+            setProperty('smokeVin.y', -130)
+            setProperty('smokeVin.alpha', 0.001)
+            setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
+
+            startTween('smoke', 'smokeVin', {alpha = 0.8}, 1, {})
+        elseif v1 == 'stop snow' then
+            if shadersEnabled then
+                runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+            end
+            addOverlay({79.0,15.0,33.0},{203.0, 21.0, 122.0},0.175)
+            setProperty('lightSnow.alpha', 0.001)
+            henchTime = true
+        end
+
+        if v1 == 'momlaugh' then
+            runHaxeCode("game.camGame.setFilters([]);")
+            setProperty('camZooming', false)
+
+            makeVideoSprite('momLaugh', 'snow light', 0, 0, 'camGame')
+            setScrollFactor('momLaugh', 0, 0)
+            scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
+            setObjectOrder('momLaugh', getObjectOrder('gfBlack')+1)
+            setProperty('camHUD.alpha', 0.001)
+        end
+    end
+
+    if name == 'stringattack' then
+        if v1 == 'prep1' then
+            setProperty('stringPrep.alpha', 1)
+            playAnim('stringPrep', 'idle', true)
+        elseif v1 == 'prep2' then
+            setProperty('stringPrep2.alpha', 1)
+            playAnim('stringPrep2', 'idle', true)
+        elseif v1 == 'shoot1' then
+            playSound('stringAttack')
+            setProperty('stringPrep.alpha', 0.001)
+            setProperty('stringShoot.alpha', 1)
+            playAnim('stringShoot', 'idle', true)
+        elseif v1 == 'shoot2' then
+            setProperty('stringPrep2.alpha', 0.001)
+            setProperty('stringShoot2.alpha', 1)
+            playAnim('stringShoot2', 'idle', true)
+        end
+    end
+
+    if name == 'camshit' then
+        if v1 == 'mm' then
+            canZoom = false
+            setProperty('defaultCamZoom', 0.9)
+        end
+    end
+
+    if name == 'specialbump' then
+        if v1 == 'big' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
+        elseif v1 == 'riser' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.05)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.02)
+            setShaderFloat('bloom', 'intensity', 0.1)
+        end
+    end
+end
+
+function onBeatHit()
+    if curBeat % 4 == 0 and henchTime then
+        if henchWhich then
+            setProperty('henchmanLight.alpha', 0.6)
+            setProperty('henchmanLight3.alpha', 0.1)
+        else
+            setProperty('henchmanLight2.alpha', 0.6)
+            setProperty('henchmanLight4.alpha', 0.1)
+        end
+        henchWhich = not henchWhich
+    end
+end
+
+function addOverlay(col1,col2,blend)
+    arrT = col1
+    arrR = col2
+    poses = {0.5,-.15}
+    amtt = blend
+    trans = false
+
+    setShaderFloat('overlay', 'rT', arrT[1]/255)
+    setShaderFloat('overlay', 'gT', arrT[2]/255)
+    setShaderFloat('overlay', 'bT', arrT[3]/255)
+    setShaderFloat('overlay', 'rR', arrR[1]/255)
+    setShaderFloat('overlay', 'gR', arrR[2]/255)
+    setShaderFloat('overlay', 'bR', arrR[3]/255)
+    setShaderFloat('overlay', 'ypos', poses[2])
+    setShaderFloat('overlay', 'xpos', poses[1])
+    setShaderFloat('overlay', 'amt', amtt)
+    setShaderBool('overlay', 'trans', trans)
+
+    runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('ovelay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+end
+
+function onUpdate(elapsed)
+    if getShaderFloat('bloom', 'intensity') > 0 then
+        setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity')-elapsed)
+    end
+
+    if getProperty('henchmanLight.alpha') > 0 then
+        setProperty('henchmanLight.alpha', getProperty('henchmanLight.alpha') - elapsed/2)
+    end
+
+    if getProperty('henchmanLight2.alpha') > 0 then
+        setProperty('henchmanLight2.alpha', getProperty('henchmanLight2.alpha') - elapsed/2)
+    end
+
+    if getProperty('henchmanLight3.alpha') > 0 then
+        setProperty('henchmanLight3.alpha', getProperty('henchmanLight3.alpha') - elapsed/6)
+    end
+
+    if getProperty('henchmanLight4.alpha') > 0 then
+        setProperty('henchmanLight4.alpha', getProperty('henchmanLight4.alpha') - elapsed/6)
+    end
 end
 
 function setPosition(obj,x,y)
