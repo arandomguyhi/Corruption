@@ -1048,8 +1048,6 @@ function goodNoteHit(id, noteData,_,_)
     setProperty('gfBlack.holdTimer', 0)
 end
 
-function
-
 function setPosition(obj,x,y)
     setProperty(obj..'.x', x)
     setProperty(obj..'.y', y)
