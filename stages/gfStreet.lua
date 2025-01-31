@@ -479,7 +479,7 @@ function onCreatePost()
     setPosition('dad', 420, -165)
 
     if not lowQuality then
-        setPosition('gfSleep', getProperty('boyfriend.x') - 110, getProperty('boyfriendGroup.y') - 100)
+        setPosition('gfBlack', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
 
