@@ -918,7 +918,7 @@ function addOverlay(col1,col2,blend)
 
     runHaxeCode([[
         game.camGame.filters = [];
-        game.camGame.setFilters([new ShaderFilter(game.getLuaObject('ovelay').shader, new ShaderFilter(game.getLuaObject('bloom').shader)]);
+        game.camGame.setFilters([new ShaderFilter(game.getLuaObject('ovelay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
     ]])
 end
 
