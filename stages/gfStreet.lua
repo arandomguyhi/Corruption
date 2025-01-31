@@ -511,7 +511,7 @@ function onCreatePost()
         setProperty('blazeIt.alpha', 0.001)
         scaleObject('blazeIt', 2.5, 1.5)
         setProperty('blazeIt.x', -70)
-        setProperty('blazeIt.y', -200)
+        setProperty('blazeIt.y', -100)
 		addInstance('blazeIt')
 
         createInstance('smokeVin', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
@@ -522,7 +522,7 @@ function onCreatePost()
         scaleObject('smokeVin', 1.4, 1.4)
         setScrollFactor('smokeVin', 0, 0)
         setProperty('smokeVin.x', -70)
-        setProperty('smokeVin.y', -130)
+        setProperty('smokeVin.y', -30)
 		addInstance('smokeVin')
 
         createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
@@ -641,6 +641,8 @@ function onCreatePost()
     setProperty('dadShadow.antialiasing', true)
     setProperty('dadShadow.alpha', 0.6)
     addBehindBF('dadShadow')
+
+    setObjectCamera('comboGroup', 'camGame')
 end
 
 function noteMiss()
@@ -1008,12 +1010,6 @@ function onSectionHit()
 end
 
 function onUpdate(elapsed)
-    playAnim('momCorruptBlack', getProperty('dad.animation.name'))
-    setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
-
-    playAnim('gfBlack', getProperty('boyfriend.animation.name'))
-    setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
-
     if getShaderFloat('bloom', 'intensity') > 0 then
         setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity') - elapsed)
     end
@@ -1033,6 +1029,16 @@ function onUpdate(elapsed)
     if getProperty('henchmanLight4.alpha') > 0 then
         setProperty('henchmanLight4.alpha', getProperty('henchmanLight4.alpha') - elapsed/6)
     end
+end
+
+function opponentNoteHit(id, noteData, _, _)
+    playAnim('momCorruptBlack', getProperty('singAnimations')[noteData+1], true)
+    setProperty('momCorruptBlack.holdTimer', 0)
+end
+
+function goodNoteHit(id, noteData,_,_)
+    playAnim('gfBlack', getProperty('singAnimations')[noteData+1], true)
+    setProperty('gfBlack.holdTimer', 0)
 end
 
 function setPosition(obj,x,y)
