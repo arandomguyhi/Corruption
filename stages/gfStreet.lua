@@ -504,7 +504,7 @@ function onCreatePost()
         createInstance('smokeVin', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('smokeVin', 'camGame')
         setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
-        setProperty('smokeVin.blend', 12)
+        setProperty('smokeVin.blend', 9)
         setProperty('smokeVin.alpha', 0.001)
         scaleObject('smokeVin', 1.4, 1.4)
         setScrollFactor('smokeVin', 0, 0)
@@ -837,10 +837,10 @@ function onEvent(name, v1, v2)
                 setScrollFactor('momLaugh', 0, 0)
                 scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
                 setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
-                setProperty('camHUD.alpha', 0.001)
             else
                 callMethod('momLaugh.startVideo', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false})
             end
+            setProperty('camHUD.alpha', 0.001)
         end
     end
 
