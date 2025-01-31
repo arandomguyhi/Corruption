@@ -479,7 +479,7 @@ function onCreatePost()
     setPosition('dad', 420, -165)
 
     if not lowQuality then
-        setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
+        setPosition('gfSleep', getProperty('boyfriendGroup.x') + 10, getProperty('boyfriendGroup.y'))
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
 
@@ -510,7 +510,7 @@ function onCreatePost()
         setProperty('blazeIt.blend', 9)
         setProperty('blazeIt.alpha', 0.001)
         scaleObject('blazeIt', 2.5, 1.5)
-        setProperty('blazeIt.x', -1000)
+        setProperty('blazeIt.x', -70)
         setProperty('blazeIt.y', -200)
 		addInstance('blazeIt')
 
@@ -904,9 +904,25 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'camshit' then
-        if v1 == 'mm' then
+        if v1 == 'gf2' then
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
+        elseif v1 == 'mm' then
+            canZoom = false
+            setProperty('defaultCamZoom', 0.9)
+        elseif v1 == 'mid' then
+            canZoom = false
+            setProperty('defaultCamZoom', 0.75)
+        elseif v1 == 'gf' then
+            canZoom = false
+            setProperty('defaultCamZoom', 0.9)
+        elseif v1 == 'mm2' then
+            canZoom = false
+            setProperty('defaultCamZoom', 0.9)
+        elseif v1 == 'undo' then
+            canZoom = true
+        elseif v1 == 'none' then
+            canZoom = true
         end
     end
 
@@ -992,6 +1008,12 @@ function onSectionHit()
 end
 
 function onUpdate(elapsed)
+    playAnim('momCorruptBlack', getProperty('dad.animation.name'))
+    setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
+
+    playAnim('gfBlack', getProperty('boyfriend.animation.name'))
+    setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
+
     if getShaderFloat('bloom', 'intensity') > 0 then
         setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity') - elapsed)
     end
