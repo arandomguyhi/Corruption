@@ -789,6 +789,7 @@ function onEvent(name, v1, v2)
                     game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
                 ]])
             end
+            setProperty('camHUD.alpha', 1)
         end
     end
 
