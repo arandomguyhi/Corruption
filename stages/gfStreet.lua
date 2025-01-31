@@ -479,7 +479,7 @@ function onCreatePost()
     setPosition('dad', 420, -165)
 
     if not lowQuality then
-        setPosition('gfBlack', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
+        setPosition('gfBlack', getProperty('boyfriend.x') + 90, getProperty('boyfriend.y') + 130)
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
 
@@ -558,7 +558,6 @@ function onCreatePost()
     makeGraphic('blackTop', 1, 1, '000000')
     scaleObject('blackTop', 1280 * 2, 720 * 2)
     setScrollFactor('blackTop', 0, 0)
-    setProperty('blackTop.alpha', 0.001)
     setObjectCamera('blackTop', 'camHUD')
     addLuaSprite('blackTop', true)
 
