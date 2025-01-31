@@ -506,7 +506,7 @@ function onCreatePost()
         setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
         setProperty('smokeVin.blend', 12)
         setProperty('smokeVin.alpha', 0.001)
-        scaleObject('smokeVin', 1.4, 1.4, false)
+        scaleObject('smokeVin', 1.4, 1.4)
         setScrollFactor('smokeVin', 0, 0)
         setProperty('smokeVin.x', -270)
         setProperty('smokeVin.y', -130)
@@ -721,7 +721,10 @@ function changeBG(id)
 
         setProperty('camHUD.alpha', 0.5)
         if shadersEnabled then
-            runHaxeCode("game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);")
+            runHaxeCode([[
+                game.camGame.filters = [];
+                game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
+            ]])
         end
         setProperty('stringPrep.alpha', 1)
         setProperty('stringPrep2.alpha', 1)
@@ -781,7 +784,10 @@ function onEvent(name, v1, v2)
 
         if v1 == 'camfilters' then
             if shadersEnabled then
-                runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+                runHaxeCode([[
+                    game.camGame.filters = [];
+                    game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
+                ]])
             end
         end
     end
@@ -812,7 +818,10 @@ function onEvent(name, v1, v2)
             startTween('smoke', 'smokeVin', {alpha = 0.8}, 1, {})
         elseif v1 == 'stop snow' then
             if shadersEnabled then
-                runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+                runHaxeCode([[
+                    game.camGame.filters = [];
+                    game.camGame.setFilters([new ShaderFilter(game.getLuaObject('bloom').shader)]);
+                ]])
             end
             addOverlay({79.0,15.0,33.0},{203.0, 21.0, 122.0},0.175)
             setProperty('lightSnow.alpha', 0.001)
@@ -904,7 +913,35 @@ function addOverlay(col1,col2,blend)
     setShaderFloat('overlay', 'amt', amtt)
     setShaderBool('overlay', 'trans', trans)
 
-    runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('ovelay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+    runHaxeCode([[
+        game.camGame.filters = [];
+        game.camGame.setFilters([new ShaderFilter(game.getLuaObject('ovelay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
+    ]])
+end
+
+function onSectionHit()
+    if not canZoom then return end
+
+    if running then
+        if mustHitSection then
+            forestCameraPos.x = -100
+			forestCameraPos.y = -3300
+        else
+            forestCameraPos.x = -750
+			forestCameraPos.y = -3550
+        end
+    end
+
+    if frontView then
+        setProperty('defaultCamZoom', 1.4)
+        return
+    end
+
+    if mustHitSection then
+        setProperty('defaultCamZoom', running and 0.925 or 0.825)
+    else
+        setProperty('defaultCamZoom', running and 0.65 or 0.725)
+    end
 end
 
 function onUpdate(elapsed)
