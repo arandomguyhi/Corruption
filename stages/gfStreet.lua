@@ -27,6 +27,14 @@ local spiderGroup = {}
 
 luaDebugMode = true
 function onCreate()
+    addCharacterToList("gfRage", 'bf')
+    addCharacterToList("momFront", 'dad')
+    addCharacterToList("momFrontSecond", 'dad')
+    addCharacterToList("gfNorm", 'bf')
+    addCharacterToList("momCorrupt", 'dad')
+    addCharacterToList("gfDark", 'bf')
+	addCharacterToList("gfRun", 'bf')
+
     if shadersEnabled then
         initLuaShader('null-and-void/bloom')
         initLuaShader('overlay')
@@ -493,9 +501,20 @@ function onCreatePost()
         setObjectCamera('waveEfx', 'camOther')
         setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
     else
+        createInstance('smokeVin', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+		setObjectCamera('smokeVin', 'camGame')
+        setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
+        setProperty('smokeVin.blend', 12)
+        setProperty('smokeVin.alpha', 0.001)
+        scaleObject('smokeVin', 1.4, 1.4, false)
+        setScrollFactor('smokeVin', 0, 0)
+        setProperty('smokeVin.x', -270)
+        setProperty('smokeVin.y', -130)
+		addInstance('smokeVin')
+
         createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('lightSnow', 'camGame')
-        setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
+        setObjectOrder('lightSnow', getObjectOrder('smokeVin')+1)
         scaleObject('lightSnow', 2.5, 2.5, false)
         setScrollFactor('lightSnow', 1.2, 1.2)
         setProperty('lightSnow.blend', 12)
@@ -504,7 +523,7 @@ function onCreatePost()
 
         createInstance('waveEfx', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('waveEfx', 'camGame')
-        setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
+        setObjectOrder('waveEfx', getObjectOrder('lightSnow')+1)
         setProperty('waveEfx.blend', 12)
         setProperty('waveEfx.alpha', 0.001)
         scaleObject('waveEfx', 1.1, 1.1)
@@ -516,7 +535,7 @@ function onCreatePost()
 
         createInstance('momLaugh', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
         setObjectCamera('momLaugh', 'camGame')
-        setObjectOrder('momLaugh', getObjectOrder('gfBlack')+1)
+        setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
         setScrollFactor('momLaugh', 0, 0)
         scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
         addInstance('momLaugh')
@@ -762,7 +781,7 @@ function onEvent(name, v1, v2)
 
         if v1 == 'camfilters' then
             if shadersEnabled then
-                runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader)), new ShaderFilter(game.getLuaObject('bloom').shader)]);")
+                runHaxeCode("game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);")
             end
         end
     end
@@ -777,14 +796,18 @@ function onEvent(name, v1, v2)
 
     if name == 'playvideo' then
         if v1 == 'smokevin' then
-            makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
-            setProperty('smokeVin.blend', 9)
-            scaleObject('smokeVin', 1.4, 1.4)
-            setScrollFactor('smokeVin', 0, 0)
-            setProperty('smokeVin.x', -270)
-            setProperty('smokeVin.y', -130)
-            setProperty('smokeVin.alpha', 0.001)
-            setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
+            if buildTarget == 'windows' then
+                makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
+                setProperty('smokeVin.blend', 9)
+                scaleObject('smokeVin', 1.4, 1.4)
+                setScrollFactor('smokeVin', 0, 0)
+                setProperty('smokeVin.x', -270)
+                setProperty('smokeVin.y', -130)
+                setProperty('smokeVin.alpha', 0.001)
+                setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
+            else
+                callMethod('smokeVin.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeVin'}), true})
+            end
 
             startTween('smoke', 'smokeVin', {alpha = 0.8}, 1, {})
         elseif v1 == 'stop snow' then
@@ -804,7 +827,7 @@ function onEvent(name, v1, v2)
                 makeVideoSprite('momLaugh', 'momLaugh', 0, 0, 'camGame')
                 setScrollFactor('momLaugh', 0, 0)
                 scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
-                setObjectOrder('momLaugh', getObjectOrder('gfBlack')+1)
+                setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
                 setProperty('camHUD.alpha', 0.001)
             else
                 callMethod('momLaugh.startVideo', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false})
