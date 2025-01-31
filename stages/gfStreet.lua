@@ -816,6 +816,8 @@ function onEvent(name, v1, v2)
             end
 
             startTween('smoke', 'smokeVin', {alpha = 0.8}, 1, {})
+        elseif v1 == 'smokevinhide' then
+            startTween('smokehide', 'smokeVin', {alpha = 0.001}, 4, {})
         elseif v1 == 'stop snow' then
             if shadersEnabled then
                 runHaxeCode([[
@@ -829,7 +831,7 @@ function onEvent(name, v1, v2)
         end
 
         if v1 == 'momlaugh' then
-            runHaxeCode("game.camGame.setFilters([]);")
+            runHaxeCode("game.camGame.filters = [];")
             setProperty('camZooming', false)
 
             if buildTarget == 'windows' then
