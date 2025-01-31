@@ -479,7 +479,7 @@ function onCreatePost()
     setPosition('dad', 420, -165)
 
     if not lowQuality then
-        setPosition('gfSleep', getProperty('boyfriendGroup.x') + 10, getProperty('boyfriendGroup.y'))
+        setPosition('gfSleep', getProperty('boyfriend.x') - 110, getProperty('boyfriendGroup.y') - 100)
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
 
@@ -958,6 +958,13 @@ function onBeatHit()
         end
         henchWhich = not henchWhich
     end
+
+    if curBeat % getProperty('dad.danceEveryNumBeats') == 0 and not getProperty('dad.animation.curAnim.name'):find('sing') then
+        callMethod('momCorruptBlack.dance', {''})
+    end
+    if curBeat % getProperty('boyfriend.danceEveryNumBeats') == 0 and not getProperty('boyfriend.animation.curAnim.name'):find('sing') then
+        callMethod('gfBlack.dance', {''})
+    end
 end
 
 function addOverlay(col1,col2,blend)
@@ -1040,6 +1047,8 @@ function goodNoteHit(id, noteData,_,_)
     playAnim('gfBlack', getProperty('singAnimations')[noteData+1], true)
     setProperty('gfBlack.holdTimer', 0)
 end
+
+function
 
 function setPosition(obj,x,y)
     setProperty(obj..'.x', x)
