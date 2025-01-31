@@ -325,7 +325,6 @@ function onCreate()
 
     if not lowQuality then
         createInstance('momCorruptBlack', 'objects.Character', {0, 0, 'momCorruptBlack'})
-        setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
         setProperty('momCorruptBlack.alpha', 0.001)
         setProperty('momCorruptBlack.blend', 0)
 
@@ -478,7 +477,11 @@ function onCreatePost()
     addOverlay({35.0,16.0,62.0},{203.0, 21.0, 122.0},0.175)
 
     setPosition('dad', 420, -165)
-    setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
+
+    if not lowQuality then
+        setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
+        setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
+    end
 
     setProperty('camGame.bgColor', getColorFromHex('808080')) -- gray color in flxcolor
 
@@ -503,11 +506,11 @@ function onCreatePost()
     else
         createInstance('blazeIt', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('blazeIt', 'camGame')
-        setObjectOrder('blazeIt', getObjectOrder('gfBlack')+1)
+        setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
         setProperty('blazeIt.blend', 9)
         setProperty('blazeIt.alpha', 0.001)
         scaleObject('blazeIt', 2.5, 1.5)
-        setProperty('blazeIt.x', -1200)
+        setProperty('blazeIt.x', -1000)
         setProperty('blazeIt.y', -200)
 		addInstance('blazeIt')
 
@@ -518,13 +521,13 @@ function onCreatePost()
         setProperty('smokeVin.alpha', 0.001)
         scaleObject('smokeVin', 1.4, 1.4)
         setScrollFactor('smokeVin', 0, 0)
-        setProperty('smokeVin.x', -270)
+        setProperty('smokeVin.x', -70)
         setProperty('smokeVin.y', -130)
 		addInstance('smokeVin')
 
         createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('lightSnow', 'camGame')
-        setObjectOrder('lightSnow', getObjectOrder('smokeVin')+1)
+        setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
         scaleObject('lightSnow', 2.5, 2.5, false)
         setScrollFactor('lightSnow', 1.2, 1.2)
         setProperty('lightSnow.blend', 12)
