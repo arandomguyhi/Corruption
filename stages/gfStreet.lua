@@ -501,9 +501,19 @@ function onCreatePost()
         setObjectCamera('waveEfx', 'camOther')
         setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
     else
+        createInstance('blazeIt', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+		setObjectCamera('blazeIt', 'camGame')
+        setObjectOrder('blazeIt', getObjectOrder('gfBlack')+1)
+        setProperty('blazeIt.blend', 9)
+        setProperty('blazeIt.alpha', 0.001)
+        scaleObject('blazeIt', 2.5, 1.5)
+        setProperty('blazeIt.x', -1200)
+        setProperty('blazeIt.y', -200)
+		addInstance('blazeIt')
+
         createInstance('smokeVin', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('smokeVin', 'camGame')
-        setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
+        setObjectOrder('smokeVin', getObjectOrder('blazeIt')+1)
         setProperty('smokeVin.blend', 9)
         setProperty('smokeVin.alpha', 0.001)
         scaleObject('smokeVin', 1.4, 1.4)
@@ -802,7 +812,27 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'playvideo' then
-        if v1 == 'smokevin' then
+        if v1 == 'smoke' then
+            henchTime = false
+            startTween('fadie', 'fade', {x = -800, alpha = 1}, 4, {})
+
+            if buildTarget == 'windows' then
+                makeVideoSprite('blazeIt', 'smokeEffect', 0, 0, 'camGame', false)
+                setProperty('blazeIt.blend', 9)
+                setProperty('blazeIt.alpha', 0.001)
+                scaleObject('blazeIt', 2.5, 1.5)
+                setProperty('blazeIt.x', -1200)
+                setProperty('blazeIt.y', -200)
+                setObjectOrder('blazeIt', getObjectOrder('gfBlack')+1)
+            else
+                callMethod('blazeIt.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeEffect'}), false})
+            end
+
+            startTween('smokie', 'blazeIt', {alpha = 0.8}, 1, {})
+            triggerEvent('Change Character', 'bf', 'gfRage')
+
+            addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+        elseif v1 == 'smokevin' then
             if buildTarget == 'windows' then
                 makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
                 setProperty('smokeVin.blend', 9)
@@ -874,9 +904,16 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'specialbump' then
-        if v1 == 'big' then
+        if v1 == 'small' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.1)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.04)
+        elseif v1 == 'big' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
+        elseif v1 == 'flash' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.2)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.08)
+            setShaderFloat('bloom', 'intensity', 1.0)
         elseif v1 == 'riser' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.05)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.02)
@@ -949,7 +986,7 @@ end
 
 function onUpdate(elapsed)
     if getShaderFloat('bloom', 'intensity') > 0 then
-        setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity')-elapsed)
+        setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity') - elapsed)
     end
 
     if getProperty('henchmanLight.alpha') > 0 then
