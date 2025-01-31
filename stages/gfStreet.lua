@@ -832,6 +832,10 @@ function onEvent(name, v1, v2)
             triggerEvent('Change Character', 'bf', 'gfRage')
 
             addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+            if not lowQuaility then
+                startTween('momblack', 'momCorruptBlack', {alpha = 1}, 4, {})
+                startTween('gfblack', 'gfBlack', {alpha = 1}, 4, {})
+            end
         elseif v1 == 'smokevin' then
             if buildTarget == 'windows' then
                 makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
