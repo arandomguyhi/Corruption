@@ -476,21 +476,51 @@ function onCreatePost()
 
 
     -- LE VIDEOS
-    makeVideoSprite('lightSnow', 'snow light', 0, 0, 'camGame', true)
-    scaleObject('lightSnow', 2.5, 2.5, false)
-    setScrollFactor('lightSnow', 1.2, 1.2)
-    setProperty('lightSnow.blend', 12)
-    setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
+    if buildTarget == 'windows' then
+        makeVideoSprite('lightSnow', 'snow light', 0, 0, 'camGame', true)
+        scaleObject('lightSnow', 2.5, 2.5, false)
+        setScrollFactor('lightSnow', 1.2, 1.2)
+        setProperty('lightSnow.blend', 12)
+        setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
 
-    makeVideoSprite('waveEfx', 'waveEffect', 0, 0, 'camGame', true)
-    setProperty('waveEfx.blend', 0)
-    setProperty('waveEfx.alpha', 0.001)
-    scaleObject('waveEfx', 1.1, 1.1)
-    setScrollFactor('waveEfx', 0, 0)
-    setProperty('waveEfx.x', -35)
-    setProperty('waveEfx.y', -25)
-    setObjectCamera('waveEfx', 'camOther')
-    setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
+        makeVideoSprite('waveEfx', 'waveEffect', 0, 0, 'camGame', true)
+        setProperty('waveEfx.blend', 0)
+        setProperty('waveEfx.alpha', 0.001)
+        scaleObject('waveEfx', 1.1, 1.1)
+        setScrollFactor('waveEfx', 0, 0)
+        setProperty('waveEfx.x', -35)
+        setProperty('waveEfx.y', -25)
+        setObjectCamera('waveEfx', 'camOther')
+        setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
+    else
+        createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+		setObjectCamera('lightSnow', 'camGame')
+        setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
+        scaleObject('lightSnow', 2.5, 2.5, false)
+        setScrollFactor('lightSnow', 1.2, 1.2)
+        setProperty('lightSnow.blend', 12)
+		addInstance('lightSnow')
+        callMethod('lightSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow light'}), true})
+
+        createInstance('waveEfx', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+		setObjectCamera('waveEfx', 'camGame')
+        setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
+        setProperty('waveEfx.blend', 12)
+        setProperty('waveEfx.alpha', 0.001)
+        scaleObject('waveEfx', 1.1, 1.1)
+        setScrollFactor('waveEfx', 0, 0)
+        setProperty('waveEfx.x', -35)
+        setProperty('waveEfx.y', -25)
+		addInstance('waveEfx')
+        callMethod('waveEfx.startVideo', {callMethodFromClass('backend.Paths', 'video', {'waveEffect'}), true})
+
+        createInstance('momLaugh', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+        setObjectCamera('momLaugh', 'camGame')
+        setObjectOrder('momLaugh', getObjectOrder('gfBlack')+1)
+        setScrollFactor('momLaugh', 0, 0)
+        scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
+        addInstance('momLaugh')
+    end
 
     makeLuaSprite('blackTop')
     makeGraphic('blackTop', 1, 1, '000000')
@@ -770,11 +800,15 @@ function onEvent(name, v1, v2)
             runHaxeCode("game.camGame.setFilters([]);")
             setProperty('camZooming', false)
 
-            makeVideoSprite('momLaugh', 'snow light', 0, 0, 'camGame')
-            setScrollFactor('momLaugh', 0, 0)
-            scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
-            setObjectOrder('momLaugh', getObjectOrder('gfBlack')+1)
-            setProperty('camHUD.alpha', 0.001)
+            if buildTarget == 'windows' then
+                makeVideoSprite('momLaugh', 'momLaugh', 0, 0, 'camGame')
+                setScrollFactor('momLaugh', 0, 0)
+                scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
+                setObjectOrder('momLaugh', getObjectOrder('gfBlack')+1)
+                setProperty('camHUD.alpha', 0.001)
+            else
+                callMethod('momLaugh.startVideo', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false})
+            end
         end
     end
 
