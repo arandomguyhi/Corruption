@@ -380,7 +380,7 @@ function onCreate()
     table.insert(forest, 'forestFront')
     table.insert(forest, 'forestForeground')
 
-    addCharacterToList("momSpider", 'dad')
+    addCharacterToList('momSpider', 'dad')
 
     makeAnimatedLuaSprite('spiderBackLegs', path..'spiderLegsBack')
     addAnimationByPrefix('spiderBackLegs', 'idle', 'BackLegs', 24, true)
@@ -470,7 +470,7 @@ function onCreate()
     addAnimationByPrefix('gfSleep', 'idle', 'GfSleep', 24, true)
     playAnim('gfSleep', 'idle', true)
     setProperty('gfSleep.antialiasing', true)
-    setProperty('gfSleep.visible', false)
+    setProperty('gfSleep.alpha', 0.001)
     addLuaSprite('gfSleep', true)
 
     -- after some videos are added, remember raly
@@ -513,7 +513,7 @@ function onCreatePost()
     else
         createInstance('blazeIt', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('blazeIt', 'camGame')
-        setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
+        setObjectOrder('blazeIt', getObjectOrder('gfBlack')+1)
         setProperty('blazeIt.blend', 9)
         setProperty('blazeIt.alpha', 0.001)
         scaleObject('blazeIt', 2.5, 1.5)
