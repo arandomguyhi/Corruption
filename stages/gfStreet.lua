@@ -354,7 +354,7 @@ function onCreate()
     setProperty('redVin.visible', false)
     addLuaSprite('redVin')
 
-    makeLuaSprite('gfShocked', path..'gfShockedBody', 230, 40)
+    makeLuaSprite('gfShocked', path..'gfShockBody', 230, 40)
     scaleObject('gfShocked', 0.9, 0.9, false)
     setProperty('gfShocked.antialiasing', true)
     setScrollFactor('gfShocked', 0, 0)
@@ -400,7 +400,7 @@ function onCreate()
     addLuaSprite('spiderBody')
     setPosition('spiderBody', -1665, -3479)
 
-    runHaxeCode("setVar('momSpider', game.dadMap('momSpider'));")
+    runHaxeCode("setVar('momSpider', game.dadMap.get('momSpider'));")
 
     setProperty('momSpider.alpha', 1)
     table.insert(spiderGroup, 'momSpider')
@@ -434,9 +434,10 @@ function onCreate()
     frontCameraPos = {x = 830, y = 300}
     forestCameraPos = {x = -200, y = -3300}
 
-    setProperty('boyfriendMap.gfRun.y', -3400)
-    setProperty('boyfriendMap.gfRun.alpha', 1)
-    table.insert(forest, 'boyfriendMap.gfRun')
+    runHaxeCode("setVar('gfRun', game.boyfriendMap.get('gfRun'));")
+    setProperty('gfRun.y', -3400)
+    setProperty('gfRun.alpha', 1)
+    table.insert(forest, 'gfRun')
 
     for _,spr in pairs(forest) do
         setProperty(spr..'.health', getProperty(spr..'.velocity.x'))
@@ -488,7 +489,7 @@ function onCreatePost()
     setPosition('dad', 420, -165)
 
     if not lowQuality then
-        setPosition('gfBlack', getProperty('boyfriend.x') + 90, getProperty('boyfriend.y') + 130)
+        setPosition('gfBlack', getProperty('boyfriend.x') + getProperty('boyfriend.positionArray[0]'), getProperty('boyfriend.y') + getProperty('boyfriend.positionArray[1]'))
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
 
@@ -776,8 +777,8 @@ function changeBG(id)
         setProperty('forestBf.alpha', 0.001)
         setProperty('forestHench.alpha', 0.001)
         setProperty('boyfriend.alpha', 1)
-        setProperty('boyfriend.y', -3400+25)
-        setProperty('dad.y', -3400)
+        setProperty('boyfriend.y', -3400 + getProperty('boyfriend.positionArray[1]') + 25)
+        setProperty('dad.y', -3400 + getProperty('dad.positionArray[1]'))
         setProperty('scopeVin.alpha', 0.4)
     end
 end
@@ -1093,13 +1094,6 @@ function onBeatHit()
             setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.33)
             setProperty('redVin.alpha', getProperty('redVin.alpha') + 0.1)
         end
-    end
-
-    if curBeat % getProperty('dad.danceEveryNumBeats') == 0 and not getProperty('dad.animation.curAnim.name'):find('sing') then
-        callMethod('momCorruptBlack.dance', {''})
-    end
-    if curBeat % getProperty('boyfriend.danceEveryNumBeats') == 0 and not getProperty('boyfriend.animation.curAnim.name'):find('sing') then
-        callMethod('gfBlack.dance', {''})
     end
 end
 
