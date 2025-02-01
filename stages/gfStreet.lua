@@ -400,8 +400,10 @@ function onCreate()
     addLuaSprite('spiderBody')
     setPosition('spiderBody', -1665, -3479)
 
-    setProperty('dadMap.momSpider.alpha', 1)
-    table.insert(spiderGroup, 'dadMap.momSpider')
+    runHaxeCode("setVar('momSpider', game.dadMap('momSpider'));")
+
+    setProperty('momSpider.alpha', 1)
+    table.insert(spiderGroup, 'momSpider')
 
     makeAnimatedLuaSprite('spiderFrontLegs', path..'spiderLegsFront')
     addAnimationByPrefix('spiderFrontLegs', 'idle', 'front leg finished', 24, true)
