@@ -339,19 +339,19 @@ function onCreate()
     scaleObject('blackBG', 1280, 720)
     setProperty('blackBG.scale.x', getProperty('blackBG.scale.x') * 1.35)
     setProperty('blackBG.scale.y', getProperty('blackBG.scale.y') * 1.35)
-    setProperty('blackBG.alpha', 0.001)
+    setProperty('blackBG.visible', false)
     addLuaSprite('blackBG')
 
     makeLuaSprite('redLight', path..'BackLight', -330, -480)
     setProperty('redLight.antialiasing', true)
     setScrollFactor('redLight', 0.95, 1)
-    setProperty('redLight.alpha', 0.001)
+    setProperty('redLight.visible', false)
     addLuaSprite('redLight')
 
     makeLuaSprite('redVin', path..'VinRed', -472, -720)
     setProperty('redVin.antialiasing', true)
     setScrollFactor('redVin', 0, 0)
-    setProperty('redVin.alpha', 0.001)
+    setProperty('redVin.visible', false)
     addLuaSprite('redVin')
 
     makeLuaSprite('gfShocked', path..'gfShockedBody', 230, 40)
@@ -808,7 +808,57 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'changeBf' then
-        if v1 == 'gfnorm' then
+        if v1 == 'front2' then
+            triggerEvent('Change Character', 'dad', 'momFrontSecond')
+            redLightMode = 2
+        elseif v1 == 'powerup2' then
+            setProperty('defaultCamZoom', 1.8)
+        elseif v1 == 'fronthide' then
+            startTween('shocked', 'gfShocked', {alpha = 0}, 1, {})
+        elseif v1 == 'front' then
+            setProperty('fade.alpha', 0.001)
+            setProperty('comboGroup.visible', false)
+            setProperty('defaultCamZoom', 1.4)
+
+            setProperty('isCameraOnForcedPos', true)
+            setProperty('camFollow.x', frontCameraPos.x)
+            setProperty('camFollow.y', frontCameraPos.y)
+
+            runHaxeCode([[
+                var blazeIt = buildTarget != 'windows' ? getVar('blazeIt') or game.getLuaObject('blazeIt');
+                game.remove(blazeIt);
+                blazeIt.destroy();
+            ]])
+
+            if shadersEnabled then
+                runHaxeCode([[
+                    game.camGame.filters = [];
+                    game.camGame.setFilters([new ShaderFilter(game.getLuaObject('bloom').shader)]);
+                ]])
+            end
+
+            setProperty('fade.visible', false)
+            triggerEvent('Change Character', 'dad', 'momFront')
+            frontView = true
+
+            setProperty('redLight.visible', true)
+            setProperty('redVin.visible', true)
+            if not lowQuality then
+                setProperty('gfBlack.visible', false)
+                setProperty('momCorruptBlack.visible', false)
+            end
+            setProperty('boyfriend.visible', false)
+
+            setProperty('blackBG.visible', true)
+
+            redLightMode = 1
+
+            setProperty('gfShocked.alpha', 0.6)
+            setProperty('gfShockedEye.alpha', 1)
+
+            startTween('shockEye', 'gfShockedEye', {alpha = 0}, 1, {})
+            startTween('hudalpha', 'camHUD', {alpha = 0.4}, 0.2, {})
+        elseif v1 == 'gfnorm' then
             triggerEvent('Change Character', 'bf', 'gfNorm')
         elseif v1 == 'gfrage' then
             triggerEvent('Change Character', 'bf', 'gfRage')
@@ -958,6 +1008,25 @@ function onBeatHit()
         henchWhich = not henchWhich
     end
 
+    if redLightMode == 1 then
+        if curBeat % 8 == 0 then
+            setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.85)
+        elseif curBeat % 4 == 0 then
+            setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.53)
+        end
+    elseif redLightMode == 2 then
+        if curBeat % 8 == 0 then
+            setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.85)
+            setProperty('redVin.alpha', getProperty('redVin.alpha') + 0.3)
+        elseif curBeat % 4 == 0 then
+            setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.53)
+            setProperty('redVin.alpha', getProperty('redVin.alpha') + 0.2)
+        elseif curBeat % 2 == 0 then
+            setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.33)
+            setProperty('redVin.alpha', getProperty('redVin.alpha') + 0.1)
+        end
+    end
+
     if curBeat % getProperty('dad.danceEveryNumBeats') == 0 and not getProperty('dad.animation.curAnim.name'):find('sing') then
         callMethod('momCorruptBlack.dance', {''})
     end
@@ -1016,6 +1085,13 @@ function onSectionHit()
 end
 
 function onUpdate(elapsed)
+    if getProperty('redLight.alpha') > 0 then
+        setProperty('redLight.alpha', getProperty('redLight.alpha') - elapsed)
+    end
+    if getProperty('redVin.alpha') > 0 then
+        setProperty('redVin.alpha', getProperty('redVin.alpha') - elapsed)
+    end
+
     if getShaderFloat('bloom', 'intensity') > 0 then
         setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity') - elapsed)
     end
@@ -1023,15 +1099,12 @@ function onUpdate(elapsed)
     if getProperty('henchmanLight.alpha') > 0 then
         setProperty('henchmanLight.alpha', getProperty('henchmanLight.alpha') - elapsed/2)
     end
-
     if getProperty('henchmanLight2.alpha') > 0 then
         setProperty('henchmanLight2.alpha', getProperty('henchmanLight2.alpha') - elapsed/2)
     end
-
     if getProperty('henchmanLight3.alpha') > 0 then
         setProperty('henchmanLight3.alpha', getProperty('henchmanLight3.alpha') - elapsed/6)
     end
-
     if getProperty('henchmanLight4.alpha') > 0 then
         setProperty('henchmanLight4.alpha', getProperty('henchmanLight4.alpha') - elapsed/6)
     end
