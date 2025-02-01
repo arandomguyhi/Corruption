@@ -534,9 +534,24 @@ function onCreatePost()
 		addInstance('lightSnow')
         callMethod('lightSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow light'}), true})
 
+        createInstance('momLaugh', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+        setObjectCamera('momLaugh', 'camGame')
+        setObjectOrder('momLaugh', getObjectOrder('lightSnow')+1)
+        setScrollFactor('momLaugh', 0, 0)
+        scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
+        addInstance('momLaugh')
+
+        createInstance('letsSettleThis', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+		setObjectCamera('letsSettleThis', 'camGame')
+        setObjectOrder('letsSettleThis', getObjectOrder('momLaugh')+1)
+        setScrollFactor('letsSettleThis', 0, 0)
+        scaleObject('letsSettleThis', 1 / 1.4, 1 / 1.4, false)
+        setProperty('letsSettleThis.alpha', 0.001)
+		addInstance('letsSettleThis')
+
         createInstance('waveEfx', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('waveEfx', 'camGame')
-        setObjectOrder('waveEfx', getObjectOrder('lightSnow')+1)
+        setObjectOrder('waveEfx', getObjectOrder('letsSettleThis')+1)
         setProperty('waveEfx.blend', 12)
         setProperty('waveEfx.alpha', 0.001)
         scaleObject('waveEfx', 1.1, 1.1)
@@ -545,13 +560,6 @@ function onCreatePost()
         setProperty('waveEfx.y', -25)
 		addInstance('waveEfx')
         callMethod('waveEfx.startVideo', {callMethodFromClass('backend.Paths', 'video', {'waveEffect'}), true})
-
-        createInstance('momLaugh', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
-        setObjectCamera('momLaugh', 'camGame')
-        setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
-        setScrollFactor('momLaugh', 0, 0)
-        scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
-        addInstance('momLaugh')
     end
 
     makeLuaSprite('blackTop')
@@ -786,7 +794,10 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'addelement' then
-        if v1 == 'fadeout' then
+        if v1 == 'runsetup' then
+            setProperty('camHUD.alpha', 1)
+            setProperty('scopeVin.alpha', 0.4)
+        elseif v1 == 'fadeout' then
             if v2 == '1' then
                 setProperty('blackTop.alpha', 1)
                 startTween('unblack', 'blackTop', {alpha = 0.001}, 2, {ease = 'quadOut'})
@@ -808,7 +819,28 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'changeBf' then
-        if v1 == 'front2' then
+        if v1 == 'run' then
+            running = true
+            setProperty('defaultCamZoom', 0.6)
+            setProperty('letsSettleThis.visible', false)
+            setProperty('blackBG.visible', false)
+
+            addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+            setProperty('comboGroup.visible', true)
+
+            redLightMode = 0
+            frontView = false
+
+            for _, spider in pairs(spiderGroup) do
+                startTween('spiderTween'.._, spider, {x = -998}, 7, {ease = 'sineInOut', type = 'pingpong'})
+            end
+
+            frontCameraPos.x = -100
+            frontCameraPos.y = -3300
+
+            setProperty('camFollow.x', frontCameraPos.x)
+            setProperty('camFollow.y', frontCameraPos.y)
+        elseif v1 == 'front2' then
             triggerEvent('Change Character', 'dad', 'momFrontSecond')
             redLightMode = 2
         elseif v1 == 'powerup2' then
@@ -866,7 +898,19 @@ function onEvent(name, v1, v2)
     end
 
     if name == 'playvideo' then
-        if v1 == 'smoke' then
+        if v1 == 'letssettle' then
+            runHaxeCode("game.camGame.filters = [];")
+            if buildTarget == 'windows' then
+                makeVideoSprite('letsSettleThis', 'letsSettleThis', 0, 0, 'camGame', false)
+                setScrollFactor('letsSettleThis')
+                scaleObject('letsSettleThis', 1 / 1.4, 1 / 1.4)
+                setObjectOrder('letsSettleThis', getObjectOrder('momLaugh')+1)
+            else
+                setProperty('letsSettleThis.alpha', 1)
+                callMethod('letsSettleThis.startVideo', {callMethodFromClass('backend.Paths', 'video', {'letsSettleThis'}), false})
+            end
+            setProperty('camHUD.alpha', 0.001)
+        elseif v1 == 'smoke' then
             henchTime = false
             startTween('fadie', 'fade', {x = -800, alpha = 1}, 4, {})
 
@@ -1100,6 +1144,11 @@ function onSectionHit()
 end
 
 function onUpdate(elapsed)
+    playAnim('gfBlack', getProperty('boyfriend.animation.curAnim.name'), true)
+    setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
+    playAnim('momCorruptBlack', getProperty('dad.animation.curAnim.name'), true)
+    setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
+
     if getProperty('redLight.alpha') > 0 then
         setProperty('redLight.alpha', getProperty('redLight.alpha') - elapsed)
     end
@@ -1123,16 +1172,6 @@ function onUpdate(elapsed)
     if getProperty('henchmanLight4.alpha') > 0 then
         setProperty('henchmanLight4.alpha', getProperty('henchmanLight4.alpha') - elapsed/6)
     end
-end
-
-function opponentNoteHit(id, noteData, _, _)
-    playAnim('momCorruptBlack', getProperty('singAnimations')[noteData+1], true)
-    setProperty('momCorruptBlack.holdTimer', 0)
-end
-
-function goodNoteHit(id, noteData,_,_)
-    playAnim('gfBlack', getProperty('singAnimations')[noteData+1], true)
-    setProperty('gfBlack.holdTimer', 0)
 end
 
 function setPosition(obj,x,y)
