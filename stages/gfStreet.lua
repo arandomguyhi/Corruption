@@ -825,7 +825,7 @@ function onEvent(name, v1, v2)
             setProperty('camFollow.y', frontCameraPos.y)
 
             runHaxeCode([[
-                var blazeIt = buildTarget != 'windows' ? getVar('blazeIt') or game.getLuaObject('blazeIt');
+                var blazeIt = buildTarget != 'windows' ? getVar('blazeIt') : game.getLuaObject('blazeIt');
                 game.remove(blazeIt);
                 blazeIt.destroy();
             ]])
@@ -981,17 +981,32 @@ function onEvent(name, v1, v2)
         if v1 == 'small' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.1)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.04)
-        elseif v1 == 'big' then
-            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
-            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
-        elseif v1 == 'flash' then
-            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.2)
-            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.08)
-            setShaderFloat('bloom', 'intensity', 1.0)
+        elseif v1 == 'small2' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.1)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.04)
+        elseif v1 == 'run' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.1)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.04)
         elseif v1 == 'riser' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.05)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.02)
             setShaderFloat('bloom', 'intensity', 0.1)
+        elseif v1 == 'big' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
+        elseif v1 == 'big2' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
+            setShaderFloat('bloom', 'intensity', 0.5)
+        elseif v1 == 'flash' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.2)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.08)
+            setShaderFloat('bloom', 'intensity', 1.0)
+        elseif v1 == 'dark' then
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.2)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.08)
+            setProperty('black2.alpha', 0.8)
+            startTween('undark', 'black2', {alpha = 0}, 0.8, {ease = 'quadOut'})
         end
     end
 end
