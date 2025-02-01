@@ -400,6 +400,9 @@ function onCreate()
     addLuaSprite('spiderBody')
     setPosition('spiderBody', -1665, -3479)
 
+    setProperty('dadMap.momSpider.alpha', 1)
+    table.insert(spiderGroup, 'dadMap.momSpider')
+
     makeAnimatedLuaSprite('spiderFrontLegs', path..'spiderLegsFront')
     addAnimationByPrefix('spiderFrontLegs', 'idle', 'front leg finished', 24, true)
     playAnim('spiderFrontLegs', 'idle', true)
@@ -428,6 +431,10 @@ function onCreate()
     changingBGCamera = {x = 1070, y = 290}
     frontCameraPos = {x = 830, y = 300}
     forestCameraPos = {x = -200, y = -3300}
+
+    setProperty('boyfriendMap.gfRun.y', -3400)
+    setProperty('boyfriendMap.gfRun.alpha', 1)
+    table.insert(forest, 'boyfriendMap.gfRun')
 
     for _,spr in pairs(forest) do
         setProperty(spr..'.health', getProperty(spr..'.velocity.x'))
