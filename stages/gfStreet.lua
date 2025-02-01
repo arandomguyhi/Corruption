@@ -415,8 +415,8 @@ function onCreate()
     setPosition('spiderFrontLegs', -1853, -3307)
 
     for _, i in pairs(spiderGroup) do
-        setProperty(i..'.y', getProperty(i..'.y') - 275)
-        setProperty(i..'.x', getProperty(i..'.x') - 300)
+        setProperty(i..'.y', getProperty(i..'.y') - 275 - 3600)
+        setProperty(i..'.x', getProperty(i..'.x') - 300 - 998)
 
         table.insert(forest, i)
     end
@@ -489,7 +489,7 @@ function onCreatePost()
     setPosition('dad', 420, -165)
 
     if not lowQuality then
-        setPosition('gfBlack', getProperty('boyfriend.x') + getProperty('boyfriend.positionArray[0]'), getProperty('boyfriend.y') + getProperty('boyfriend.positionArray[1]'))
+        setPosition('gfBlack', getProperty('boyfriend.x') + getProperty('gfBlack.positionArray[0]'), getProperty('boyfriend.y') + getProperty('gfBlack.positionArray[1]'))
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
 
