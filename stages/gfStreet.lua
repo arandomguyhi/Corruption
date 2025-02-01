@@ -415,11 +415,13 @@ function onCreate()
     setPosition('spiderFrontLegs', -1853, -3307)
 
     for _, i in pairs(spiderGroup) do
-        setProperty(i..'.y', getProperty(i..'.y') - 275 - 3600)
-        setProperty(i..'.x', getProperty(i..'.x') - 300 - 998)
+        setProperty(i..'.y', getProperty(i..'.y') - 275)
+        setProperty(i..'.x', getProperty(i..'.x') - 300)
 
         table.insert(forest, i)
     end
+    setProperty('momSpider.x', getProperty('momSpider.x') - 3600)
+    setProperty('momSpider.y', getProperty('momSpider.y') - 998)
 
     makeAnimatedLuaSprite('spiderPunched', path..'spiderPunched')
     addAnimationByPrefix('spiderPunched', 'idle', 'SpiderDeath', 24, false)
@@ -803,6 +805,85 @@ function onEvent(name, v1, v2)
         changeBG(bgs[currentBG])
     end
 
+    if name == 'stoprun' then
+        if v1 == '1' then
+            stopping = true
+            for _,i in pairs(spiderGroup) do
+                cancelTween('spiderTween'.._)
+                startTween('setSPos'.._, i, {x = 200}, 2, {})
+            end
+            setProperty('gfRun.alpha', 0.001)
+            boyfX = getProperty('boyfriend.x')
+            boyfY = getProperty('boyfriend.y')
+            setPosition('boyfriend', getProperty('gfRun.x'), getProperty('gfRun.y'))
+            setProperty('boyfriend.x', getProperty('boyfriend.x') + 150)
+            setProperty('boyfriend.visible', true) setProperty('boyfriend.alpha', 1)
+            triggerEvent('Change Character', 'bf', 'gfRage')
+        elseif v1 == '4' then
+            setCameraAlignment("", "", 0, 0)
+        elseif v1 == '3' then
+            running = false
+            for _,i in pairs(spiderGroup) do
+                setProperty(i..'.alpha', 0.001)
+            end
+            setProperty('spiderPunched.alpha', 1)
+            playAnim('spiderPunched', 'idle', true)
+
+            setPosition('boyfriend', boyfX, boyfY)
+
+            setProperty('forestForeground.alpha', 0.001)
+            setProperty('scopeVin.alpha', 0.001)
+
+            setProperty('stringPrep.alpha', 0.001)
+            setProperty('stringPrep2.alpha', 0.001)
+            setProperty('stringsBg.alpha', 0.001)
+            normalFloor()
+            normalWall()
+
+            setProperty('darkenBG.visible', true)
+            setProperty('darkenBG.alpha', 1)
+            startTween('undark', 'darkenBG', {alpha = 0.001}, 2, {})
+            startTween('scope', 'scopeVin', {alpha = 0.4}, 2, {})
+
+            setCameraAlignment("0", "",0,0)
+            setProperty('gfSleep.visible', false)
+        elseif v1 == 'henchbf' then
+            setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
+            setProperty('forestBf.x', -720 + 2250)
+        elseif v1 == 'return' then
+            runHaxeCode("game.camGame.filters = [];")
+            running = true
+            setProperty('camFollow.x', forestCamPos.x)
+            setProperty('camFollow.y', forestCamPos.y)
+            setProperty('camHUD.alpha', 1)
+
+            setProperty('scopeVin.alpha', 0.4)
+            -- pause videos
+        elseif v1 == 'sad' then
+            -- pause videos
+            running = false
+
+            setProperty('waveEfx.alpha', 0.001)
+            setProperty('scopeVin.alpha', 0.001)
+            
+            runHaxeCode([[
+                game.camGame.filters = [];
+                game.camGame.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
+            ]])
+
+            setProperty('camGame.alpha', 0.5)
+
+            setProperty('gfSleep.visible', true)
+            setProperty('boyfriend.visible', false)
+            altWall()
+            altFloor()
+            setProperty('stringsBg.alpha', 1)
+            triggerEvent('Change Character', 'dad', 'momCorrupt')
+        elseif v1 == 'henchmen' then
+            addOverlay({79.0,15.0,33.0},{203.0,21.0,122.0},0.175)
+            setProperty('forestHench.visible', true)
+        end
+
     if name == 'addelement' then
         if v1 == 'runsetup' then
             setProperty('camHUD.alpha', 1)
@@ -1012,22 +1093,28 @@ function onEvent(name, v1, v2)
         if v1 == 'gf2' then
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
+            setCameraAlignment("0", "",0,0)
         elseif v1 == 'mm' then
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
+            setCameraAlignment("1", "",150,-50)
         elseif v1 == 'mid' then
             canZoom = false
             setProperty('defaultCamZoom', 0.75)
+            setCameraAlignment("0.5", "",-100,0)
         elseif v1 == 'gf' then
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
+            setCameraAlignment("0", "",-150,0)
         elseif v1 == 'mm2' then
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
+            setCameraAlignment("1", "",0,0)
         elseif v1 == 'undo' then
             canZoom = true
         elseif v1 == 'none' then
             canZoom = true
+            setCameraAlignment("", "",0,0)
         end
     end
 
@@ -1174,6 +1261,63 @@ function onUpdate(elapsed)
     end
     if getProperty('henchmanLight4.alpha') > 0 then
         setProperty('henchmanLight4.alpha', getProperty('henchmanLight4.alpha') - elapsed/6)
+    end
+end
+
+local function isNaN(value)
+    return value ~= value
+end
+
+function setCameraAlignment(value1, value2, offsetX, offsetY)
+    local sowy = tonumber(value1)
+
+    if not isNaN(sowy) then
+        local camDad = {
+            x = getMidpointX('dad') + 150 + getProperty('dad.cameraPosition[0]') + getProperty('opponentCameraOffset[0]'),
+            y = getMidpointY('dad') - 100 + getProperty('dad.cameraPosition[1]') + getProperty('opponentCameraOffset[1]')
+        }
+        local camBf = {
+            x = getMidpointX('boyfriend') - 100 - getProperty('boyfriend.cameraPosition[0]') + getProperty('boyfriendCameraOffset[0]'),
+            y = getMidpointY('boyfriend') - 100 + getProperty('boyfriend.cameraPosition[1]') + getProperty('boyfriendCameraOffset[1]')
+        }
+
+        local dadX = camDad.x + offsetX
+        local dadY = camDad.y + offsetY
+
+        local bfX = camBf.x + offsetX
+        local bfY = camBf.y + offsetY
+
+        local minX
+        local minY
+        local maxX
+        local maxY
+
+        if dadX < bfX then
+            minX = dadX
+            maxX = bfX
+
+            minY = dadY
+            maxY = bfY
+        else
+            maxX = dadX
+            minX = bfX
+
+            maxY = dadY
+            minY = bfY
+        end
+
+        triggerEvent(
+            "Camera Follow Pos",
+            tostring(callMethodFromClass('flixel.math.FlxMath', 'lerp', {minX, maxX, sowy})),
+            tostring(callMethodFromClass('flixel.math.FlxMath', 'lerp', {minY, maxY, sowy}))
+        )
+
+        local cusSpeed = tonumber(value2)
+        if not isNaN(cusSpeed) then
+            setProperty('cameraSpeed', getProperty('cameraSpeed') * cusSpeed)
+        end
+    else
+        triggerEvent("Camera Follow Pos", "", "")
     end
 end
 
