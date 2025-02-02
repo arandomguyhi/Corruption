@@ -819,6 +819,18 @@ function changeBG(id)
         setProperty('dad.y', -3400 + getProperty('dad.positionArray[1]'))
         setProperty('scopeVin.alpha', 0.4)
     end
+
+    local camDad = {
+        x = getMidpointX('dad') + 150 + getProperty('dad.cameraPosition[0]') + getProperty('opponentCameraOffset[0]'),
+        y = getMidpointY('dad') - 100 + getProperty('dad.cameraPosition[1]') + getProperty('opponentCameraOffset[1]')
+    }
+    local camBf = {
+        x = getMidpointX('boyfriend') - 100 - getProperty('boyfriend.cameraPosition[0]') + getProperty('boyfriendCameraOffset[0]'),
+        y = getMidpointY('boyfriend') - 100 + getProperty('boyfriend.cameraPosition[1]') + getProperty('boyfriendCameraOffset[1]')
+    }
+    callMethod('camFollow.setPosition', {mustHitSection and camBf.x or camDad.x, mustHitSection and camBf.y or camDad.y})
+    setProperty('camGame.scroll.x', mustHitSection and camBf.x or camDad.x - (screenWidth/2))
+    setProperty('camGame.scroll.y', mustHitSection and camBf.y or camDad.y - (screenHeight/2))
 end
 
 local bgs = {2,0,2,1,2,0}
