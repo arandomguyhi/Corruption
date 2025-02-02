@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="gfRunDown.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="runDown0000" x="8" y="8" width="565" height="501" frameX="0" frameY="-38" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0001" x="8" y="8" width="565" height="501" frameX="0" frameY="-38" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0002" x="8" y="8" width="565" height="501" frameX="0" frameY="-38" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0003" x="581" y="8" width="532" height="508" frameX="-20" frameY="-40" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0004" x="581" y="8" width="532" height="508" frameX="-20" frameY="-40" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0005" x="581" y="8" width="532" height="508" frameX="-20" frameY="-40" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0006" x="1121" y="8" width="535" height="529" frameX="-22" frameY="-13" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0007" x="1121" y="8" width="535" height="529" frameX="-22" frameY="-13" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0008" x="8" y="545" width="519" height="497" frameX="-37" frameY="0" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0009" x="535" y="545" width="519" height="497" frameX="-37" frameY="0" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0010" x="1062" y="545" width="562" height="532" frameX="-5" frameY="-11" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0011" x="1062" y="545" width="562" height="532" frameX="-5" frameY="-11" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0012" x="1062" y="545" width="562" height="532" frameX="-5" frameY="-11" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0013" x="8" y="1085" width="534" height="511" frameX="-18" frameY="-32" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0014" x="8" y="1085" width="534" height="511" frameX="-18" frameY="-32" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0015" x="8" y="1085" width="534" height="511" frameX="-18" frameY="-32" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0016" x="550" y="1085" width="530" height="527" frameX="-27" frameY="-15" frameWidth="567" frameHeight="548"/>
+	<SubTexture name="runDown0017" x="550" y="1085" width="530" height="527" frameX="-27" frameY="-15" frameWidth="567" frameHeight="548"/>
+</TextureAtlas>

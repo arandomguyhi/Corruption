@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="gfRunRight.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="runRight0000" x="8" y="8" width="549" height="500" frameX="0" frameY="-41" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0001" x="8" y="8" width="549" height="500" frameX="0" frameY="-41" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0002" x="8" y="8" width="549" height="500" frameX="0" frameY="-41" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0003" x="565" y="8" width="525" height="506" frameX="-18" frameY="-44" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0004" x="565" y="8" width="525" height="506" frameX="-18" frameY="-44" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0005" x="565" y="8" width="525" height="506" frameX="-18" frameY="-44" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0006" x="1098" y="8" width="504" height="534" frameX="-23" frameY="-10" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0007" x="1098" y="8" width="504" height="534" frameX="-23" frameY="-10" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0008" x="8" y="550" width="504" height="499" frameX="-38" frameY="0" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0009" x="520" y="550" width="504" height="499" frameX="-38" frameY="0" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0010" x="1032" y="550" width="547" height="532" frameX="-4" frameY="-13" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0011" x="1032" y="550" width="547" height="532" frameX="-4" frameY="-13" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0012" x="1032" y="550" width="547" height="532" frameX="-4" frameY="-13" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0013" x="8" y="1090" width="517" height="511" frameX="-16" frameY="-34" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0014" x="8" y="1090" width="517" height="511" frameX="-16" frameY="-34" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0015" x="8" y="1090" width="517" height="511" frameX="-16" frameY="-34" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0016" x="533" y="1090" width="498" height="532" frameX="-29" frameY="-12" frameWidth="551" frameHeight="550"/>
+	<SubTexture name="runRight0017" x="533" y="1090" width="498" height="532" frameX="-29" frameY="-12" frameWidth="551" frameHeight="550"/>
+</TextureAtlas>
