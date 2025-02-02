@@ -853,8 +853,11 @@ function onEvent(name, v1, v2)
         elseif v1 == 'return' then
             runHaxeCode("game.camGame.filters = [];")
             running = true
-            setProperty('camFollow.x', forestCameraPos.x)
-            setProperty('camFollow.y', forestCameraPos.y)
+
+            setProperty('isCameraOnForcedPos', true)
+            callMethod('camFollow.setPosition', {forestCameraPos.x, forestCameraPos.y})
+            setProperty('camGame.scroll.x', forestCameraPos.x - (screenWidth/2))
+            setProperty('camGame.scroll.y', forestCameraPos.y - (screenHeight/2))
             setProperty('camHUD.alpha', 1)
 
             setProperty('scopeVin.alpha', 0.4)
@@ -930,8 +933,10 @@ function onEvent(name, v1, v2)
             frontCameraPos.x = -100
             frontCameraPos.y = -3300
 
-            setProperty('camFollow.x', frontCameraPos.x)
-            setProperty('camFollow.y', frontCameraPos.y)
+            setProperty('isCameraOnForcedPos', true)
+            callMethod('camFollow.setPosition', {forestCameraPos.x, forestCameraPos.y})
+            setProperty('camGame.scroll.x', frontCameraPos.x - (screenWidth/2))
+            setProperty('camGame.scroll.y', frontCameraPos.y - (screenHeight/2))
         elseif v1 == 'front2' then
             triggerEvent('Change Character', 'dad', 'momFrontSecond')
             redLightMode = 2
@@ -1265,14 +1270,10 @@ function onUpdate(elapsed)
     end
 end
 
-local function isNaN(value)
-    return type(value) ~= "number"
-end
-
 function setCameraAlignment(value1, value2, offsetX, offsetY)
     local sowy = tonumber(value1)
 
-    if not isNaN(sowy) then
+    if type(sowy) == 'number' then
         local camDad = {
             x = getMidpointX('dad') + 150 + getProperty('dad.cameraPosition[0]') + getProperty('opponentCameraOffset[0]'),
             y = getMidpointY('dad') - 100 + getProperty('dad.cameraPosition[1]') + getProperty('opponentCameraOffset[1]')
@@ -1314,7 +1315,7 @@ function setCameraAlignment(value1, value2, offsetX, offsetY)
         )
 
         local cusSpeed = tonumber(value2)
-        if not isNaN(cusSpeed) then
+        if type(cusSpeed) == 'number' then
             setProperty('cameraSpeed', getProperty('cameraSpeed') * cusSpeed)
         end
     else
