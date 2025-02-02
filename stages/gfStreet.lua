@@ -563,7 +563,7 @@ function onCreatePost()
         setProperty('heavySnow.alpha', 0.001)
 		addInstance('heavySnow')
 
-        if not lowQuality
+        if not lowQuality then
             createInstance('blackSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		    setObjectCamera('blackSnow', 'camGame')
             setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
@@ -1042,6 +1042,7 @@ function onEvent(name, v1, v2)
                 setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
             else
                 callMethod('momLaugh.startVideo', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false})
+                setProperty('momLaugh.alpha', 1)
             end
             setProperty('camHUD.alpha', 0.001)
         end
@@ -1065,7 +1066,9 @@ function onEvent(name, v1, v2)
             setProperty('smokeVin.paused', true)
             setPosition('boyfriend', -322, 20)
             
-            -- black snow
+            setProperty('blackSnow.visible', true)
+            setProperty('blackSnow.alpha', 1)
+            callMethod('blackSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'dark snow'}), false})
 
             setProperty('wall.visible', false)
             setProperty('floor.visible', false)
@@ -1282,6 +1285,15 @@ function onBeatHit()
         henchWhich = not henchWhich
     end
 
+    if curBeat % 8 == 0 and getProperty('whiteFade.visible') then
+        setProperty('whiteFade.alpha', 0.6)
+    end
+
+    if curBeat % 4 == 0 then
+        setProperty('stringsBg.alpha', 1)
+    end
+    setProperty('stringsBgShoot.alpha', getProperty('stringsBg.alpha'))
+
     if redLightMode == 1 then
         if curBeat % 8 == 0 then
             setProperty('redLight.alpha', getProperty('redLight.alpha') + 0.85)
@@ -1323,6 +1335,21 @@ function addOverlay(col1,col2,blend)
     runHaxeCode([[
         game.camGame.filters = [];
         game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
+    ]])
+end
+
+function addTrail(who, length, delay, alpha, diff)
+    if length == nil then length = 4 end
+    if delay == nil then delay = 24 end
+    if alpha == nil then alpha = 0.4 end
+    if diff == nil then diff = 0.069 end
+
+    runHaxeCode([[
+        import flixel.addons.effects.FlxTrail;
+
+        var bfTrail = new FlxTrail(]]..who..[[, null, ]]..length..[[, ]]..delay..[[, ]]..alpha..[[, ]]..diff..[[);
+        bfTrail.color = 0xFFFF0000;
+        game.addBehindBF(bfTrail); 
     ]])
 end
 
@@ -1369,6 +1396,38 @@ function onUpdate(elapsed)
 	    end
 	end
 
+    if hurtAmount > 0 then
+        hurtAmount = hurtAmount - 0.2 * elapsed
+    elseif hurtAmount < 0 then
+        hurtAmount = 0
+    end
+
+    if hurtRedAmount > 0 then
+        hurtRedAmount = hurtRedAmount - 0.4 * elapsed
+    elseif hurtRedAmount < 0 then
+        hurtRedAmount = 0
+    end
+
+    if getHealth() <= 0.4 then
+        if getProperty('lowVin.alpha') < 0.8 then
+            setProperty('lowVin.alpha', getProperty('lowVin.alpha') + 0.4 * elapsed)
+        else
+            setProperty('lowVin.alpha', 0.8)
+        end
+    else
+        if getProperty('lowVin.alpha') > 0 then
+            setProperty('lowVin.alpha', getProperty('lowVin.alpha') - 0.4 * elapsed)
+        end
+    end
+
+    setProperty('hurtVin.alpha', hurtAmount)
+    setProperty('hurtRedVin.alpha', hurtRedAmount)
+    setProperty('hurtBlack.alpha', hurtAmountBlack)
+
+    if getProperty('whiteFade.alpha') > 0 and getProperty('whiteFade.visible') then
+        setProperty('whiteFade.alpha', getProperty('whiteFade.alpha') - elapsed/4)
+    end
+
     if getProperty('redLight.alpha') > 0 then
         setProperty('redLight.alpha', getProperty('redLight.alpha') - elapsed)
     end
@@ -1391,6 +1450,10 @@ function onUpdate(elapsed)
     end
     if getProperty('henchmanLight4.alpha') > 0 then
         setProperty('henchmanLight4.alpha', getProperty('henchmanLight4.alpha') - elapsed/6)
+    end
+
+    if getProperty('stringsBg.alpha') > 0.5 and getProperty('stringsBg.visible') and stringPulsing then
+        setProperty('stringsBg.alpha', getProperty('stringsBg.alpha') - elapsed * 0.5)
     end
 end
 
