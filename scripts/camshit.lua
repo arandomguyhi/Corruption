@@ -6,7 +6,7 @@ function onUpdate()
             setProperty('isCameraOnForcedPos', true)
             setProperty('camFollow.x', getVar('cameraPoint').x)
             setProperty('camFollow.y', getVar('cameraPoint').y)
-            debugPrint('testingggg')
+            debugPrint('x: '.. getVar('cameraPoint').x ..'. y: '.. getVar('cameraPoint').y ..'.')
         else
             debugPrint('tafalso')
             setProperty('isCameraOnForcedPos', false)
