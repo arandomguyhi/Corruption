@@ -847,6 +847,7 @@ function onEvent(name, v1, v2)
 
             setCameraAlignment("0", "",0,0)
             setProperty('gfSleep.visible', false)
+            setVar('cameraPoint', {x = nil, y = nil})
         elseif v1 == 'henchbf' then
             setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
             setProperty('forestBf.x', -720 + 2250)
@@ -854,10 +855,11 @@ function onEvent(name, v1, v2)
             runHaxeCode("game.camGame.filters = [];")
             running = true
 
-            setProperty('isCameraOnForcedPos', true)
             callMethod('camFollow.setPosition', {forestCameraPos.x, forestCameraPos.y})
             setProperty('camGame.scroll.x', forestCameraPos.x - (screenWidth/2))
             setProperty('camGame.scroll.y', forestCameraPos.y - (screenHeight/2))
+            setVar('cameraPoint', forestCameraPos)
+
             setProperty('camHUD.alpha', 1)
 
             setProperty('scopeVin.alpha', 0.4)
@@ -880,6 +882,7 @@ function onEvent(name, v1, v2)
             setProperty('boyfriend.visible', false)
             altWall()
             altFloor()
+            setVar('cameraPoint', {x = nil, y = nil})
             setProperty('stringsBg.alpha', 1)
             triggerEvent('Change Character', 'dad', 'momCorrupt')
         elseif v1 == 'henchmen' then
@@ -930,13 +933,13 @@ function onEvent(name, v1, v2)
                 startTween('spiderTween'.._, spider, {x = -998}, 7, {ease = 'sineInOut', type = 'pingpong'})
             end
 
-            frontCameraPos.x = -100
-            frontCameraPos.y = -3300
+            forestCameraPos.x = -100
+            forestCameraPos.y = -3300
 
-            setProperty('isCameraOnForcedPos', true)
             callMethod('camFollow.setPosition', {forestCameraPos.x, forestCameraPos.y})
-            setProperty('camGame.scroll.x', frontCameraPos.x - (screenWidth/2))
-            setProperty('camGame.scroll.y', frontCameraPos.y - (screenHeight/2))
+            setProperty('camGame.scroll.x', forestCameraPos.x - (screenWidth/2))
+            setProperty('camGame.scroll.y', forestCameraPos.y - (screenHeight/2))
+            setVar('cameraPoint', forestCameraPos)
         elseif v1 == 'front2' then
             triggerEvent('Change Character', 'dad', 'momFrontSecond')
             redLightMode = 2
@@ -969,9 +972,7 @@ function onEvent(name, v1, v2)
             setProperty('fade.visible', false)
             triggerEvent('Change Character', 'dad', 'momFront')
             frontView = true
-            
-            getVar('cameraPoint').x = frontCameraPos.x
-            getVar('cameraPoint').y = frontCameraPos.y
+            setVar('cameraPoint', frontCameraPos)
 
             setProperty('redLight.visible', true)
             setProperty('redVin.visible', true)
