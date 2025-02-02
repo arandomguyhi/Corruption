@@ -820,7 +820,7 @@ function onEvent(name, v1, v2)
             setProperty('boyfriend.visible', true) setProperty('boyfriend.alpha', 1)
             triggerEvent('Change Character', 'bf', 'gfRage')
         elseif v1 == '4' then
-            setCameraAlignment("", "", 0, 0)
+            setCameraAlignment("", "",0,0)
         elseif v1 == '3' then
             running = false
             for _,i in pairs(spiderGroup) do
@@ -853,8 +853,8 @@ function onEvent(name, v1, v2)
         elseif v1 == 'return' then
             runHaxeCode("game.camGame.filters = [];")
             running = true
-            setProperty('camFollow.x', forestCamPos.x)
-            setProperty('camFollow.y', forestCamPos.y)
+            setProperty('camFollow.x', forestCameraPos.x)
+            setProperty('camFollow.y', forestCameraPos.y)
             setProperty('camHUD.alpha', 1)
 
             setProperty('scopeVin.alpha', 0.4)
@@ -883,6 +883,7 @@ function onEvent(name, v1, v2)
             addOverlay({79.0,15.0,33.0},{203.0,21.0,122.0},0.175)
             setProperty('forestHench.visible', true)
         end
+    end
 
     if name == 'addelement' then
         if v1 == 'runsetup' then
@@ -1265,7 +1266,7 @@ function onUpdate(elapsed)
 end
 
 local function isNaN(value)
-    return value ~= value
+    return type(value) ~= "number"
 end
 
 function setCameraAlignment(value1, value2, offsetX, offsetY)
