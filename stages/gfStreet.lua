@@ -415,13 +415,11 @@ function onCreate()
     setPosition('spiderFrontLegs', -1853, -3307)
 
     for _, i in pairs(spiderGroup) do
-        setProperty(i..'.y', getProperty(i..'.y') - 275)
-        setProperty(i..'.x', getProperty(i..'.x') - 300)
+        setProperty(i..'.y', getProperty(i..'.y') - 275 + (i == 'momSpider' and -3600 or 0))
+        setProperty(i..'.x', getProperty(i..'.x') - 300 + (i == 'momSpider' and -998 or 0))
 
         table.insert(forest, i)
     end
-    setProperty('momSpider.x', getProperty('momSpider.x') - 3600)
-    setProperty('momSpider.y', getProperty('momSpider.y') - 998)
 
     makeAnimatedLuaSprite('spiderPunched', path..'spiderPunched')
     addAnimationByPrefix('spiderPunched', 'idle', 'SpiderDeath', 24, false)
@@ -437,7 +435,7 @@ function onCreate()
     forestCameraPos = {x = -200, y = -3300}
 
     runHaxeCode("setVar('gfRun', game.boyfriendMap.get('gfRun'));")
-    --setProperty('gfRun.y', -3400)
+    setProperty('gfRun.y', -3400)
     setProperty('gfRun.alpha', 1)
     table.insert(forest, 'gfRun')
 

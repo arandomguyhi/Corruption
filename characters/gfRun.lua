@@ -9,6 +9,7 @@ function onCreate()
         makeAnimatedLuaSprite(i:lower(), path..'gfRun'..i)
         addAnimationByPrefix(i:lower(), 'idle', 'run'..i, 24, true)
         playAnim(i:lower(), 'idle')
+        setProperty(i:lower()..'.visible', false)
 
         addLuaSprite(i:lower(), true)
     end
