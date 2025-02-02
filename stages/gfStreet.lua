@@ -437,7 +437,7 @@ function onCreate()
     forestCameraPos = {x = -200, y = -3300}
 
     runHaxeCode("setVar('gfRun', game.boyfriendMap.get('gfRun'));")
-    setProperty('gfRun.y', -3400)
+    --setProperty('gfRun.y', -3400)
     setProperty('gfRun.alpha', 1)
     table.insert(forest, 'gfRun')
 
@@ -872,17 +872,26 @@ function onEvent(name, v1, v2)
             setProperty('scopeVin.alpha', 0.001)
             
             runHaxeCode([[
-                game.camGame.filters = [];
-                game.camGame.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
+                game.camHUD.filters = [];
+                game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
             ]])
 
-            setProperty('camGame.alpha', 0.5)
+            setProperty('camHUD.alpha', 0.5)
 
             setProperty('gfSleep.visible', true)
             setProperty('boyfriend.visible', false)
             altWall()
             altFloor()
+
             setVar('cameraPoint', {x = nil, y = nil})
+            local camBf = {
+                x = getMidpointX('boyfriend') - 100 - getProperty('boyfriend.cameraPosition[0]') + getProperty('boyfriendCameraOffset[0]'),
+                y = getMidpointY('boyfriend') - 100 + getProperty('boyfriend.cameraPosition[1]') + getProperty('boyfriendCameraOffset[1]')
+            }
+            callMethod('camFollow.setPosition', {camBf.x, camBf.y})
+            setProperty('camGame.scroll.x', camBf.x - (screenWidth/2))
+            setProperty('camGame.scroll.y', camBf.y - (screenHeight/2))
+
             setProperty('stringsBg.alpha', 1)
             triggerEvent('Change Character', 'dad', 'momCorrupt')
         elseif v1 == 'henchmen' then
