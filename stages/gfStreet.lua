@@ -382,13 +382,22 @@ function onCreate()
 
     addCharacterToList('momSpider', 'dad')
 
+    runHaxeCode([[
+        import flixel.group.FlxTypedSpriteGroup;
+
+        var spiderGroup = new FlxTypedSpriteGroup(-998, -3600);
+        spiderGroup.scrollFactor.set(1, 1);
+        game.addBehindDad(spiderGroup);
+        spiderGroup.alpha = 1;
+        setVar('spiderGroup', spiderGroup);
+    ]])
+
     makeAnimatedLuaSprite('spiderBackLegs', path..'spiderLegsBack')
     addAnimationByPrefix('spiderBackLegs', 'idle', 'BackLegs', 24, true)
     playAnim('spiderBackLegs', 'idle', true)
     scaleObject('spiderBackLegs', 1.3, 1.3, false)
     setProperty('spiderBackLegs.antialiasing', true)
-    table.insert(spiderGroup, 'spiderBackLegs')
-    addLuaSprite('spiderBackLegs')
+    callMethod('spiderGroup.add', {instanceArg('spiderBackLegs')})
     setPosition('spiderBackLegs', -1660, -3255)
 
     makeAnimatedLuaSprite('spiderBody', path..'spidermm')
@@ -396,30 +405,27 @@ function onCreate()
     playAnim('spiderBody', 'idle', true)
     scaleObject('spiderBody', 1.3, 1.3, false)
     setProperty('spiderBody.antialiasing', true)
-    table.insert(spiderGroup, 'spiderBody')
-    addLuaSprite('spiderBody')
+    callMethod('spiderGroup.add', {instanceArg('spiderBody')})
     setPosition('spiderBody', -1665, -3479)
 
     runHaxeCode("setVar('momSpider', game.dadMap.get('momSpider'));")
 
     setProperty('momSpider.alpha', 1)
-    table.insert(spiderGroup, 'momSpider')
+    callMethod('dadGroup.remove', {instanceArg('momSpider')})
+    callMethod('spiderGroup.add', {instanceArg('momSpider')})
 
     makeAnimatedLuaSprite('spiderFrontLegs', path..'spiderLegsFront')
     addAnimationByPrefix('spiderFrontLegs', 'idle', 'front leg finished', 24, true)
     playAnim('spiderFrontLegs', 'idle', true)
     scaleObject('spiderFrontLegs', 1.3, 1.3, false)
     setProperty('spiderFrontLegs.antialiasing', true)
-    table.insert(spiderGroup, 'spiderFrontLegs')
-    addLuaSprite('spiderFrontLegs')
+    callMethod('spiderGroup.add', {instanceArg('spiderFrontLegs')})
     setPosition('spiderFrontLegs', -1853, -3307)
 
-    for _, i in pairs(spiderGroup) do
-        setProperty(i..'.y', getProperty(i..'.y') - 275 + (i == 'momSpider' and -3600 or 0))
-        setProperty(i..'.x', getProperty(i..'.x') - 300 + (i == 'momSpider' and -998 or 0))
+    setProperty('spiderGroup.x', getProperty('spiderGroup.x') - 275)
+    setProperty('spiderGroup.y', getProperty('spiderGroup.y') - 300)
 
-        table.insert(forest, i)
-    end
+    table.insert(forest, getVar('spiderGroup'))
 
     makeAnimatedLuaSprite('spiderPunched', path..'spiderPunched')
     addAnimationByPrefix('spiderPunched', 'idle', 'SpiderDeath', 24, false)
@@ -806,10 +812,10 @@ function onEvent(name, v1, v2)
     if name == 'stoprun' then
         if v1 == '1' then
             stopping = true
-            for _,i in pairs(spiderGroup) do
-                cancelTween('spiderTween'.._)
-                startTween('setSPos'.._, i, {x = 200}, 2, {})
-            end
+
+            cancelTween('spiderTween')
+            startTween('setSPos', 'spiderGroup', {x = 200}, 2, {})
+
             setProperty('gfRun.alpha', 0.001)
             boyfX = getProperty('boyfriend.x')
             boyfY = getProperty('boyfriend.y')
@@ -821,9 +827,8 @@ function onEvent(name, v1, v2)
             setCameraAlignment("", "",0,0)
         elseif v1 == '3' then
             running = false
-            for _,i in pairs(spiderGroup) do
-                setProperty(i..'.alpha', 0.001)
-            end
+
+            setProperty('spiderGroup.alpha', 0.001)
             setProperty('spiderPunched.alpha', 1)
             playAnim('spiderPunched', 'idle', true)
 
@@ -936,9 +941,7 @@ function onEvent(name, v1, v2)
             redLightMode = 0
             frontView = false
 
-            for _, spider in pairs(spiderGroup) do
-                startTween('spiderTween'.._, spider, {x = -998}, 7, {ease = 'sineInOut', type = 'pingpong'})
-            end
+            startTween('spiderTween', 'spiderGroup', {x = -998}, 7, {ease = 'sineInOut', type = 'pingpong'})
 
             forestCameraPos.x = -100
             forestCameraPos.y = -3300
