@@ -27,13 +27,13 @@ local spiderGroup = {}
 
 luaDebugMode = true
 function onCreate()
-    addCharacterToList("gfRage", 'bf')
+    addCharacterToList("gfRage", 'boyfriend')
     addCharacterToList("momFront", 'dad')
     addCharacterToList("momFrontSecond", 'dad')
-    addCharacterToList("gfNorm", 'bf')
+    addCharacterToList("gfNorm", 'boyfriend')
     addCharacterToList("momCorrupt", 'dad')
-    addCharacterToList("gfDark", 'bf')
-	addCharacterToList("gfRun", 'bf')
+    addCharacterToList("gfDark", 'boyfriend')
+	addCharacterToList("gfRun", 'boyfriend')
 
     if shadersEnabled then
         initLuaShader('null-and-void/bloom')
