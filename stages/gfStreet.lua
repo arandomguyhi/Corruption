@@ -896,6 +896,7 @@ function onEvent(name, v1, v2)
             setCameraAlignment("0", "",0,0)
             setProperty('gfSleep.alpha', 0.001)
             setVar('cameraPoint', {x = nil, y = nil})
+            setProperty('camGame.targetOffset.x', -300)
         elseif v1 == 'henchbf' then
             setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
             setProperty('forestBf.x', -720 + 2250)
@@ -1238,6 +1239,9 @@ function onEvent(name, v1, v2)
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
             setCameraAlignment("0", "",0,0)
+            if not running then
+                setProperty('camGame.targetOffset.x', -100)
+            end
         elseif v1 == 'mm' then
             canZoom = false
             setProperty('defaultCamZoom', 0.9)
