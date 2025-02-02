@@ -25,13 +25,13 @@ end
 local sprites = {'left', 'down', 'up', 'right', 'idle'}
 function onUpdate()
     for _, spr in pairs(sprites) do
-        setProperty(spr..'.x', getProperty('boyfriend.x'))
-        setProperty(spr..'.y', getProperty('boyfriend.y'))
-        setProperty(spr..'.alpha', getProperty('boyfriend.alpha'))
+        setProperty(spr..'.x', getProperty('gfRun.x'))
+        setProperty(spr..'.y', getProperty('gfRun.y'))
+        setProperty(spr..'.alpha', getProperty('gfRun.alpha'))
 
         if getProperty('boyfriend.animation.curAnim.name') == 'idle' then
             setProperty(sprites[5]..'.visible', true)
-            setProperty(sprites[_-1]..'.visible', false)
+            for smt = 1,4 do setProperty(sprites[smt]..'.visible', false) end
         end
     end
 end
