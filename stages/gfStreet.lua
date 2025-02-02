@@ -1532,6 +1532,11 @@ function setCameraAlignment(value1, value2, offsetX, offsetY)
     end
 end
 
+function opponentNoteHit(i,d,_,_)
+    playAnim('momSpider', getProperty('singAnimations')[d+1], true)
+    setProperty('momSpider.holdTimer', 0)
+end
+
 function setPosition(obj,x,y)
     setProperty(obj..'.x', x)
     setProperty(obj..'.y', y)
