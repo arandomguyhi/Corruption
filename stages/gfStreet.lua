@@ -249,8 +249,8 @@ function onCreate()
     addLuaSprite('stringsBgShoot')
     setPosition('stringsBgShoot', -509, 134)
     scaleObject('stringsBgShoot', 1.2, 1.4)
-    setProperty('stringsBgShoot.alpha', 0.001)
-    setProperty('stringsBg.alpha', 0.001)
+    setProperty('stringsBgShoot.visible', false)
+    setProperty('stringsBg.visible', false)
 
     makeLuaSprite('fade', path..'fade', 900, 0)
     scaleObject('fade', 1.55, 1.55, false)
@@ -757,9 +757,9 @@ function changeBG(id)
     setProperty('camHUD.alpha', 1)
     runHaxeCode("game.camHUD.filters = [];")
 
-    setProperty('stringPrep.alpha', 0.001)
-    setProperty('stringPrep2.alpha', 0.001)
-    setProperty('stringsBg.alpha', 0.001)
+    setProperty('stringPrep.visible', false)
+    setProperty('stringPrep2.visible', false)
+    setProperty('stringsBg.visible', false)
 
     if id == 0 then
         addOverlay({79.0,15.0,33.0}, {203.0, 21.0, 122.0}, 0.175)
@@ -783,7 +783,7 @@ function changeBG(id)
             setProperty('heavySnow.alpha', 0.6)
             setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
         else
-            callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), false})
+            setProperty('heavySnow.paused', false)
             setProperty('heavySnow.alpha', 0.6)
         end
 
@@ -796,11 +796,11 @@ function changeBG(id)
                 game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
             ]])
         end
-        setProperty('stringPrep.alpha', 1)
-        setProperty('stringPrep2.alpha', 1)
+        setProperty('stringPrep.visible', true)
+        setProperty('stringPrep2.visible', true)
         altWall()
         altFloor()
-        setProperty('stringsBg.alpha', 1)
+        setProperty('stringsBg.visible', true)
         setProperty('boyfriend.alpha', 0.001)
         setProperty('gfSleep.alpha', 1)
         setProperty('scopeVin.alpha', 0.001)
@@ -881,9 +881,9 @@ function onEvent(name, v1, v2)
             setProperty('forestForeground.alpha', 0.001)
             setProperty('scopeVin.alpha', 0.001)
 
-            setProperty('stringPrep.alpha', 0.001)
-            setProperty('stringPrep2.alpha', 0.001)
-            setProperty('stringsBg.alpha', 0.001)
+            setProperty('stringPrep.visible', false)
+            setProperty('stringPrep2.visible', false)
+            setProperty('stringsBg.visible', false)
             normalFloor()
             normalWall()
 
@@ -910,9 +910,17 @@ function onEvent(name, v1, v2)
             setProperty('camHUD.alpha', 1)
 
             setProperty('scopeVin.alpha', 0.4)
-            -- pause videos
+            
+            if buildTarget ~= 'windows' then
+                setProperty('heavySnow.paused', true)
+                setProperty('heavySnow.alpha', 0.001)
+            end
         elseif v1 == 'sad' then
-            -- pause videos
+            if buildTarget ~= 'windows' then
+                callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), true})
+                setProperty('heavySnow.alpha', 0.6)
+            end
+
             running = false
 
             setProperty('waveEfx.alpha', 0.001)
@@ -939,11 +947,11 @@ function onEvent(name, v1, v2)
             setProperty('camGame.scroll.x', camBf.x - (screenWidth/2))
             setProperty('camGame.scroll.y', camBf.y - (screenHeight/2))
 
-            setProperty('stringsBg.alpha', 1)
+            setProperty('stringsBg.visible', true)
             triggerEvent('Change Character', 'dad', 'momCorrupt')
         elseif v1 == 'henchmen' then
             addOverlay({79.0,15.0,33.0},{203.0,21.0,122.0},0.175)
-            setProperty('forestHench.visible', true)
+            setProperty('forestHench.alpha', 1)
         end
     end
 
@@ -983,9 +991,6 @@ function onEvent(name, v1, v2)
                 callMethod('letsSettleThis.startVideo', {callMethodFromClass('backend.Paths', 'video', {'letsSettleThis'}), false})
             end
             setProperty('camHUD.alpha', 0.001)
-        elseif v1 == 'snowheavy' then
-            callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), false})
-            setProperty('heavySnow.alpha', 0.6)
         elseif v1 == 'smoke' then
             henchTime = false
             startTween('fadie', 'fade', {x = -800, alpha = 1}, 4, {})
@@ -1116,8 +1121,8 @@ function onEvent(name, v1, v2)
             daBG = -1
             setProperty('gfSleep.visible', false)
             setProperty('boyfriend.visible', true) setProperty('boyfriend.alpha', 1)
-            setProperty('stringsBg.visible', false)
-            setProperty('stringsBgShoot.visible', false)
+            setProperty('stringsBg.visible', true)
+            setProperty('stringsBgShoot.visible', true)
         elseif v1 == 'tween1' then
             cancelTween('spiderTween')
             startTween('setSpiderPos', 'spiderGroup', {x = -2000}, 6, {ease = 'sineInOut'})
