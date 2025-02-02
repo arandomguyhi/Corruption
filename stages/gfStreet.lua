@@ -397,7 +397,7 @@ function onCreate()
     playAnim('spiderBackLegs', 'idle', true)
     scaleObject('spiderBackLegs', 1.3, 1.3, false)
     setProperty('spiderBackLegs.antialiasing', true)
-    callMethod('spiderGroup.add', {instanceArg('spiderBackLegs')})
+    runHaxeCode("getVar('spiderGroup').add(game.getLuaObject('spiderBackLegs'));")
     setPosition('spiderBackLegs', -1660, -3255)
 
     makeAnimatedLuaSprite('spiderBody', path..'spidermm')
@@ -405,21 +405,23 @@ function onCreate()
     playAnim('spiderBody', 'idle', true)
     scaleObject('spiderBody', 1.3, 1.3, false)
     setProperty('spiderBody.antialiasing', true)
-    callMethod('spiderGroup.add', {instanceArg('spiderBody')})
+    runHaxeCode("getVar('spiderGroup').add(game.getLuaObject('spiderBody'));")
     setPosition('spiderBody', -1665, -3479)
 
     runHaxeCode("setVar('momSpider', game.dadMap.get('momSpider'));")
 
     setProperty('momSpider.alpha', 1)
-    callMethod('dadGroup.remove', {instanceArg('momSpider')})
-    callMethod('spiderGroup.add', {instanceArg('momSpider')})
+    runHaxeCode([[
+        game.dadGroup.remove(getVar('momSpider'));
+        getVar('spiderGroup').add(getVar('momSpider'));
+    ]])
 
     makeAnimatedLuaSprite('spiderFrontLegs', path..'spiderLegsFront')
     addAnimationByPrefix('spiderFrontLegs', 'idle', 'front leg finished', 24, true)
     playAnim('spiderFrontLegs', 'idle', true)
     scaleObject('spiderFrontLegs', 1.3, 1.3, false)
     setProperty('spiderFrontLegs.antialiasing', true)
-    callMethod('spiderGroup.add', {instanceArg('spiderFrontLegs')})
+    runHaxeCode("getVar('spiderGroup').add(game.getLuaObject('spiderFrontLegs'));")
     setPosition('spiderFrontLegs', -1853, -3307)
 
     setProperty('spiderGroup.x', getProperty('spiderGroup.x') - 275)
@@ -498,6 +500,7 @@ function onCreatePost()
         setPosition('gfBlack', getProperty('boyfriend.x') + getProperty('gfBlack.positionArray[0]'), getProperty('boyfriend.y') + getProperty('gfBlack.positionArray[1]'))
         setPosition('momCorruptBlack', getProperty('dad.x'), getProperty('dad.y'))
     end
+    setPosition('gfSleep', getProperty('boyfriend.x') + 10, getProperty('boyfriend.y'))
 
     setProperty('camGame.bgColor', getColorFromHex('808080')) -- gray color in flxcolor
 
@@ -522,7 +525,7 @@ function onCreatePost()
     else
         createInstance('blazeIt', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('blazeIt', 'camGame')
-        setObjectOrder('blazeIt', getObjectOrder('gfBlack')+1)
+        setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
         setProperty('blazeIt.blend', 9)
         setProperty('blazeIt.alpha', 0.001)
         scaleObject('blazeIt', 2.5, 1.5)
@@ -849,13 +852,13 @@ function onEvent(name, v1, v2)
             startTween('scope', 'scopeVin', {alpha = 0.4}, 2, {})
 
             setCameraAlignment("0", "",0,0)
-            setProperty('gfSleep.visible', false)
+            setProperty('gfSleep.alpha', 0.001)
             setVar('cameraPoint', {x = nil, y = nil})
         elseif v1 == 'henchbf' then
             setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
             setProperty('forestBf.x', -720 + 2250)
         elseif v1 == 'return' then
-            runHaxeCode("game.camGame.filters = [];")
+            runHaxeCode("game.camHUD.filters = [];")
             running = true
 
             callMethod('camFollow.setPosition', {forestCameraPos.x, forestCameraPos.y})
@@ -881,7 +884,7 @@ function onEvent(name, v1, v2)
 
             setProperty('camHUD.alpha', 0.5)
 
-            setProperty('gfSleep.visible', true)
+            setProperty('gfSleep.alpha', 1)
             setProperty('boyfriend.visible', false)
             altWall()
             altFloor()
@@ -1239,6 +1242,7 @@ function onSectionHit()
             forestCameraPos.x = -750
 			forestCameraPos.y = -3550
         end
+        setVar('cameraPoint', forestCameraPos)
     end
 
     if frontView then
@@ -1253,11 +1257,22 @@ function onSectionHit()
     end
 end
 
+local rate = 1
 function onUpdate(elapsed)
     playAnim('gfBlack', getProperty('boyfriend.animation.curAnim.name'), true)
     setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
     playAnim('momCorruptBlack', getProperty('dad.animation.curAnim.name'), true)
     setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
+
+    if stopping then
+			rate = rate - elapsed
+			if rate < 0 then
+			  rate = 0 end
+			
+	    for _, s in pairs(forest) do
+	      setProperty(s..'.velocity.x', getProperty(s..'.health') * rate)
+	    end
+	  end
 
     if getProperty('redLight.alpha') > 0 then
         setProperty('redLight.alpha', getProperty('redLight.alpha') - elapsed)
