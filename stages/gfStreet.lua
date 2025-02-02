@@ -969,6 +969,7 @@ function onEvent(name, v1, v2)
             setProperty('fade.visible', false)
             triggerEvent('Change Character', 'dad', 'momFront')
             frontView = true
+            
             getVar('cameraPoint').x = frontCameraPos.x
             getVar('cameraPoint').y = frontCameraPos.y
 
