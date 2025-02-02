@@ -637,7 +637,7 @@ function onCreatePost()
         setProperty('hurtVin.active', false)
         setProperty('hurtVin.alpha', 0.001)
         setProperty('hurtVin.blend', 9)
-        setObjectCamera('scopeVin', 'camOther')
+        setObjectCamera('hurtVin', 'camOther')
         addLuaSprite('hurtVin', true)
 
         makeLuaSprite('hurtRedVin', path..'redHurtVin', -300, -170)
@@ -1106,6 +1106,8 @@ function onEvent(name, v1, v2)
             setProperty('darkenBG.alpha', 1)
 
             setProperty('whiteFade.visible', true)
+        elseif v1 == 'stringsappear' then
+            startTween('cantescape', 'stringsTrappedEnd', {alpha = 1}, 15, {})
         elseif v1 == 'trapped' then
             setProperty('camHUD.alpha', 0.4)
             runHaxeCode([[
@@ -1116,6 +1118,9 @@ function onEvent(name, v1, v2)
             setProperty('dad.visible', false)
             stringPulsing = false
             setCameraAlignment("0", "",0,0)
+
+            cameraSetTarget('boyfriend')
+            setProperty('camGame.targetOffset.x', -300)
 
             changeBG(1)
             daBG = -1
