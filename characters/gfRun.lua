@@ -5,11 +5,14 @@ function onCreate()
     addAnimationByPrefix('idle', 'idle', 'runIdle', 24, true)
     playAnim('idle', 'idle')
 
-    for _, i in pairs({'Left', 'Right', 'Up', 'Down'})
+    for _, i in pairs({'Left', 'Right', 'Up', 'Down'}) do
         makeAnimatedLuaSprite(i:lower(), path..'gfRun'..i)
         addAnimationByPrefix(i:lower(), 'idle', 'run'..i, 24, true)
         playAnim(i:lower(), 'idle')
+
+        addLuaSprite(i:lower(), true)
     end
+    addLuaSprite('idle', true)
 
     addOffset('idle', 'idle', 0, 0)
     addOffset('left', 'idle', -3, -2)
@@ -33,5 +36,8 @@ function onUpdate()
 end
 
 function goodNoteHit(id, noteData, noteType, isSustainNote)
-    setProperty(sprites[noteData+1]..'.visible', true)
+    for _, i in pairs(sprites) then
+        setProperty(i..'.visible', false)
+        setProperty(sprites[noteData+1]..'.visible', true)
+    end
 end
