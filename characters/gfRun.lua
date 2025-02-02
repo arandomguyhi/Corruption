@@ -36,7 +36,7 @@ function onUpdate()
 end
 
 function goodNoteHit(id, noteData, noteType, isSustainNote)
-    for _, i in pairs(sprites) then
+    for _, i in pairs(sprites) do
         setProperty(i..'.visible', false)
         setProperty(sprites[noteData+1]..'.visible', true)
     end
