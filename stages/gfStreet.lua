@@ -949,9 +949,9 @@ function onEvent(name, v1, v2)
             setProperty('comboGroup.visible', false)
             setProperty('defaultCamZoom', 1.4)
 
-            setProperty('isCameraOnForcedPos', true)
-            setProperty('camFollow.x', frontCameraPos.x)
-            setProperty('camFollow.y', frontCameraPos.y)
+            callMethod('camFollow.setPosition', {frontCameraPos.x, frontCameraPos.y})
+            setProperty('camGame.scroll.x', frontCameraPos.x - (screenWidth/2))
+            setProperty('camGame.scroll.y', frontCameraPos.y - (screenHeight/2))
 
             runHaxeCode([[
                 var blazeIt = buildTarget != 'windows' ? getVar('blazeIt') : game.getLuaObject('blazeIt');
@@ -969,6 +969,8 @@ function onEvent(name, v1, v2)
             setProperty('fade.visible', false)
             triggerEvent('Change Character', 'dad', 'momFront')
             frontView = true
+            getVar('cameraPoint').x = frontCameraPos.x
+            getVar('cameraPoint').y = frontCameraPos.y
 
             setProperty('redLight.visible', true)
             setProperty('redVin.visible', true)
