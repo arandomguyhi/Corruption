@@ -541,7 +541,7 @@ function onCreatePost()
         scaleObject('smokeVin', 1.4, 1.4)
         setScrollFactor('smokeVin', 0, 0)
         setProperty('smokeVin.x', -70)
-        setProperty('smokeVin.y', -30)
+        setProperty('smokeVin.y', 170)
 		addInstance('smokeVin')
 
         createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
@@ -558,7 +558,7 @@ function onCreatePost()
         setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
         scaleObject('heavySnow', 2.5, 2.5, false)
         setScrollFactor('heavySnow', 1.2, 1.2)
-        screenCenter('heavySnow')
+        --screenCenter('heavySnow')
         setProperty('heavySnow.blend', 12)
         setProperty('heavySnow.alpha', 0.001)
 		addInstance('heavySnow')
@@ -761,6 +761,8 @@ function changeBG(id)
     setProperty('stringPrep2.visible', false)
     setProperty('stringsBg.visible', false)
 
+    setProperty('camGame.targetOffset.x', 0)
+
     if id == 0 then
         addOverlay({79.0,15.0,33.0}, {203.0, 21.0, 122.0}, 0.175)
         normalWall()
@@ -870,6 +872,7 @@ function onEvent(name, v1, v2)
             triggerEvent('Change Character', 'bf', 'gfRage')
         elseif v1 == '4' then
             setCameraAlignment("", "",0,0)
+            setProperty('camGame.targetOffset.x', 0)
         elseif v1 == '3' then
             running = false
 
@@ -1121,11 +1124,12 @@ function onEvent(name, v1, v2)
             stringPulsing = false
             setCameraAlignment("0", "",0,0)
 
+            changeBG(1)
+            daBG = -1
+
             cameraSetTarget('boyfriend')
             setProperty('camGame.targetOffset.x', -300)
 
-            changeBG(1)
-            daBG = -1
             setProperty('gfSleep.visible', false)
             setProperty('boyfriend.visible', true) setProperty('boyfriend.alpha', 1)
             setProperty('stringsBg.visible', true)
@@ -1162,6 +1166,7 @@ function onEvent(name, v1, v2)
             redLightMode = 2
         elseif v1 == 'powerup2' then
             setProperty('defaultCamZoom', 1.8)
+            setProperty('camGame.targetOffset.x', 0)
         elseif v1 == 'fronthide' then
             startTween('shocked', 'gfShocked', {alpha = 0}, 1, {})
         elseif v1 == 'front' then
@@ -1169,6 +1174,7 @@ function onEvent(name, v1, v2)
             setProperty('comboGroup.visible', false)
             setProperty('defaultCamZoom', 1.4)
 
+            setProperty('camGame.targetOffset.x', 0)
             callMethod('camFollow.setPosition', {frontCameraPos.x, frontCameraPos.y})
             setProperty('camGame.scroll.x', frontCameraPos.x - (screenWidth/2))
             setProperty('camGame.scroll.y', frontCameraPos.y - (screenHeight/2))
