@@ -762,7 +762,6 @@ function changeBG(id)
     setProperty('stringsBg.visible', false)
 
     setProperty('camGame.targetOffset.x', 0)
-    setVar('cameraPoint', {x = nil, y = nil})
 
     if id == 0 then
         addOverlay({79.0,15.0,33.0}, {203.0, 21.0, 122.0}, 0.175)
@@ -794,10 +793,7 @@ function changeBG(id)
 
         setProperty('camHUD.alpha', 0.5)
         if shadersEnabled then
-            runHaxeCode([[
-                game.camGame.filters = [];
-                game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
-            ]])
+            runHaxeCode("game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);")
         end
         setProperty('stringPrep.visible', true)
         setProperty('stringPrep2.visible', true)
@@ -901,6 +897,7 @@ function onEvent(name, v1, v2)
             setCameraAlignment("0", "",0,0)
             setProperty('gfSleep.alpha', 0.001)
             setProperty('camGame.targetOffset.x', -300)
+            setVar('cameraPoint', {x = nil, y = nil})
         elseif v1 == 'henchbf' then
             setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
             setProperty('forestBf.x', -720 + 2250)
@@ -1054,7 +1051,10 @@ function onEvent(name, v1, v2)
             setProperty('lightSnow.visible', false)
             setProperty('lightSnow.alpha', 0.001)
             henchTime = true
-            callMethod('bfTrail.remove', {''})
+            runHaxeCode([[
+                getVar('bfTrail').remove();
+                getVar('bfTrail').destroy();
+            ]])
         end
 
         if v1 == 'momlaugh' then
