@@ -829,8 +829,8 @@ function changeBG(id)
         y = getMidpointY('boyfriend') - 100 + getProperty('boyfriend.cameraPosition[1]') + getProperty('boyfriendCameraOffset[1]')
     }
     callMethod('camFollow.setPosition', {mustHitSection and camBf.x or camDad.x, mustHitSection and camBf.y or camDad.y})
-    setProperty('camGame.scroll.x', mustHitSection and camBf.x or camDad.x - (screenWidth/2))
-    setProperty('camGame.scroll.y', mustHitSection and camBf.y or camDad.y - (screenHeight/2))
+    setProperty('camGame.scroll.x', (mustHitSection and camBf.x or camDad.x) - (screenWidth/2))
+    setProperty('camGame.scroll.y', (mustHitSection and camBf.y or camDad.y) - (screenHeight/2))
 end
 
 local bgs = {2,0,2,1,2,0}
@@ -1051,10 +1051,7 @@ function onEvent(name, v1, v2)
             setProperty('lightSnow.visible', false)
             setProperty('lightSnow.alpha', 0.001)
             henchTime = true
-            runHaxeCode([[
-                getVar('bfTrail').remove();
-                getVar('bfTrail').destroy();
-            ]])
+            setProperty('bfTrail.visible', false)
         end
 
         if v1 == 'momlaugh' then
