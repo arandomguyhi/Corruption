@@ -1,11 +1,7 @@
 function onCreatePost()
-    setProperty('timeBar.visible', false)
-    setProperty('timeBar.bg.visible', false)
-    setProperty('timeTxt.visible', false)
-    setProperty('scoreTxt.visible', false)
+    for _,i in pairs({'timeBar', 'timeBar.bg', 'timeTxt', 'scoreTxt', 'iconP1', 'iconP2', 'healthBar', 'healthBar.bg'})
+        setProperty(i..'.visible', false) end
     setProperty('botplayTxt.y', getProperty('healthBar.y') + (downscroll and 70 or -120))
-
-    callMethod('healthBar.setColors', {0xFF0000, 0x00FF00})
 
     makeLuaText('newScore', 'Score: 0', getProperty('newScore.width'), getProperty('scoreTxt.x')+750, getProperty('scoreTxt.y')-10)
     setTextSize('newScore', 16)
