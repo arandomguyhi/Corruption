@@ -563,16 +563,14 @@ function onCreatePost()
         setProperty('heavySnow.alpha', 0.001)
 		addInstance('heavySnow')
 
-        if not lowQuality then
-            createInstance('blackSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
-		    setObjectCamera('blackSnow', 'camGame')
-            setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
-            scaleObject('blackSnow', 1.25, 1.25)
-            setPosition('blackSnow', -960, -190)
-            setProperty('blackSnow.blend', 9)
-            setProperty('blackSnow.alpha', 0.001)
-		    addInstance('blackSnow')
-        end
+        createInstance('blackSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
+		setObjectCamera('blackSnow', 'camGame')
+        setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
+        scaleObject('blackSnow', 1.25, 1.25)
+        setPosition('blackSnow', -960, -190)
+        setProperty('blackSnow.blend', 9)
+        setProperty('blackSnow.alpha', 0.001)
+		if not lowQuality then addInstance('blackSnow') end
 
         createInstance('momLaugh', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
         setObjectCamera('momLaugh', 'camGame')
@@ -690,6 +688,10 @@ function onCreatePost()
     setProperty('dadShadow.alpha', 0.6)
     addBehindBF('dadShadow')
 
+    for i = 0,3 do
+        setPropertyFromGroup('opponentStrums', i, 'texture', '../assets/noteskins/NOTE_assets_Corrupt')
+    end
+
     setObjectCamera('comboGroup', 'camGame')
 end
 
@@ -702,6 +704,14 @@ function noteMiss()
         setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
         setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.15)
         setProperty('health', getProperty('health') - 0.35)
+    end
+end
+
+function onSpawnNote()
+    for i = 0,7 do
+        if not getPropertyFromGroup('notes', i, 'mustPress') then
+            setPropertyFromGroup('notes', i, 'texture', '../assets/noteskins/NOTE_assets_Corrupt')
+        end
     end
 end
 
@@ -870,7 +880,6 @@ function onEvent(name, v1, v2)
             triggerEvent('Change Character', 'bf', 'gfRage')
         elseif v1 == '4' then
             setCameraAlignment("", "",0,0)
-            setProperty('camGame.targetOffset.x', 0)
         elseif v1 == '3' then
             running = false
 
@@ -930,10 +939,12 @@ function onEvent(name, v1, v2)
             setProperty('waveEfx.alpha', 0.001)
             setProperty('scopeVin.alpha', 0.001)
             
-            runHaxeCode([[
-                game.camHUD.filters = [];
-                game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
-            ]])
+            if shadersEnabled then
+                runHaxeCode([[
+                    game.camHUD.filters = [];
+                    game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
+                ]])
+            end
 
             setProperty('camHUD.alpha', 0.5)
 
@@ -1117,10 +1128,12 @@ function onEvent(name, v1, v2)
             startTween('cantescape', 'stringsTrappedEnd', {alpha = 1}, 15, {})
         elseif v1 == 'trapped' then
             setProperty('camHUD.alpha', 0.4)
-            runHaxeCode([[
-                game.camHUD.filters = [];
-                game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
-            ]])
+            if shadersEnabled then
+                runHaxeCode([[
+                    game.camHUD.filters = [];
+                    game.camHUD.setFilters([new ShaderFilter(game.getLuaObject('blur').shader)]);
+                ]])
+            end
             addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
             setProperty('dad.visible', false)
             stringPulsing = false
@@ -1356,21 +1369,23 @@ function addOverlay(col1,col2,blend)
     amtt = blend
     trans = false
 
-    setShaderFloat('overlay', 'rT', arrT[1]/255)
-    setShaderFloat('overlay', 'gT', arrT[2]/255)
-    setShaderFloat('overlay', 'bT', arrT[3]/255)
-    setShaderFloat('overlay', 'rR', arrR[1]/255)
-    setShaderFloat('overlay', 'gR', arrR[2]/255)
-    setShaderFloat('overlay', 'bR', arrR[3]/255)
-    setShaderFloat('overlay', 'ypos', poses[2])
-    setShaderFloat('overlay', 'xpos', poses[1])
-    setShaderFloat('overlay', 'amt', amtt)
-    setShaderBool('overlay', 'trans', trans)
+    if shadersEnabled then
+        setShaderFloat('overlay', 'rT', arrT[1]/255)
+        setShaderFloat('overlay', 'gT', arrT[2]/255)
+        setShaderFloat('overlay', 'bT', arrT[3]/255)
+        setShaderFloat('overlay', 'rR', arrR[1]/255)
+        setShaderFloat('overlay', 'gR', arrR[2]/255)
+        setShaderFloat('overlay', 'bR', arrR[3]/255)
+        setShaderFloat('overlay', 'ypos', poses[2])
+        setShaderFloat('overlay', 'xpos', poses[1])
+        setShaderFloat('overlay', 'amt', amtt)
+        setShaderBool('overlay', 'trans', trans)
 
-    runHaxeCode([[
-        game.camGame.filters = [];
-        game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
-    ]])
+        runHaxeCode([[
+            game.camGame.filters = [];
+            game.camGame.setFilters([new ShaderFilter(game.getLuaObject('overlay').shader), new ShaderFilter(game.getLuaObject('bloom').shader)]);
+        ]])
+    end
 end
 
 function addTrail(who, length, delay, alpha, diff)

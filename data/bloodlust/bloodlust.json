@@ -11779,7 +11779,9 @@
 			]
 		],
 		"player2": "momCorrupt",
-		"hudSkin": "onesided-corruption",
+		"disableNoteRGB": true,
+		"arrowSkin": "../assets/noteskins/NOTE_assets",
+		"splashSkin": "../assets/noteskins/noteSplashes",
 		"song": "Bloodlust",
 		"validScore": true,
 		"needsVoices": true,
