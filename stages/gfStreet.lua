@@ -762,6 +762,7 @@ function changeBG(id)
     setProperty('stringsBg.visible', false)
 
     setProperty('camGame.targetOffset.x', 0)
+    setVar('cameraPoint', {x = nil, y = nil})
 
     if id == 0 then
         addOverlay({79.0,15.0,33.0}, {203.0, 21.0, 122.0}, 0.175)
@@ -877,6 +878,7 @@ function onEvent(name, v1, v2)
             running = false
 
             setProperty('spiderGroup.alpha', 0.001)
+            setProperty('spiderGroup.visible', false)
             setProperty('spiderPunched.alpha', 1)
             playAnim('spiderPunched', 'idle', true)
 
@@ -898,7 +900,6 @@ function onEvent(name, v1, v2)
 
             setCameraAlignment("0", "",0,0)
             setProperty('gfSleep.alpha', 0.001)
-            setVar('cameraPoint', {x = nil, y = nil})
             setProperty('camGame.targetOffset.x', -300)
         elseif v1 == 'henchbf' then
             setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
