@@ -1041,6 +1041,7 @@ function onEvent(name, v1, v2)
             if playing then return end
             playing = true
             setProperty('lightSnow.visible', true)
+            startTween('snowie', 'lightSnow', {alpha = 0.5}, 1, {})
         elseif v1 == 'stop snow' then
             if shadersEnabled then
                 runHaxeCode([[
@@ -1049,8 +1050,10 @@ function onEvent(name, v1, v2)
                 ]])
             end
             addOverlay({79.0,15.0,33.0},{203.0, 21.0, 122.0},0.175)
+            setProperty('lightSnow.visible', false)
             setProperty('lightSnow.alpha', 0.001)
             henchTime = true
+            callMethod('bfTrail.remove', {''})
         end
 
         if v1 == 'momlaugh' then
@@ -1233,6 +1236,7 @@ function onEvent(name, v1, v2)
             setProperty('stringPrep.alpha', 0.001)
             setProperty('stringShoot.alpha', 1)
             playAnim('stringShoot', 'idle', true)
+            addTrail('boyfriend', 10, 5)
         elseif v1 == 'shoot2' then
             setProperty('stringPrep2.alpha', 0.001)
             setProperty('stringShoot2.alpha', 1)
@@ -1382,7 +1386,8 @@ function addTrail(who, length, delay, alpha, diff)
 
         var bfTrail = new FlxTrail(]]..who..[[, null, ]]..length..[[, ]]..delay..[[, ]]..alpha..[[, ]]..diff..[[);
         bfTrail.color = 0xFFFF0000;
-        game.addBehindBF(bfTrail); 
+        game.addBehindBF(bfTrail);
+        setVar('bfTrail', bfTrail);
     ]])
 end
 
