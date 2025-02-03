@@ -807,6 +807,7 @@ function changeBG(id)
         addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
 
         setProperty('smokeVin.alpha', 0.001)
+        setProperty('heavySnow.alpha', 0.001)
         setProperty('waveEfx.alpha', 0.1)
 
         setProperty('forestForeground.alpha', 0.001)
@@ -1167,7 +1168,6 @@ function onEvent(name, v1, v2)
             redLightMode = 2
         elseif v1 == 'powerup2' then
             setProperty('defaultCamZoom', 1.8)
-            setProperty('camGame.targetOffset.x', 0)
         elseif v1 == 'fronthide' then
             startTween('shocked', 'gfShocked', {alpha = 0}, 1, {})
         elseif v1 == 'front' then
