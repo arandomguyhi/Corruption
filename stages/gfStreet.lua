@@ -788,6 +788,8 @@ function changeBG(id)
             setProperty('heavySnow.blend', 12)
             setProperty('heavySnow.alpha', 0.6)
             setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
+
+            setProperty('smokeVin.alpha', 1)
         else
             setProperty('heavySnow.paused', false)
             setProperty('heavySnow.alpha', 0.6)
@@ -929,20 +931,20 @@ function onEvent(name, v1, v2)
 
             setProperty('scopeVin.alpha', 0.4)
             
+            setProperty('smokeVin.alpha', 0.001)
             if buildTarget ~= 'windows' then
                 setProperty('smokeVin.paused', true)
-                setProperty('smokeVin.alpha', 0.001)
 
                 setProperty('heavySnow.paused', true)
                 setProperty('heavySnow.alpha', 0.001)
             end
         elseif v1 == 'sad' then
+            setProperty('smokeVin.alpha', 1)
             if buildTarget ~= 'windows' then
                 callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), true})
                 setProperty('heavySnow.alpha', 0.6)
 
-                setProperty('smokeVin.paused', true)
-                setProperty('smokeVin.alpha', 1)
+                setProperty('smokeVin.paused', false)
             end
 
             running = false
@@ -1026,9 +1028,7 @@ function onEvent(name, v1, v2)
                 setProperty('blazeIt.blend', 9)
                 setProperty('blazeIt.alpha', 0.001)
                 scaleObject('blazeIt', 2.5, 1.5)
-                setProperty('blazeIt.x', -1200)
-                setProperty('blazeIt.y', -200)
-                setObjectOrder('blazeIt', getObjectOrder('gfBlack')+1)
+                setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
             else
                 callMethod('blazeIt.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeEffect'}), false})
             end
@@ -1047,10 +1047,8 @@ function onEvent(name, v1, v2)
                 setProperty('smokeVin.blend', 9)
                 scaleObject('smokeVin', 1.4, 1.4)
                 setScrollFactor('smokeVin', 0, 0)
-                setProperty('smokeVin.x', -270)
-                setProperty('smokeVin.y', -130)
                 setProperty('smokeVin.alpha', 0.001)
-                setObjectOrder('smokeVin', getObjectOrder('gfBlack')+1)
+                setObjectOrder('smokeVin', getObjectOrder('blazeIt')+1)
             else
                 callMethod('smokeVin.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeVin'}), true})
             end
@@ -1108,8 +1106,8 @@ function onEvent(name, v1, v2)
                 setProperty(s..'.visible', false) end
 
             runHaxeCode("game.camHUD.filters = [];")
+            setProperty('smokeVin.alpha', 0.001)
             if buildTarget ~= 'windows' then
-                setProperty('smokeVin.alpha', 0)
                 setProperty('smokeVin.paused', true)
             end
             setPosition('boyfriend', -322, 20)
