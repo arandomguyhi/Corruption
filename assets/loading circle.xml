@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="loading circle.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="0load0000" x="8" y="8" width="13" height="13"/>
+	<SubTexture name="10load0000" x="29" y="8" width="126" height="127"/>
+	<SubTexture name="11load0000" x="163" y="8" width="126" height="127"/>
+	<SubTexture name="12load0000" x="297" y="8" width="126" height="127"/>
+	<SubTexture name="13load0000" x="431" y="8" width="126" height="127"/>
+	<SubTexture name="14load0000" x="565" y="8" width="126" height="127"/>
+	<SubTexture name="15load0000" x="699" y="8" width="126" height="127"/>
+	<SubTexture name="16load0000" x="833" y="8" width="126" height="127"/>
+	<SubTexture name="1load0000" x="8" y="143" width="126" height="127"/>
+	<SubTexture name="2load0000" x="142" y="143" width="126" height="127"/>
+	<SubTexture name="3load0000" x="276" y="143" width="126" height="127"/>
+	<SubTexture name="4load0000" x="410" y="143" width="126" height="127"/>
+	<SubTexture name="5load0000" x="544" y="143" width="126" height="127"/>
+	<SubTexture name="6load0000" x="678" y="143" width="126" height="127"/>
+	<SubTexture name="7load0000" x="812" y="143" width="126" height="127"/>
+	<SubTexture name="8load0000" x="8" y="278" width="126" height="127"/>
+	<SubTexture name="9load0000" x="142" y="278" width="126" height="127"/>
+</TextureAtlas>
