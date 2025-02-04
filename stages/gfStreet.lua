@@ -1300,18 +1300,18 @@ function onEvent(name, v1, v2)
         elseif v1 == 'riser' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.05)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.02)
-            setShaderFloat('bloom', 'intensity', 0.1)
+            if shadersEnabled then setShaderFloat('bloom', 'intensity', 0.1) end
         elseif v1 == 'big' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
         elseif v1 == 'big2' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.15)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.07)
-            setShaderFloat('bloom', 'intensity', 0.5)
+            if shadersEnabled then setShaderFloat('bloom', 'intensity', 0.5) end
         elseif v1 == 'flash' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.2)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.08)
-            setShaderFloat('bloom', 'intensity', 1.0)
+            if shadersEnabled then setShaderFloat('bloom', 'intensity', 1.0) end
         elseif v1 == 'dark' then
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.2)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.08)
@@ -1486,8 +1486,10 @@ function onUpdate(elapsed)
         setProperty('redVin.alpha', getProperty('redVin.alpha') - elapsed)
     end
 
-    if getShaderFloat('bloom', 'intensity') > 0 then
-        setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity') - elapsed)
+    if shadersEnabled then
+        if getShaderFloat('bloom', 'intensity') > 0 then
+            setShaderFloat('bloom', 'intensity', getShaderFloat('bloom', 'intensity') - elapsed)
+        end
     end
 
     if getProperty('henchmanLight.alpha') > 0 then

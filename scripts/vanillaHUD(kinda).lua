@@ -1,5 +1,5 @@
 function onCreatePost()
-    for _,i in pairs({'timeBar', 'timeBar.bg', 'timeTxt', 'scoreTxt', 'iconP1', 'iconP2', 'healthBar', 'healthBar.bg'})
+    for _,i in pairs({'timeBar', 'timeBar.bg', 'timeTxt', 'scoreTxt', 'iconP1', 'iconP2', 'healthBar', 'healthBar.bg'}) do
         setProperty(i..'.visible', false) end
     setProperty('botplayTxt.y', getProperty('healthBar.y') + (downscroll and 70 or -120))
 
