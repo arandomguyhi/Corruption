@@ -1625,6 +1625,10 @@ function opponentNoteHit(i,d,_,_)
     setProperty('momSpider.holdTimer', 0)
 end
 
+function onDestroy()
+    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', ogOffs)
+end
+
 function setPosition(obj,x,y)
     setProperty(obj..'.x', x)
     setProperty(obj..'.y', y)
