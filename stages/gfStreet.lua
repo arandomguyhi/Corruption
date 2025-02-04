@@ -905,6 +905,14 @@ function onEvent(name, v1, v2)
             startTween('scope', 'scopeVin', {alpha = 0.4}, 2, {})
 
             setCameraAlignment("0", "",0,0)
+            local camBf = {
+                x = getMidpointX('boyfriend') - 100 - getProperty('boyfriend.cameraPosition[0]') + getProperty('boyfriendCameraOffset[0]'),
+                y = getMidpointY('boyfriend') - 100 + getProperty('boyfriend.cameraPosition[1]') + getProperty('boyfriendCameraOffset[1]')
+            }
+            callMethod('camFollow.setPosition', {camBf.x, camBf.y})
+            setProperty('camGame.scroll.x', camBf.x - (screenWidth/2))
+            setProperty('camGame.scroll.y', camBf.y - (screenHeight/2))
+
             setProperty('gfSleep.alpha', 0.001)
             setProperty('camGame.targetOffset.x', -300)
             setVar('cameraPoint', {x = nil, y = nil})
