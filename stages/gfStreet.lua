@@ -781,14 +781,7 @@ function changeBG(id)
         setProperty('waveEfx.alpha', 0.001)
 
         if buildTarget == 'windows' then
-            makeVideoSprite('heavySnow', 'snow heavy', 0, 0, 'camGame', true)
-            scaleObject('heavySnow', 2.5, 2.5)
-            setScrollFactor('heavySnow', 1.2, 1.2)
-            screenCenter('heavySnow')
-            setProperty('heavySnow.blend', 12)
-            setProperty('heavySnow.alpha', 0.6)
-            setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
-
+            setProperty('heavySnow.alpha', 1)
             setProperty('smokeVin.alpha', 1)
         else
             setProperty('heavySnow.paused', false)
@@ -945,6 +938,14 @@ function onEvent(name, v1, v2)
                 setProperty('heavySnow.alpha', 0.6)
 
                 setProperty('smokeVin.paused', false)
+            else
+                makeVideoSprite('heavySnow', 'snow heavy', 0, 0, 'camGame', true)
+                scaleObject('heavySnow', 2.5, 2.5)
+                setScrollFactor('heavySnow', 1.2, 1.2)
+                screenCenter('heavySnow')
+                setProperty('heavySnow.blend', 12)
+                setProperty('heavySnow.alpha', 0.6)
+                setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
             end
 
             running = false
@@ -1112,9 +1113,17 @@ function onEvent(name, v1, v2)
             end
             setPosition('boyfriend', -322, 20)
             
-            setProperty('blackSnow.visible', true)
-            setProperty('blackSnow.alpha', 1)
-            callMethod('blackSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'dark snow'}), false})
+            if buildTarget ~= 'windows' then
+                setProperty('blackSnow.visible', true)
+                setProperty('blackSnow.alpha', 1)
+                callMethod('blackSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'dark snow'}), false})
+            else
+                makeVideoSprite('blackSnow', 'dark snow', 0, 0, 'camGame', true)
+                scaleObject('blackSnow', 1.25, 1.25)
+                setPosition('blackSnow', -960, -190)
+                setProperty('blackSnow.blend', 9)
+                setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
+            end
 
             setProperty('wall.visible', false)
             setProperty('floor.visible', false)
