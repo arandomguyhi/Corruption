@@ -693,10 +693,10 @@ function onCreatePost()
 
     ogOffs = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset')
 
-    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', {0, 0, 0, -100})
+    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', {0, 0, -100, 0})
     setObjectCamera('comboGroup', 'camGame')
     setObjectOrder('comboGroup', getObjectOrder('boyfriendGroup'))
-    setProperty('comboGroup.x', -200)
+    setProperty('comboGroup.x', -300)
 end
 
 function noteMiss()

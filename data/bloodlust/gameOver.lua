@@ -18,11 +18,11 @@ local canLeave = true
 local quickSwitch = true
 
 luaDebugMode = true
-function onGameOverStart()
+function onGameOver()
     startedCutscene = true
     startGameOverVideo('gameovers/gf death cutscene')
     startTimer('GAMEOVER', 7)
-    
+
     return Function_Stop
 end
 
@@ -129,10 +129,9 @@ function onCreatePost()
     makeLuaSprite('titleBlack', '../assets/stages/fullBlack')
     setScrollFactor('titleBlack', 0, 0)
     scaleObject('titleBlack', 1.7, 1.7, false)
-    setProperty('titleBlack.alpha', 1)
     addLuaSprite('titleBlack')
     runHaxeCode("game.getLuaObject('titleBlack').camera = getVar('camOverlay');")
-    startTween('title', 'titleBlack', {alpha = 0}, 1, {eaase = 'sineOut'})
+    startTween('titletween', 'titleBlack', {alpha = 0}, 1, {eaase = 'sineOut'})
 end
 
 function startGameOverVideo(name)
