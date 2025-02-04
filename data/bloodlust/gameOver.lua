@@ -19,15 +19,11 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOverStart()
-    if canPlayVideo then
-        startedCutscene = true
-        startGameOverVideo('gameovers/gf death cutscene')
-        canPlayVideo = false
-
-        startTimer('GAMEOVER', 7)
-        return Function_Stop
-    end
-    return Function_Continue
+    startedCutscene = true
+    startGameOverVideo('gameovers/gf death cutscene')
+    startTimer('GAMEOVER', 7)
+    
+    return Function_Stop
 end
 
 function onUpdate(elapsed)

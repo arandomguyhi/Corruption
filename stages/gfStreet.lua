@@ -691,7 +691,12 @@ function onCreatePost()
         setPropertyFromGroup('opponentStrums', i, 'texture', '../assets/noteskins/NOTE_assets_Corrupt')
     end
 
+    ogOffs = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset')
+
+    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', {0, 0, 0, -100})
     setObjectCamera('comboGroup', 'camGame')
+    setObjectOrder('comboGroup', getObjectOrder('boyfriendGroup'))
+    setProperty('comboGroup.x', -200)
 end
 
 function noteMiss()
@@ -771,9 +776,11 @@ function changeBG(id)
     setProperty('stringsBg.visible', false)
 
     setProperty('camGame.targetOffset.x', 0)
+    setProperty('comboGroup.visible', true)
 
     if id == 0 then
         addOverlay({79.0,15.0,33.0}, {203.0, 21.0, 122.0}, 0.175)
+        setProperty('comboGroup.y', getProperty('comboGroup.y')+3500)
         normalWall()
         normalFloor()
         setProperty('waveEfx.alpha', 0.1)
@@ -783,6 +790,7 @@ function changeBG(id)
         setProperty('smokeVin.alpha', 0.001)
         setProperty('scopeVin.alpha', 0.4)
     elseif id == 1 then
+        setProperty('comboGroup.visible', false)
         setProperty('waveEfx.alpha', 0.001)
 
         if buildTarget == 'windows' then
@@ -812,6 +820,9 @@ function changeBG(id)
         setProperty('scopeVin.alpha', 0.001)
     elseif id == 2 then
         addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+
+        setProperty('comboGroup.visible', true)
+        setProperty('comboGroup.y', getProperty('comboGroup.y')-3500)
 
         setProperty('smokeVin.alpha', 0.001)
         setProperty('heavySnow.alpha', 0.001)
@@ -895,6 +906,8 @@ function onEvent(name, v1, v2)
             setProperty('stringsBg.visible', false)
             normalFloor()
             normalWall()
+
+            setProperty('comboGroup.y', getProperty('comboGroup.y')+3500)
 
             setProperty('darkenBG.visible', true)
             setProperty('darkenBG.alpha', 1)
@@ -1185,6 +1198,7 @@ function onEvent(name, v1, v2)
 
             addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
             setProperty('comboGroup.visible', true)
+            setProperty('comboGroup.y', getProperty('comboGroup.y')-3500)
 
             redLightMode = 0
             frontView = false
@@ -1508,6 +1522,10 @@ function onUpdate(elapsed)
     setProperty('hurtRedVin.alpha', hurtRedAmount)
     setProperty('hurtBlack.alpha', hurtAmountBlack)
 
+    if running then
+        setProperty('comboGroup.x', getProperty('comboGroup.x') - 1750 * elapsed * rate)
+        end
+
     if getProperty('whiteFade.alpha') > 0 and getProperty('whiteFade.visible') then
         setProperty('whiteFade.alpha', getProperty('whiteFade.alpha') - elapsed/4)
     end
@@ -1540,6 +1558,12 @@ function onUpdate(elapsed)
 
     if getProperty('stringsBg.alpha') > 0.5 and getProperty('stringsBg.visible') and stringPulsing then
         setProperty('stringsBg.alpha', getProperty('stringsBg.alpha') - elapsed * 0.5)
+    end
+end
+
+function onUpdatePost()
+    if daBG == 1 then
+        setProperty('comboGroup.visible', false)
     end
 end
 
