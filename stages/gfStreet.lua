@@ -541,7 +541,7 @@ function onCreatePost()
         scaleObject('smokeVin', 1.4, 1.4)
         setScrollFactor('smokeVin', 0, 0)
         setProperty('smokeVin.x', -70)
-        setProperty('smokeVin.y', 70)
+        setProperty('smokeVin.y', 0)
 		addInstance('smokeVin')
 
         createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
@@ -797,6 +797,9 @@ function changeBG(id)
         else
             setProperty('heavySnow.paused', false)
             setProperty('heavySnow.alpha', 0.6)
+
+            setProperty('smokeVin.paused', false)
+            setProperty('smokeVin.alpha', 1)
         end
 
         addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
@@ -904,18 +907,18 @@ function onEvent(name, v1, v2)
             startTween('undark', 'darkenBG', {alpha = 0.001}, 2, {})
             startTween('scope', 'scopeVin', {alpha = 0.4}, 2, {})
 
+            setVar('cameraPoint', {x = nil, y = nil})
             setCameraAlignment("0", "",0,0)
+
+            setProperty('gfSleep.alpha', 0.001)
+
             local camBf = {
                 x = getMidpointX('boyfriend') - 100 - getProperty('boyfriend.cameraPosition[0]') + getProperty('boyfriendCameraOffset[0]'),
                 y = getMidpointY('boyfriend') - 100 + getProperty('boyfriend.cameraPosition[1]') + getProperty('boyfriendCameraOffset[1]')
             }
-            callMethod('camFollow.setPosition', {camBf.x, camBf.y})
-            setProperty('camGame.scroll.x', camBf.x - (screenWidth/2))
+            callMethod('camFollow.setPosition', {camBf.x-300, camBf.y})
+            setProperty('camGame.scroll.x', camBf.x-300 - (screenWidth/2))
             setProperty('camGame.scroll.y', camBf.y - (screenHeight/2))
-
-            setProperty('gfSleep.alpha', 0.001)
-            setProperty('camGame.targetOffset.x', -300)
-            setVar('cameraPoint', {x = nil, y = nil})
         elseif v1 == 'henchbf' then
             setProperty('forestBf.visible', true) setProperty('forestBf.alpha', 1)
             setProperty('forestBf.x', -720 + 2250)
@@ -933,6 +936,9 @@ function onEvent(name, v1, v2)
             setProperty('scopeVin.alpha', 0.4)
             
             if buildTarget ~= 'windows' then
+                setProperty('smokeVin.paused', true)
+                setProperty('smokeVin.alpha', 0.001)
+
                 setProperty('heavySnow.paused', true)
                 setProperty('heavySnow.alpha', 0.001)
             end
@@ -940,6 +946,9 @@ function onEvent(name, v1, v2)
             if buildTarget ~= 'windows' then
                 callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), true})
                 setProperty('heavySnow.alpha', 0.6)
+
+                setProperty('smokeVin.paused', true)
+                setProperty('smokeVin.alpha', 1)
             end
 
             running = false
@@ -1105,8 +1114,10 @@ function onEvent(name, v1, v2)
                 setProperty(s..'.visible', false) end
 
             runHaxeCode("game.camHUD.filters = [];")
-            setProperty('smokeVin.alpha', 0)
-            setProperty('smokeVin.paused', true)
+            if buildTarget ~= 'windows' then
+                setProperty('smokeVin.alpha', 0)
+                setProperty('smokeVin.paused', true)
+            end
             setPosition('boyfriend', -322, 20)
             
             setProperty('blackSnow.visible', true)
