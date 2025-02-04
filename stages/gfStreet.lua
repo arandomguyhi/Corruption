@@ -504,14 +504,13 @@ function onCreatePost()
 
     setProperty('camGame.bgColor', getColorFromHex('808080')) -- gray color in flxcolor
 
-
     -- LE VIDEOS
     if buildTarget == 'windows' then
         makeVideoSprite('lightSnow', 'snow light', 0, 0, 'camGame', true)
         scaleObject('lightSnow', 2.5, 2.5, false)
         setScrollFactor('lightSnow', 1.2, 1.2)
         setProperty('lightSnow.blend', 12)
-        setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
+        setObjectOrder('lightSnow', getObjectOrder(not lowQuality and 'gfBlack' or 'gfSleep')+1)
 
         makeVideoSprite('waveEfx', 'waveEffect', 0, 0, 'camGame', true)
         setProperty('waveEfx.blend', 0)
@@ -521,7 +520,7 @@ function onCreatePost()
         setProperty('waveEfx.x', -35)
         setProperty('waveEfx.y', -25)
         runHaxeCode("game.getLuaObject('waveEfx').camera = getVar('camOverlay');")
-        setObjectOrder('waveEfx', getObjectOrder('gfBlack')+1)
+        setObjectOrder('waveEfx', getObjectOrder('lightSnow'))
     else
         createInstance('blazeIt', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('blazeIt', 'camGame')
@@ -542,7 +541,7 @@ function onCreatePost()
 
         createInstance('lightSnow', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
 		setObjectCamera('lightSnow', 'camGame')
-        setObjectOrder('lightSnow', getObjectOrder('gfBlack')+1)
+        setObjectOrder('lightSnow', getObjectOrder(not lowQuality and 'gfBlack' or 'smokeVin')+1)
         scaleObject('lightSnow', 2.5, 2.5, false)
         setScrollFactor('lightSnow', 1.2, 1.2)
         setProperty('lightSnow.blend', 12)
