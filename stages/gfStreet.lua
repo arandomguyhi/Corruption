@@ -1446,10 +1446,12 @@ end
 
 local rate = 1
 function onUpdate(elapsed)
-    playAnim('gfBlack', getProperty('boyfriend.animation.curAnim.name'), true)
-    setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
-    playAnim('momCorruptBlack', getProperty('dad.animation.curAnim.name'), true)
-    setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
+    if not lowQuality then
+        runHaxeCode("game.getLuaObject('gfBlack').animation.copyFrom(boyfriend.animation);")
+        setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
+        runHaxeCode("game.getLuaObject('momCorruptBlack').animation.copyFrom(dad.animation);")
+        setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
+    end
 
     if stopping then
 		rate = rate - elapsed
