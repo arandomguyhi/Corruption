@@ -17,7 +17,8 @@ local canLeave = true
 
 local quickSwitch = true
 
-function onGameOver()
+luaDebugMode = true
+function onGameOverStart()
     if canPlayVideo then
         startedCutscene = true
         startGameOverVideo('gameovers/gf death cutscene')

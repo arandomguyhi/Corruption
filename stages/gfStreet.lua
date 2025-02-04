@@ -1486,6 +1486,12 @@ function onUpdate(elapsed)
         hurtRedAmount = 0
     end
 
+    if hurtAmountBlack > 0 then
+        hurtAmountBlack = hurtAmountBlack - 0.4 * elapsed
+    elseif hurtAmountBlack < 0 then
+        hurtAmountBlack = 0
+    end
+
     if getHealth() <= 0.4 then
         if getProperty('lowVin.alpha') < 0.8 then
             setProperty('lowVin.alpha', getProperty('lowVin.alpha') + 0.4 * elapsed)
