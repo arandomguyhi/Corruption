@@ -19,6 +19,7 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOver()
+    startGameOverVideo('gameovers/gf death cutscene')
     openCustomSubstate('gameover', true)
     return Function_Stop
 end
@@ -32,7 +33,6 @@ function onCustomSubstateCreate(name)
         setProperty('camZooming', false)
         startedCutscene = true
         setProperty('vocals.volume', 0)
-        startGameOverVideo('gameovers/gf death cutscene')
 
         runTimer('GAMEOVER', 7)
     end
