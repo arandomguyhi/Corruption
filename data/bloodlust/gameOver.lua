@@ -159,7 +159,6 @@ function startGameOverVideo(name)
         runHaxeCode("game.getLuaObject('gameover').camera = getVar('camOverlay');")
     else
         createInstance('gameover', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
-        setObjectCamera('gameover', getVar('camOverlay'))
         setScrollFactor('gameover', 0, 0)
         runHaxeCode("getVar('gameover').camera = getVar('camOverlay');")
         setObjectOrder('gameover', getObjectOrder('titleBlack')+1)
