@@ -19,18 +19,17 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOver()
-    startGameOverVideo('gameovers/gf death cutscene')
     openCustomSubstate('gameover', true)
     return Function_Stop
 end
 
 function onCustomSubstateCreate(name)
     if name == 'gameover' then
-        setProperty('endingSong', true)
         setProperty('camGame.visible', false) -- some optimization lol
         setProperty('camHUD.alpha', 0)
         setProperty('camZoomingMult', 0)
         setProperty('camZooming', false)
+        startGameOverVideo('gameovers/gf death cutscene')
         startedCutscene = true
         setProperty('vocals.volume', 0)
 
