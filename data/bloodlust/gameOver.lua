@@ -19,7 +19,7 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOver()
-    openCustomSubstate('gameover', true)
+    openCustomSubstate('gameover', trye)
     return Function_Stop
 end
 
@@ -46,7 +46,7 @@ function onCustomSubstateUpdate(name, elapsed)
         if isLoading and (timeSinceLastPress >= timeWithoutPressing) then
             onSpaceNotPressed()
             isLoading = false
-            timeSinceLastPressed = 0
+            timeSinceLastPress = 0
         end
 
         if not allowedToLoad then
@@ -78,7 +78,7 @@ function onCustomSubstateUpdate(name, elapsed)
                 runTimer('restartTheSong', 4)
             end
         else
-            timeSinceLastPressed = timeSinceLastPressed + elapsed
+            timeSinceLastPress = timeSinceLastPress + elapsed
         end
     end
 end
