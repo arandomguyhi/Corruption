@@ -5,7 +5,7 @@ local loadFloat = 0.0
 local loadRate = 15.0
 local curLoad = 0
 
-local timeSinceLastPress
+local timeSinceLastPress = 0
 local timeWithoutPressing = 2
 
 local allowedToLoad = true
@@ -27,7 +27,7 @@ function onCustomSubstateCreate(name)
     if name == 'gameover' then
         startedCutscene = true
         startGameOverVideo('gameovers/gf death cutscene')
-        startTimer('GAMEOVER', 7)
+        runTimer('GAMEOVER', 7)
     end
 end
 
