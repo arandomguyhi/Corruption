@@ -19,8 +19,7 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOver()
-    openCustomSubstate('gameover')
-
+    openCustomSubstate('gameover', true)
     return Function_Stop
 end
 
