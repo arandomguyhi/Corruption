@@ -19,60 +19,68 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOver()
-    startedCutscene = true
-    startGameOverVideo('gameovers/gf death cutscene')
-    startTimer('GAMEOVER', 7)
+    openCustomSubstate('gameover')
 
     return Function_Stop
 end
 
-function onUpdate(elapsed)
-    if not startedCutscene then return end
-    if hasEnded then return end
-
-    loadAmount = tonumber(loadFloat)
-
-    if curLoad ~= loadAmount then
-        playAnim('loading', loadAmount, true)
-        curLoad = loadAmount
+function onCustomSubstateCreate(name)
+    if name == 'gameover' then
+        startedCutscene = true
+        startGameOverVideo('gameovers/gf death cutscene')
+        startTimer('GAMEOVER', 7)
     end
+end
 
-    if isLoading and (timeSinceLastPress >= timeWithoutPressing) then
-        onSpaceNotPressed()
-        isLoading = false
-        timeSinceLastPressed = 0
-    end
+function onCustomSubstateUpdate(name, elapsed)
+    if name == 'gameover' then
+        if not startedCutscene then return end
+        if hasEnded then return end
 
-    if not allowedToLoad then
-        if loadAmount > 0 then
-            loadFloat = loadFloat - loadRate * elapsed
-            setProperty('loading.alpha', getProperty('loading.alpha') - 1 * elapsed)
-        else
-            allowedToLoad = true
+        loadAmount = tonumber(loadFloat)
+
+        if curLoad ~= loadAmount then
+            playAnim('loading', loadAmount, true)
+            curLoad = loadAmount
         end
-        return
-    end
 
-    if not canLeave then return end
-
-    if getProperty('controls.ACCEPT') or touchedScreen() then
-        if quickSwitch then
-            canLeave = false
-            runHaxeCode("FlxG.sound.music.stop();")
-            startAndEnd()
-        else
-            canLeave = false
-            runHaxeCode("FlxG.sound.music.stop();")
-            playSound('../music/bloodlust game over end')
-
-            setProperty('gameOverText2.alpha', 1)
-            startTween('textScale', 'gameOverText.scale', {x = 1.3, y = 1.3}, 4, {ease = 'sineIn'})
-            startTween('title', 'titleBlack', {alpha = 1}, 4, {ease = 'sineIn'})
-
-            runTimer('restartTheSong', 4)
+        if isLoading and (timeSinceLastPress >= timeWithoutPressing) then
+            onSpaceNotPressed()
+            isLoading = false
+            timeSinceLastPressed = 0
         end
-    else
-        timeSinceLastPressed = timeSinceLastPressed + elapsed
+
+        if not allowedToLoad then
+            if loadAmount > 0 then
+                loadFloat = loadFloat - loadRate * elapsed
+                setProperty('loading.alpha', getProperty('loading.alpha') - 1 * elapsed)
+            else
+                allowedToLoad = true
+            end
+            return
+        end
+
+        if not canLeave then return end
+
+        if getProperty('controls.ACCEPT') or touchedScreen() then
+            if quickSwitch then
+                canLeave = false
+                runHaxeCode("FlxG.sound.music.stop();")
+                startAndEnd()
+            else
+                canLeave = false
+                runHaxeCode("FlxG.sound.music.stop();")
+                playSound('../music/bloodlust game over end')
+
+                setProperty('gameOverText2.alpha', 1)
+                startTween('textScale', 'gameOverText.scale', {x = 1.3, y = 1.3}, 4, {ease = 'sineIn'})
+                startTween('title', 'titleBlack', {alpha = 1}, 4, {ease = 'sineIn'})
+
+                runTimer('restartTheSong', 4)
+            end
+        else
+            timeSinceLastPressed = timeSinceLastPressed + elapsed
+        end
     end
 end
 
@@ -156,6 +164,7 @@ end
 function startAndEnd()
     hasEnded = true
     startTween('loadBye', 'loading', {alpha = 0}, 2, {ease = 'quadOut'})
+    closeCustomSubstate()
     restartSong()
 end
 
