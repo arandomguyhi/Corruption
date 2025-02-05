@@ -693,7 +693,8 @@ function onCreatePost()
 
     ogOffs = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset')
 
-    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', {0, 0, 75, 0})
+    setProperty('comboGroup.visible', true)
+    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', {0, 0, 125, 0})
     setObjectCamera('comboGroup', 'camGame')
     setObjectOrder('comboGroup', getObjectOrder('boyfriendGroup'))
     setProperty('comboGroup.x', -300)
@@ -1472,9 +1473,9 @@ end
 local rate = 1
 function onUpdate(elapsed)
     if not lowQuality then
-        runHaxeCode("game.getLuaObject('gfBlack').animation.copyFrom(boyfriend.animation);")
+        playAnim('gfBlack', getProperty('boyfriend.animation.curAnim.name'), true)
         setProperty('gfBlack.animation.curAnim.curFrame', getProperty('boyfriend.animation.curAnim.curFrame'))
-        runHaxeCode("game.getLuaObject('momCorruptBlack').animation.copyFrom(dad.animation);")
+        playAnim('momCorruptBlack', getProperty('dad.animation.curAnim.name'), true)
         setProperty('momCorruptBlack.animation.curAnim.curFrame', getProperty('dad.animation.curAnim.curFrame'))
     end
 
