@@ -78,7 +78,7 @@ function onCustomSubstateUpdate(name, elapsed)
                 playSound('../music/bloodlust game over end')
 
                 setProperty('gameOverText2.alpha', 1)
-                startTween('textScale', 'gameOverText.scale', {x = 1.3, y = 1.3}, 4, {ease = 'sineIn'})
+                startTween('textScale', 'gameOverText2.scale', {x = 1.3, y = 1.3}, 4, {ease = 'sineIn'})
                 startTween('title', 'titleBlack', {alpha = 1}, 4, {ease = 'sineIn'})
 
                 runTimer('restartTheSong', 4)
@@ -131,18 +131,18 @@ function onCreatePost()
     setProperty('gameOverText.antialiasing', true)
     setProperty('gameOverText.alpha', 0.001)
     runHaxeCode("game.getLuaObject('gameOverText').camera = getVar('camOverlay');")
-    addLuaSprite('gameOverText')
+    addLuaSprite('gameOverText', true)
 
     makeLuaSprite('gameOverText2', '../assets/game over text2')
     setProperty('gameOverText2.antialiasing', true)
     setProperty('gameOverText2.alpha', 0.001)
     runHaxeCode("game.getLuaObject('gameOverText2').camera = getVar('camOverlay');")
-    addLuaSprite('gameOverText2')
+    addLuaSprite('gameOverText2', true)
 
     makeLuaSprite('titleBlack', '../assets/stages/fullBlack')
     setScrollFactor('titleBlack', 0, 0)
     scaleObject('titleBlack', 1.7, 1.7, false)
-    addLuaSprite('titleBlack')
+    addLuaSprite('titleBlack', true)
     runHaxeCode("game.getLuaObject('titleBlack').camera = getVar('camOverlay');")
     startTween('titletween', 'titleBlack', {alpha = 0}, 1, {eaase = 'sineOut'})
 end
@@ -159,11 +159,11 @@ function startGameOverVideo(name)
         setObjectCamera('gameover', getVar('camOverlay'))
         setScrollFactor('gameover', 0, 0)
         runHaxeCode("getVar('gameover').camera = getVar('camOverlay');")
-        addInstance('gameover')
+        addInstance('gameover', true)
         callMethod('gameover.startVideo', {callMethodFromClass('backend.Paths', 'video', {name})})
     end
 
-    addLuaSprite('loading')
+    addLuaSprite('loading', true)
 end
 
 function startAndEnd()
