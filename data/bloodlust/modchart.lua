@@ -12,7 +12,9 @@ function onStepHit()
             startTween('opStrumAlpha'..i, 'opponentStrums.members['..i..']', {alpha = 0.001}, (stepCrochet/1000) * 8, {ease = 'quadOut'})
         end
     end
+end
 
+function onUpdatePost()
     if curStep >= 1914 and curStep < 1918 then
         setProperty('blackTop.alpha', callMethodFromClass('flixel.math.FlxMath', 'lerp', {0, 1, (stepCrochet/1000)*4}))
     end

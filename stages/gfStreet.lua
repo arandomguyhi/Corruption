@@ -589,15 +589,84 @@ function onCreatePost()
             setProperty('waveEfx.alpha', 0.001)
             scaleObject('waveEfx', 1.1, 1.1)
             setScrollFactor('waveEfx', 0, 0)
-            setProperty('waveEfx.x', -35)
-            setProperty('waveEfx.y', -25)
+            setPosition('waveEfx', -35, -25)
             addInstance('waveEfx')
             runHaxeCode("getVar('waveEfx').camera = getVar('camOverlay');")
             callMethod('waveEfx.startVideo', {callMethodFromClass('backend.Paths', 'video', {'waveEffect'}), true})
         end
     else
-        -- isn't done lol
-        --callMethod('blazeIt', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'smokeEffect'}), false, })
+        -- FOR 1.0.0+ !!!!!!!!!!!!!!!
+        callMethod('blazeIt', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'smokeEffect'}), false, false, false})
+        setObjectCamera('blazeIt', 'camGame')
+        setProperty('blazeIt.blend', 9)
+        setProperty('blazeIt.alpha', 0.001)
+        scaleObject('blazeIt', 2.5, 1.5)
+        setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
+        addInstance('blazeIt')
+
+        callMethod('smokeVin', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'smokeVin'}), false, false, true})
+        setObjectCamera('smokeVin', 'camGame')
+        setProperty('smokeVin.blend', 9)
+        setProperty('smokeVin.alpha', 0.001)
+        scaleObject('smokeVin', 1.4, 1.4)
+        setScrollFactor('smokeVin', 0, 0)
+        setObjectOrder('smokeVin', getObjectOrder('blazeIt')+1)
+        addInstance('smokeVin')
+
+        callMethod('lightSnow', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'snow light'}), false, false, true})
+        setObjectCamera('lightSnow', 'camGame')
+        setProperty('lightSnow.blend', 12)
+        scaleObject('lightSnow', 2.5, 2.5, false)
+        setScrollFactor('lightSnow', 1.2, 1.2)
+        setObjectOrder('lightSnow', getObjectOrder(not lowQuality and 'gfBlack' or 'smokeVin')+1)
+        addInstance('lightSnow')
+        callMethod('lightSnow.play', {''})
+
+        callMethod('heavySnow', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), false, false, true})
+        setObjectCamera('heavySnow', 'camGame')
+        setProperty('heavySnow.blend', 12)
+        scaleObject('heavySnow', 2.5, 2.5, false)
+        setScrollFactor('heavySnow', 1.2, 1.2)
+        setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
+        setProperty('heavySnow.alpha', 0.001)
+        addInstance('heavySnow')
+
+        callMethod('blackSnow', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'dark snow'}), false, false, true})
+        setObjectCamera('blackSnow', 'camGame')
+        setProperty('blackSnow.blend', 9)
+        scaleObject('blackSnow', 1.25, 1.25)
+        setPosition('blackSnow', -960, -190)
+        setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
+        setProperty('blackSnow.alpha', 0.001)
+        if not lowQuality then addInstance('blackSnow') end
+
+        callMethod('momLaugh', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false, false, false})
+        setObjectCamera('momLaugh', 'camGame')
+        scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
+        setScrollFactor('momLaugh', 0, 0)
+        setObjectOrder('momLaugh', getObjectOrder('blackSnow')+1)
+        setProperty('momLaugh.alpha', 0.001)
+        addInstance('momLaugh')
+
+        callMethod('letsSettleThis', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'letsSettleThis'}), false, false, false})
+        setObjectCamera('letsSettleThis', 'camGame')
+        scaleObject('letsSettleThis', 1 / 1.4, 1 / 1.4, false)
+        setScrollFactor('letsSettleThis', 0, 0)
+        setObjectOrder('letsSettleThis', getObjectOrder('momLaugh')+1)
+        setProperty('letsSettleThis.alpha', 0.001)
+        addInstance('letsSettleThis')
+
+        callMethod('waveEfx', 'objects.VideoSprite', {callMethodFromClass('backend.Paths', 'video', {'waveEffect'}), false, false, true})
+        setObjectCamera('waveEfx', 'camGame')
+        setProperty('waveEfx.blend', 0)
+        setProperty('waveEfx.alpha', 0.001)
+        scaleObject('waveEfx', 1.1, 1.1)
+        setScrollFactor('waveEfx', 0, 0)
+        setPosition('waveEfx', -35, -25)
+        setObjectOrder('waveEfx', getObjectOrder('letsSettleThis')+1)
+        runHaxeCode("getVar('waveEfx').camera = getVar('camOverlay');")
+        addInstance('waveEfx')
+        callMethod('waveEfx.play', {''})
     end
 
     makeLuaSprite('blackTop')
@@ -794,14 +863,22 @@ function changeBG(id)
         setProperty('comboGroup.visible', false)
         setProperty('waveEfx.alpha', 0.001)
 
-        if buildTarget == 'windows' then
-            setProperty('heavySnow.alpha', 1)
-            setProperty('smokeVin.alpha', 1)
+        if version <= '0.7.3' then
+            if buildTarget == 'windows' then
+                setProperty('heavySnow.alpha', 1)
+                setProperty('smokeVin.alpha', 1)
+            else
+                setProperty('heavySnow.paused', false)
+                setProperty('heavySnow.alpha', 0.6)
+
+                setProperty('smokeVin.paused', false)
+                setProperty('smokeVin.alpha', 1)
+            end
         else
-            setProperty('heavySnow.paused', false)
+            callMethod('heavySnow.play', {''})
             setProperty('heavySnow.alpha', 0.6)
 
-            setProperty('smokeVin.paused', false)
+            callMethod('smokeVin.play', {''})
             setProperty('smokeVin.alpha', 1)
         end
 
@@ -944,27 +1021,37 @@ function onEvent(name, v1, v2)
             setProperty('scopeVin.alpha', 0.4)
             
             setProperty('smokeVin.alpha', 0.001)
-            if buildTarget ~= 'windows' then
-                setProperty('smokeVin.paused', true)
+            setProperty('heavySnow.alpha', 0.001)
 
-                setProperty('heavySnow.paused', true)
-                setProperty('heavySnow.alpha', 0.001)
+            if version <= '0.7.3' then
+                if buildTarget ~= 'windows' then
+                    setProperty('smokeVin.paused', true)
+                    setProperty('heavySnow.paused', true)
+                end
+            else
+                callMethod('smokeVin.pause', {''})
+                callMethod('heavySnow.pause', {''})
             end
         elseif v1 == 'sad' then
             setProperty('smokeVin.alpha', 1)
-            if buildTarget ~= 'windows' then
-                callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), true})
-                setProperty('heavySnow.alpha', 0.6)
-
-                setProperty('smokeVin.paused', false)
+            
+            if version <= '0.7.3' then
+                if buildTarget ~= 'windows' then
+                    callMethod('heavySnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'snow heavy'}), true})
+                    setProperty('heavySnow.alpha', 0.6)
+                    setProperty('smokeVin.paused', false)
+                else
+                    makeVideoSprite('heavySnow', 'snow heavy', 0, 0, 'camGame', true)
+                    scaleObject('heavySnow', 2.5, 2.5)
+                    setScrollFactor('heavySnow', 1.2, 1.2)
+                    screenCenter('heavySnow')
+                    setProperty('heavySnow.blend', 12)
+                    setProperty('heavySnow.alpha', 0.6)
+                    setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
+                end
             else
-                makeVideoSprite('heavySnow', 'snow heavy', 0, 0, 'camGame', true)
-                scaleObject('heavySnow', 2.5, 2.5)
-                setScrollFactor('heavySnow', 1.2, 1.2)
-                screenCenter('heavySnow')
-                setProperty('heavySnow.blend', 12)
-                setProperty('heavySnow.alpha', 0.6)
-                setObjectOrder('heavySnow', getObjectOrder('lightSnow')+1)
+                callMethod('heavySnow.play', {''})
+                callMethod('smokeVin.play', {''})
             end
 
             running = false
@@ -1029,28 +1116,37 @@ function onEvent(name, v1, v2)
     if name == 'playvideo' then
         if v1 == 'letssettle' then
             runHaxeCode("game.camGame.filters = [];")
-            if buildTarget == 'windows' then
-                makeVideoSprite('letsSettleThis', 'letsSettleThis', 0, 0, 'camGame', false)
-                setScrollFactor('letsSettleThis')
-                scaleObject('letsSettleThis', 1 / 1.4, 1 / 1.4)
-                setObjectOrder('letsSettleThis', getObjectOrder('momLaugh')+1)
+            if version <= '0.7.3' then
+                if buildTarget == 'windows' then
+                    makeVideoSprite('letsSettleThis', 'letsSettleThis', 0, 0, 'camGame', false)
+                    setScrollFactor('letsSettleThis')
+                    scaleObject('letsSettleThis', 1 / 1.4, 1 / 1.4)
+                    setObjectOrder('letsSettleThis', getObjectOrder('momLaugh')+1)
+                else
+                    setProperty('letsSettleThis.alpha', 1)
+                    callMethod('letsSettleThis.startVideo', {callMethodFromClass('backend.Paths', 'video', {'letsSettleThis'}), false})
+                end
             else
                 setProperty('letsSettleThis.alpha', 1)
-                callMethod('letsSettleThis.startVideo', {callMethodFromClass('backend.Paths', 'video', {'letsSettleThis'}), false})
+                callMethod('letsSettleThis.play', {''})
             end
             setProperty('camHUD.alpha', 0.001)
         elseif v1 == 'smoke' then
             henchTime = false
             startTween('fadie', 'fade', {x = -800, alpha = 1}, 4, {})
 
-            if buildTarget == 'windows' then
-                makeVideoSprite('blazeIt', 'smokeEffect', 0, 0, 'camGame', false)
-                setProperty('blazeIt.blend', 9)
-                setProperty('blazeIt.alpha', 0.001)
-                scaleObject('blazeIt', 2.5, 1.5)
-                setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
+            if version <= '0.7.3' then
+                if buildTarget == 'windows' then
+                    makeVideoSprite('blazeIt', 'smokeEffect', 0, 0, 'camGame', false)
+                    setProperty('blazeIt.blend', 9)
+                    setProperty('blazeIt.alpha', 0.001)
+                    scaleObject('blazeIt', 2.5, 1.5)
+                    setObjectOrder('blazeIt', getObjectOrder('gfSleep')+1)
+                else
+                    callMethod('blazeIt.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeEffect'}), false})
+                end
             else
-                callMethod('blazeIt.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeEffect'}), false})
+                callMethod('blazeIt.play', {''})
             end
 
             startTween('smokie', 'blazeIt', {alpha = 0.8}, 1, {})
@@ -1062,15 +1158,19 @@ function onEvent(name, v1, v2)
                 startTween('gfblack', 'gfBlack', {alpha = 1}, 4, {})
             end
         elseif v1 == 'smokevin' then
-            if buildTarget == 'windows' then
-                makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
-                setProperty('smokeVin.blend', 9)
-                scaleObject('smokeVin', 1.4, 1.4)
-                setScrollFactor('smokeVin', 0, 0)
-                setProperty('smokeVin.alpha', 0.001)
-                setObjectOrder('smokeVin', getObjectOrder('blazeIt')+1)
+            if version <= '0.7.3' then
+                if buildTarget == 'windows' then
+                    makeVideoSprite('smokeVin', 'smokeVin', 0, 0, 'camGame', true)
+                    setProperty('smokeVin.blend', 9)
+                    scaleObject('smokeVin', 1.4, 1.4)
+                    setScrollFactor('smokeVin', 0, 0)
+                    setProperty('smokeVin.alpha', 0.001)
+                    setObjectOrder('smokeVin', getObjectOrder('blazeIt')+1)
+                else
+                    callMethod('smokeVin.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeVin'}), true})
+                end
             else
-                callMethod('smokeVin.startVideo', {callMethodFromClass('backend.Paths', 'video', {'smokeVin'}), true})
+                callMethod('smokeVin.play', {''})
             end
 
             startTween('smoke', 'smokeVin', {alpha = 0.8}, 1, {})
@@ -1099,13 +1199,18 @@ function onEvent(name, v1, v2)
             runHaxeCode("game.camGame.filters = [];")
             setProperty('camZooming', false)
 
-            if buildTarget == 'windows' then
-                makeVideoSprite('momLaugh', 'momLaugh', 0, 0, 'camGame')
-                setScrollFactor('momLaugh', 0, 0)
-                scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
-                setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
+            if version <= '0.7.3' then
+                if buildTarget == 'windows' then
+                    makeVideoSprite('momLaugh', 'momLaugh', 0, 0, 'camGame')
+                    setScrollFactor('momLaugh', 0, 0)
+                    scaleObject('momLaugh', 1 / getProperty('defaultCamZoom'), 1 / getProperty('defaultCamZoom'), false)
+                    setObjectOrder('momLaugh', getObjectOrder('waveEfx')+1)
+                else
+                    callMethod('momLaugh.startVideo', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false})
+                    setProperty('momLaugh.alpha', 1)
+                end
             else
-                callMethod('momLaugh.startVideo', {callMethodFromClass('backend.Paths', 'video', {'momLaugh'}), false})
+                callMethod('momLaugh.play', {''})
                 setProperty('momLaugh.alpha', 1)
             end
             setProperty('camHUD.alpha', 0.001)
@@ -1127,21 +1232,31 @@ function onEvent(name, v1, v2)
 
             runHaxeCode("game.camHUD.filters = [];")
             setProperty('smokeVin.alpha', 0.001)
-            if buildTarget ~= 'windows' then
-                setProperty('smokeVin.paused', true)
+            if version <= '0.7.3' then
+                if buildTarget ~= 'windows' then
+                    setProperty('smokeVin.paused', true)
+                end
+            else
+                callMethod('smokeVin.pause', {''})
             end
             setPosition('boyfriend', -322, 20)
             
-            if buildTarget ~= 'windows' then
+            if version <= '0.7.3' then
+                if buildTarget ~= 'windows' then
+                    setProperty('blackSnow.visible', true)
+                    setProperty('blackSnow.alpha', 1)
+                    callMethod('blackSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'dark snow'}), false})
+                else
+                    makeVideoSprite('blackSnow', 'dark snow', 0, 0, 'camGame', true)
+                    scaleObject('blackSnow', 1.25, 1.25)
+                    setPosition('blackSnow', -960, -190)
+                    setProperty('blackSnow.blend', 9)
+                    setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
+                end
+            else
                 setProperty('blackSnow.visible', true)
                 setProperty('blackSnow.alpha', 1)
-                callMethod('blackSnow.startVideo', {callMethodFromClass('backend.Paths', 'video', {'dark snow'}), false})
-            else
-                makeVideoSprite('blackSnow', 'dark snow', 0, 0, 'camGame', true)
-                scaleObject('blackSnow', 1.25, 1.25)
-                setPosition('blackSnow', -960, -190)
-                setProperty('blackSnow.blend', 9)
-                setObjectOrder('blackSnow', getObjectOrder('heavySnow')+1)
+                callMethod('blackSnow.play', {''})
             end
 
             setProperty('wall.visible', false)
@@ -1150,14 +1265,21 @@ function onEvent(name, v1, v2)
             setProperty('stringPrep2.visible', false)
             setProperty('sky.visible', false)
             setProperty('building.visible', false)
-            runHaxeCode([[
-                var heavySnow = buildTarget != 'windows' ? getVar('heavySnow') : game.getLuaObject('heavySnow');
-                var lightSnow = buildTarget != 'windows' ? getVar('lightSnow') : game.getLuaObject('lightSnow');
-                game.remove(heavySnow);
-                heavySnow.destroy();
-                game.remove(lightSnow);
-                lightSnow.destroy();
-            ]])
+            if version <= '0.7.3' then
+                runHaxeCode([[
+                    var heavySnow = buildTarget != 'windows' ? getVar('heavySnow') : game.getLuaObject('heavySnow');
+                    var lightSnow = buildTarget != 'windows' ? getVar('lightSnow') : game.getLuaObject('lightSnow');
+                    game.remove(heavySnow);
+                    heavySnow.destroy();
+                    game.remove(lightSnow);
+                    lightSnow.destroy();
+                ]])
+            else
+                for _,vid in pairs('lightSnow', 'heavySnow') do
+                    callMethod(vid..'.remove', {''})
+                    callMethod(vid..'.destroy', {''})
+                end
+            end
 
             setProperty('darkenBG.visible', true)
             setProperty('darkenBG.alpha', 1)
@@ -1233,11 +1355,16 @@ function onEvent(name, v1, v2)
             setProperty('camGame.scroll.x', frontCameraPos.x - (screenWidth/2))
             setProperty('camGame.scroll.y', frontCameraPos.y - (screenHeight/2))
 
-            runHaxeCode([[
-                var blazeIt = buildTarget != 'windows' ? getVar('blazeIt') : game.getLuaObject('blazeIt');
-                game.remove(blazeIt);
-                blazeIt.destroy();
-            ]])
+            if version <= '0.7.3' then 
+                runHaxeCode([[
+                    var blazeIt = buildTarget != 'windows' ? getVar('blazeIt') : game.getLuaObject('blazeIt');
+                    game.remove(blazeIt);
+                    blazeIt.destroy();
+                ]])
+            else
+                callMethod('blazeIt.remove', {''})
+                callMethod('blazeIt.destroy', {''})
+            end
 
             if shadersEnabled then
                 runHaxeCode([[
