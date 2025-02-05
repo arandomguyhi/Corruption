@@ -26,6 +26,7 @@ end
 function onCustomSubstateCreate(name)
     if name == 'gameover' then
         setProperty('endingSong', true)
+        setProperty('camGame.visible', false) -- some optimization lol
         setProperty('camHUD.alpha', 0)
         setProperty('camZoomingMult', 0)
         setProperty('camZooming', false)
@@ -138,13 +139,13 @@ function onCreatePost()
     setProperty('gameOverText2.antialiasing', true)
     setProperty('gameOverText2.alpha', 0.001)
     runHaxeCode("game.getLuaObject('gameOverText2').camera = getVar('camOverlay');")
-    setObjectOrder('gameOverText2', getObjectOrder('lowVin')+1)
+    setObjectOrder('gameOverText2', getObjectOrder('gameOverText')+1)
     addLuaSprite('gameOverText2', true)
 
     makeLuaSprite('titleBlack', '../assets/stages/fullBlack')
     setScrollFactor('titleBlack', 0, 0)
     scaleObject('titleBlack', 1.7, 1.7, false)
-    setObjectOrder('titleBlack', getObjectOrder('lowVin')+1)
+    setObjectOrder('titleBlack', getObjectOrder('gameOverText2')+1)
     addLuaSprite('titleBlack', true)
     runHaxeCode("game.getLuaObject('titleBlack').camera = getVar('camOverlay');")
     startTween('titletween', 'titleBlack', {alpha = 0}, 1, {eaase = 'sineOut'})
