@@ -153,18 +153,14 @@ end
 function startGameOverVideo(name)
     setProperty('blackBottom.alpha', 1)
 
-    if buildTarget == 'windows' then
-        makeVideoSprite('gameover', name, 0, 0, 'camGame', false)
-        setScrollFactor('gameover', 0, 0)
-        runHaxeCode("game.getLuaObject('gameover').camera = getVar('camOverlay');")
-    else
-        createInstance('gameover', 'backend.VideoSpriteManager', {0, 0, screenWidth, screenHeight})
-        setScrollFactor('gameover', 0, 0)
-        runHaxeCode("getVar('gameover').camera = getVar('camOverlay');")
-        setObjectOrder('gameover', getObjectOrder('titleBlack')+1)
-        addInstance('gameover')
-        callMethod('gameover.startVideo', {callMethodFromClass('backend.Paths', 'video', {name})})
-    end
+    makeVideoSprite('gameover', 0, 0, 'camGame')
+    setScrollFactor('gameover', 0, 0)
+    setObjectOrder('gameover', getObjectOrder('titleBlack')+1)
+    runHaxeCode([[
+        var gameoverVid = buildTarget != 'android' ? game.modchartSprites['gameover'] : getVar('gameover');
+        gameoverVid.camera = getVar('camOverlay');
+    ]])
+    startVideoSprite('gameover', name, false)
 
     addLuaSprite('loading')
     setObjectOrder('loading', getObjectOrder('gameover')+1)
