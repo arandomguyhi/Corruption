@@ -160,7 +160,7 @@ function startGameOverVideo(name)
         var gameoverVid = buildTarget != 'android' ? game.modchartSprites['gameover'] : getVar('gameover');
         gameoverVid.camera = getVar('camOverlay');
     ]])
-    startVideoSprite('gameover', name, false)
+    playVideoSprite('gameover', name, false)
 
     addLuaSprite('loading')
     setObjectOrder('loading', getObjectOrder('gameover')+1)

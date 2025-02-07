@@ -742,6 +742,8 @@ end
 function noteMiss()
     hurtAmount = hurtAmount + 0.2
     hurtAmountBlack = hurtAmountBlack + 0.2
+    if hurtAmount > 1 then hurtAmount = 1 end
+    if hurtAmountBlack > 1 then hurtAmountBlack = 1 end
 
     if curStep >= 631 and curStep < 648 then
         hurtRedAmount = hurtRedAmount + 0.4
