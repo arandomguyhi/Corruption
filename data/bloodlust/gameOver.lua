@@ -19,18 +19,20 @@ local quickSwitch = true
 
 luaDebugMode = true
 function onGameOver()
-    openCustomSubstate('gameover', true)
+    openCustomSubstate('gameover')
     return Function_Stop
 end
 
 function onCustomSubstateCreate(name)
     if name == 'gameover' then
         setProperty('camGame.visible', false) -- some optimization lol
-        setProperty('camHUD.alpha', 0)
+        setProperty('camHUD.visible', false)
         setProperty('camZoomingMult', 0)
         setProperty('camZooming', false)
         startGameOverVideo('gameovers/gf death cutscene')
         startedCutscene = true
+
+        runHaxeCode("FlxG.sound.music.stop();")
         setProperty('vocals.volume', 0)
 
         runTimer('GAMEOVER', 7)
@@ -91,6 +93,12 @@ end
 
 function onTimerCompleted(tag)
     if tag == 'GAMEOVER' then
+        -- pauses the game
+        setPropertyFromClass('flixel.FlxG', 'camera.followLerp', 0)
+        setProperty('persistentUpdate', false)
+        setProperty('persistentDraw', true)
+        setProperty('paused', true)
+        
         startTween('textAlpha', 'gameOverText', {alpha = 1, ['scale.x'] = 1.1, ['scale.y'] = 1.1}, 2, {ease = 'sineOut'})
         quickSwitch = false
 
