@@ -3,6 +3,8 @@ function onCreatePost()
         setProperty('playerStrums.members['..i..'].x', _G['defaultOpponentStrumX'..i])
         setProperty('opponentStrums.members['..i..'].x', _G['defaultPlayerStrumX'..i])
     end
+    for _, obj in pairs({'iconP1','iconP2','healthBar','timeBar','timeTxt'}) do
+        setProperty(obj..'.visible', false) end
 end
 
 function onStepHit()

@@ -1660,9 +1660,12 @@ function setCameraAlignment(value1, value2, offsetX, offsetY)
     end
 end
 
-function opponentNoteHit(i,d,_,_)
-    playAnim('momSpider', getProperty('singAnimations')[d+1], true)
-    setProperty('momSpider.holdTimer', 0)
+function opponentNoteHit(i,d,t,s)
+if not s then
+playAnim('momSpider', getProperty('singAnimations')[d+1], true)
+end
+setProperty('momSpider.holdTimer', 0)
+callMethod('opponentStrums.members['..d..'].playAnim', {'static', true})
 end
 
 function onDestroy()

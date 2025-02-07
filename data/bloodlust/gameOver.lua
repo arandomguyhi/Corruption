@@ -16,8 +16,6 @@ local startedCutscene = false
 local canLeave = true
 
 local quickSwitch = true
-
-luaDebugMode = true
 function onGameOver()
     openCustomSubstate('gameover')
     
