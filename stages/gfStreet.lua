@@ -1563,7 +1563,7 @@ function onUpdate(elapsed)
     setProperty('hurtBlack.alpha', hurtAmountBlack)
 
     if running then
-        runHaxeCode("game.comboGroup.x -= 1750 * "..elapsed.." * "..rate..";")
+        setProperty('comboGroup.x', getProperty('comboGroup.x') - 1750 * elapsed * rate)
     end
 
     if getProperty('whiteFade.alpha') > 0 and getProperty('whiteFade.visible') then
