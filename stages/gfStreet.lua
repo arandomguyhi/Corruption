@@ -1564,6 +1564,9 @@ function onUpdate(elapsed)
 
     if running then
         setProperty('comboGroup.x', getProperty('comboGroup.x') - 1750 * elapsed * rate)
+        if getProperty('comboGroup.x') < -2000 then
+            setProperty('comboGroup.x', 300)
+        end
     end
 
     if getProperty('whiteFade.alpha') > 0 and getProperty('whiteFade.visible') then
@@ -1661,11 +1664,11 @@ function setCameraAlignment(value1, value2, offsetX, offsetY)
 end
 
 function opponentNoteHit(i,d,t,s)
-if not s then
-playAnim('momSpider', getProperty('singAnimations')[d+1], true)
-end
-setProperty('momSpider.holdTimer', 0)
-callMethod('opponentStrums.members['..d..'].playAnim', {'static', true})
+    if not s then
+        playAnim('momSpider', getProperty('singAnimations')[d+1], true)
+    end
+    setProperty('momSpider.holdTimer', 0)
+    callMethod('opponentStrums.members['..d..'].playAnim', {'static', true})
 end
 
 function onDestroy()

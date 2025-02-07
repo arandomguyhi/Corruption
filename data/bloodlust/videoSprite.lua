@@ -2,7 +2,6 @@
  * Script creado Por Perez Sen *
   SIRVE PARA EL PSYCH ENGINE 0.7.3 (ANDROID Y PC) !!!!
 ]]--
-luaDebugMode = true
 
 local videoSprites = {}
 function onCreate() 
