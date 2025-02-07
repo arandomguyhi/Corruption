@@ -20,6 +20,10 @@ local quickSwitch = true
 luaDebugMode = true
 function onGameOver()
     openCustomSubstate('gameover')
+    
+    callMethodFromClass('flixel.FlxG', 'sound.music.stop', {''})
+    callMethod('vocals.pause', {''})
+
     return Function_Stop
 end
 
@@ -31,9 +35,6 @@ function onCustomSubstateCreate(name)
         setProperty('camZooming', false)
         startGameOverVideo('gameovers/gf death cutscene')
         startedCutscene = true
-
-        runHaxeCode("FlxG.sound.music.stop();")
-        setProperty('vocals.volume', 0)
 
         runTimer('GAMEOVER', 7)
     end
@@ -93,12 +94,6 @@ end
 
 function onTimerCompleted(tag)
     if tag == 'GAMEOVER' then
-        -- pauses the game
-        setPropertyFromClass('flixel.FlxG', 'camera.followLerp', 0)
-        setProperty('persistentUpdate', false)
-        setProperty('persistentDraw', true)
-        setProperty('paused', true)
-        
         startTween('textAlpha', 'gameOverText', {alpha = 1, ['scale.x'] = 1.1, ['scale.y'] = 1.1}, 2, {ease = 'sineOut'})
         quickSwitch = false
 
@@ -139,7 +134,7 @@ function onCreatePost()
     setProperty('gameOverText.antialiasing', true)
     setProperty('gameOverText.alpha', 0.001)
     runHaxeCode("game.getLuaObject('gameOverText').camera = getVar('camOverlay');")
-    setObjectOrder('gameOverText', getObjectOrder('lowVin')+1)
+    setObjectOrder('gameOverText', getObjectOrder('lowVin')+2)
     addLuaSprite('gameOverText', true)
 
     makeLuaSprite('gameOverText2', '../assets/game over text2')
@@ -163,7 +158,7 @@ function startGameOverVideo(name)
 
     makeVideoSprite('gameover', 0, 0, 'camGame')
     setScrollFactor('gameover', 0, 0)
-    setObjectOrder('gameover', getObjectOrder('titleBlack')+1)
+    setObjectOrder('gameover', getObjectOrder('lowVin')+1)
     runHaxeCode([[
         var gameoverVid = buildTarget != 'android' ? game.modchartSprites['gameover'] : getVar('gameover');
         gameoverVid.camera = getVar('camOverlay');

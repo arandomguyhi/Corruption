@@ -1231,6 +1231,7 @@ function onEvent(name, v1, v2)
             setProperty('blackBG.visible', false)
 
             addOverlay({75.0,26.0,233.0},{203.0, 21.0, 122.0},0.075)
+
             setProperty('comboGroup.visible', true)
             setProperty('comboGroup.y', getProperty('comboGroup.y')-3500)
 
@@ -1562,8 +1563,8 @@ function onUpdate(elapsed)
     setProperty('hurtBlack.alpha', hurtAmountBlack)
 
     if running then
-        setProperty('comboGroup.x', getProperty('comboGroup.x') - 1750 * elapsed * rate)
-        end
+        runHaxeCode("game.comboGroup.x -= 1750 * "..elapsed.." * "..rate..";")
+    end
 
     if getProperty('whiteFade.alpha') > 0 and getProperty('whiteFade.visible') then
         setProperty('whiteFade.alpha', getProperty('whiteFade.alpha') - elapsed/4)
