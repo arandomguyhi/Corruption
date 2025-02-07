@@ -2,6 +2,7 @@
  * Script creado Por Perez Sen *
   SIRVE PARA EL PSYCH ENGINE 0.7.3 (ANDROID Y PC) !!!!
 ]]--
+luaDebugMode = true
 
 local videoSprites = {}
 function onCreate() 
@@ -14,9 +15,10 @@ function onCreate()
             return parentLua.call("precachePath", [videoPath]);
         });
 
+
         // 3 new cool functions :fire: :fire:
-        createGlobalCallback('playVideoSprite', function(tag:String, path:String, ?looped:Bool = false) {
-            return parentLua.call("playTheVideo", [tag, path, looped]);
+        createGlobalCallback('playVideoSprite', function(tag:String, path:String, ?shouldLoop:Bool = false) {
+            return parentLua.call("playTheVideo", [tag, path, shouldLoop]);
         });
         createGlobalCallback('pauseVideoSprite', function(tag:String) {
             return parentLua.call("pauseTheVideo", [tag]);
@@ -87,20 +89,21 @@ function precachePath(videoPath)
    end
 end
 
-function playTheVideo(tag, path, looped)
+function playTheVideo(tag, path, shouldLoop)
+    setVar('shouldLoop', shouldLoop) -- I KNOW, I KNOW. DON'T SAY NOTHING
     if buildTarget ~= 'android' then
         runHaxeCode([[
-            var video = getVar(]]..tag..[[);
+            var video = getVar(']]..tag..[[');
             video.onTextureSetup.add(function(){
                 game.modchartSprites[']]..tag..[['].loadGraphic(video.bitmapData);
             });
 
-            video.play(Paths.video(']]..path..[['), ]]..looped..[[);
+            video.play(Paths.video(']]..path..[['), getVar('shouldLoop'));
             video.rate = game.playbackRate;
         ]])
     else
         local tagLoad = callMethodFromClass('backend.Paths', 'video', {path})
-        callMethod(tag ..'.startVideo', {tagLoad, looped})
+        callMethod(tag ..'.startVideo', {tagLoad, shouldLoop})
     end
 end
 
