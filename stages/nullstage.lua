@@ -596,7 +596,7 @@ function onEvent(name, value1, value2)
                 runHaxeCode([[
                     var cu = game.getLuaObject;
                     game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('pixelate').shader)]);
-                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/]);
+                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader)]);
                 ]])
             elseif value2 == 'addoverlay' then
                 runHaxeCode([[
