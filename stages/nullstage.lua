@@ -159,7 +159,7 @@ function onCreatePost()
         runHaxeCode("getVar('video7s').setGraphicSize(1920, 1080);")
     end
     setProperty('video7.scale.x', getProperty('video7.scale.x') * 1.1)
-    setProperty('video7sscale.y', getProperty('video7.scale.y') * 1.3)
+    setProperty('video7.scale.y', getProperty('video7.scale.y') * 1.3)
     setPosition('video7', -200, -100)
     setProperty('video7.antialiasing', false)
 
@@ -190,8 +190,8 @@ function onCreatePost()
     else
         runHaxeCode("getVar('video4s').setGraphicSize(1920, 1080);")
     end
-    setProperty('video4.scale.x', getProperty('video4s.scale.x') * 1.3)
-    setProperty('video4.scale.y', getProperty('video4s.scale.y') * 1.3)
+    setProperty('video4.scale.x', getProperty('video4.scale.x') * 1.3)
+    setProperty('video4.scale.y', getProperty('video4.scale.y') * 1.3)
     setPosition('video4', -130, -110)
     setProperty('video4.antialiasing', false)
 
@@ -202,8 +202,8 @@ function onCreatePost()
     else
         runHaxeCode("getVar('video5s').setGraphicSize(1920, 1080);")
     end
-    setProperty('video5.scale.x', getProperty('video5s.scale.x') * 1.3)
-    setProperty('video5.scale.y', getProperty('video5s.scale.y') * 1.3)
+    setProperty('video5.scale.x', getProperty('video5.scale.x') * 1.3)
+    setProperty('video5.scale.y', getProperty('video5.scale.y') * 1.3)
     setPosition('video5', -130, -110)
     setProperty('video5.antialiasing', false)
     setObjectOrder('video5', getObjectOrder('boyfriendGroup')-1)
@@ -479,13 +479,16 @@ function onEvent(name, value1, value2)
             elseif value2 == 'hands' then
                 -- nothing lol
             else
-                playAnim('numTunnel', 'anim', true)
-                playAnim('numTunnel2', 'anim', true)
-
-                setProperty('glitchBump.alpha', 0.25)
-                setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.08)
-                setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.10)
+                startTween('BZL', 'helpme', {alpha = 0}, 0.2, {})
             end
+            setProperty('camHUD.alpha', 1)
+        else
+            playAnim('numTunnel', 'anim', true)
+            playAnim('numTunnel2', 'anim', true)
+
+            setProperty('glitchBump.alpha', 0.25)
+            setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.08)
+            setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.10)
         end
     end
 
@@ -726,6 +729,13 @@ end
 function onBeatHit()
     if curBeat % 4 == 0 then
         setShaderFloat('nullGlitch', 'glitchAmplitude', getRandomFloat(1.0,5.0))
+    end
+end
+
+function onStepHit()
+    if curStep >= 896 and curStep < 916 then
+        setShaderFloat('barrel', 'zoom', callMethodFromClass('flixel.math.FlxMath', 'lerp', {2, 1, (stepCrochet/1000)*20}))
+        setShaderFloat('barrel', 'distortionIntensity', callMethodFromClass('flixel.math.FlxMath', 'lerp', {-1.5, -0.25, (stepCrochet/1000)*20}))
     end
 end
 
