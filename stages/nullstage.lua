@@ -147,10 +147,10 @@ function onCreatePost()
     else
         runHaxeCode("getVar('video6s').setGraphicSize(1920, 1080);")
     end
-    setProperty('video6s.scale.x', getProperty('video6s.scale.x') * 1.1)
-    setProperty('video6s.scale.y', getProperty('video6s.scale.y') * 1.3)
-    setPosition('video6s', -200, -100)
-    setProperty('video6s.antialiasing', false)
+    setProperty('video6.scale.x', getProperty('video6.scale.x') * 1.1)
+    setProperty('video6.scale.y', getProperty('video6.scale.y') * 1.3)
+    setPosition('video6', -200, -100)
+    setProperty('video6.antialiasing', false)
 
     makeVideoSprite('video7', 0, 0, 'camGame')
     if buildTarget == 'android' then
@@ -158,21 +158,21 @@ function onCreatePost()
     else
         runHaxeCode("getVar('video7s').setGraphicSize(1920, 1080);")
     end
-    setProperty('video7s.scale.x', getProperty('video7s.scale.x') * 1.1)
-    setProperty('video7s.scale.y', getProperty('video7s.scale.y') * 1.3)
-    setPosition('video7s', -200, -100)
-    setProperty('video7s.antialiasing', false)
+    setProperty('video7.scale.x', getProperty('video7.scale.x') * 1.1)
+    setProperty('video7sscale.y', getProperty('video7.scale.y') * 1.3)
+    setPosition('video7', -200, -100)
+    setProperty('video7.antialiasing', false)
 
     makeVideoSprite('video8', 0, 0, 'camGame')
-    setPosition('video8s', -130, -110)
+    setPosition('video8', -130, -110)
     if buildTarget == 'android' then
         setGraphicSize('video8', 1920, 1080)
     else
         runHaxeCode("getVar('video8s').setGraphicSize(1920, 1080);")
     end
-    setProperty('video8s.scale.x', getProperty('video8s.scale.x') * 1.4)
-    setProperty('video8s.scale.y', getProperty('video8s.scale.y') * 1.4)
-    setProperty('video8s.antialiasing', false)
+    setProperty('video8.scale.x', getProperty('video8.scale.x') * 1.4)
+    setProperty('video8.scale.y', getProperty('video8.scale.y') * 1.4)
+    setProperty('video8.antialiasing', false)
 
     makeAnimatedLuaSprite('helpme', path..'HelpMe')
     addAnimationByPrefix('helpme', 'anim', 'HelpMe idle', 16, false)
@@ -181,7 +181,7 @@ function onCreatePost()
     setProperty('helpme.alpha', 1)
     updateHitbox('helpme')
     screenCenter('helpme')
-    scaleObject('helpme', 3, 3)
+    scaleObject('helpme', 3, 3, false)
     setProperty('helpme.antialiasing', false)
 
     makeVideoSprite('video4', 0, 0, 'camGame')

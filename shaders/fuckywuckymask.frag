@@ -262,7 +262,7 @@ void main()
     glitchColor(p, color);
 
     if(maskMix){
-        gl_FragColor = mix(color, flixel_texture2D(bitmap, openfl_TextureCoordv), texture2D(mask, openfl_TextureCoordv).r);
+        gl_FragColor = mix(color, texture2D(bitmap, openfl_TextureCoordv), texture2D(mask, openfl_TextureCoordv).r);
     }else{
         gl_FragColor = color;
     }
