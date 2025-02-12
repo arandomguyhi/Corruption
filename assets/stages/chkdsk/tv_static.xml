@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="tv_static.png">
+<SubTexture name="tv_static idle0000" x="0" y="0" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0001" x="800" y="0" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0002" x="0" y="450" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0003" x="800" y="450" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0004" x="0" y="900" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0005" x="800" y="900" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0006" x="1600" y="0" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0007" x="1600" y="450" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0008" x="1600" y="900" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0009" x="0" y="1350" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0010" x="800" y="1350" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0011" x="1600" y="1350" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+<SubTexture name="tv_static idle0012" x="1600" y="1350" width="800" height="450" frameX="0" frameY="0" frameWidth="800" frameHeight="450" />
+</TextureAtlas>

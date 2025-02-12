@@ -1,0 +1,10 @@
+[
+    {
+        "save": "shadersC",
+        "name": "Shaders:",
+        "type": "string",
+        "description": "Set how many shaders will be in gameplay",
+        "format": "%v",
+        "options": ["All", "Minimal", "Off"]
+    }
+]

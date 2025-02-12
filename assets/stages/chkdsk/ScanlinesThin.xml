@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<TextureAtlas imagePath="ScanlinesThin.png">
+<SubTexture name="ScanlinesThin idle0000" x="0" y="0" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0001" x="700" y="0" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0002" x="0" y="394" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0003" x="700" y="394" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0004" x="0" y="788" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0005" x="700" y="788" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0006" x="1400" y="0" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+<SubTexture name="ScanlinesThin idle0007" x="1400" y="394" width="700" height="394" frameX="0" frameY="0" frameWidth="700" frameHeight="394" />
+</TextureAtlas>
