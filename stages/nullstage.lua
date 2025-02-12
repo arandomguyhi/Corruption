@@ -33,7 +33,7 @@ if shadersEnabled then
     setShaderFloat('nullGlitch', 'glitchNarrowness', 1.0)
     setShaderFloat('nullGlitch', 'glitchBlockiness', 4.0)
     setShaderFloat('nullGlitch', 'glitchMinimizer', 5.0)
-    setShaderFloatArray('nullGlitch', 'iResolution', {screenWidth, screenHeight})
+    setShaderFloatArray('nullGlitch', 'iResolution', {getPropertyFromClass('openfl.Lib', 'current.stage.stageWidth'), getPropertyFromClass('openfl.Lib', 'current.stage.stageHeight')})
     setShaderFloat('nullGlitch', 'iTime', 0.0)
 
     initLuaShader('barrel')
@@ -272,7 +272,7 @@ function onCreatePost()
     addTrail('dad', 1, 8, 5, 0.4, 0.030)
 
     setProperty('helpme.visible', false)
-    addLuaSprite('helpme')
+    addLuaSprite('helpme', true)
 
     setObjectOrder('video4', getObjectOrder('helpme')+1)
     setProperty('video4.visible', false)
@@ -596,7 +596,7 @@ function onEvent(name, value1, value2)
                 runHaxeCode([[
                     var cu = game.getLuaObject;
                     game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('pixelate').shader)]);
-                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader)]);
+                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/]);
                 ]])
             elseif value2 == 'addoverlay' then
                 runHaxeCode([[
@@ -734,6 +734,7 @@ end
 
 function onStepHit()
     if curStep >= 896 and curStep < 916 then
+        debugPrint('oi')
         setShaderFloat('barrel', 'zoom', callMethodFromClass('flixel.math.FlxMath', 'lerp', {2, 1, (stepCrochet/1000)*20}))
         setShaderFloat('barrel', 'distortionIntensity', callMethodFromClass('flixel.math.FlxMath', 'lerp', {-1.5, -0.25, (stepCrochet/1000)*20}))
     end
