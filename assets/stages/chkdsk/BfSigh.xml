@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="BfSigh.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="BfSigh0000" x="8" y="8" width="84" height="83" frameX="0" frameY="-40" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0001" x="8" y="8" width="84" height="83" frameX="0" frameY="-40" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0002" x="8" y="8" width="84" height="83" frameX="-1" frameY="-36" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0003" x="8" y="8" width="84" height="83" frameX="-1" frameY="-36" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0004" x="100" y="8" width="83" height="83" frameX="0" frameY="-22" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0005" x="100" y="8" width="83" height="83" frameX="0" frameY="-22" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0006" x="100" y="8" width="83" height="83" frameX="-1" frameY="-8" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0007" x="100" y="8" width="83" height="83" frameX="-1" frameY="-8" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0008" x="191" y="8" width="84" height="83" frameX="0" frameY="-4" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0009" x="191" y="8" width="84" height="83" frameX="0" frameY="-4" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0010" x="191" y="8" width="84" height="83" frameX="-1" frameY="0" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0011" x="191" y="8" width="84" height="83" frameX="-1" frameY="0" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0012" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0013" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0014" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0015" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0016" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0017" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0018" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0019" x="283" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0020" x="375" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0021" x="375" y="8" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0022" x="8" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0023" x="8" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0024" x="100" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0025" x="100" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0026" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0027" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0028" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0029" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0030" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0031" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0032" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0033" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0034" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0035" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0036" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0037" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0038" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0039" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0040" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+	<SubTexture name="BfSigh0041" x="192" y="99" width="84" height="83" frameX="0" frameY="-2" frameWidth="85" frameHeight="123"/>
+</TextureAtlas>

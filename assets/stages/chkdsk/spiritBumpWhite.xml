@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="spiritBump.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="SenpaiBump0000" x="8" y="8" width="1920" height="1920"/>
+	<SubTexture name="SenpaiBump0001" x="8" y="8" width="1920" height="1920"/>
+	<SubTexture name="SenpaiBump0002" x="1936" y="8" width="1920" height="1920"/>
+	<SubTexture name="SenpaiBump0003" x="1936" y="8" width="1920" height="1920"/>
+	<SubTexture name="SenpaiBump0004" x="8" y="1936" width="1920" height="1920"/>
+	<SubTexture name="SenpaiBump0005" x="8" y="1936" width="1920" height="1920"/>
+</TextureAtlas>

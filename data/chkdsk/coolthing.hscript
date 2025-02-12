@@ -1,0 +1,264 @@
+import shaders.ColorSwap;
+import flixel.math.FlxRect;
+
+if(PlayState.difficulty == 0)
+	return; // no cool thing
+
+var otherField = newPlayField();
+otherField.modNumber = 2;
+otherField.noteField.modNumber = 2;
+
+function preReceptorGeneration(){
+    otherField.autoPlayed = game.playerField.autoPlayed;
+    otherField.isPlayer = game.playerField.isPlayer;
+    otherField.noteHitCallback = game.playerField.noteHitCallback;
+    otherField.characters = game.playerField.characters;
+    otherField.cameras = [game.camHUD];
+}
+
+var notePointer:Int = 0;
+var notes:Array<Note> = [];
+
+function getNote(){
+    var note = notes[notePointer];
+    notePointer += 1;
+    if(notePointer >= notes.length)notePointer = 0;
+    if(note != null)note.alive = true;
+    return note;    
+}
+
+function getUnusedNote(){
+    var note = notes[notePointer];
+    notePointer += 1;
+    while(note.alive && notePointer < notes.length){
+        note = notes[notePointer];
+        notePointer += 1;
+    }
+    if(notePointer >= notes.length)notePointer = 0;
+    if(note.alive)note = createNote(); // make one that isnt used lol
+    note.alive = true;
+    return note;
+}
+
+var colorSwaps:Array<ColorSwap> = [];
+
+function getNoteSwap(note:Note)return colorSwaps[notes.indexOf(note)];
+
+function createFlash(dir:Int){
+    var note:FlxSprite3D = new FlxSprite3D();
+    var image = ClientPrefs.noteSkin == 'Quants' ? "QUANTNOTE_assets" : "NOTE_assets";
+    var graphic = Paths.image("pixelUI/" + image);
+    note.loadGraphic(graphic, Math.floor(graphic.width / 4), Math.floor(graphic.height / 5));
+    note.scale.set(6, 6);
+    note.updateHitbox();
+    note.cameras = [game.camHUD];
+    note.animation.add("flash", [12 + dir, 16 + dir], 12, false);
+    note.animation.play("flash", true);
+    note.alpha = 0;
+    var swap = new ColorSwap();
+    note.shader = swap.shader;
+    game.add(note);
+    return [note, swap];
+}
+
+var leftFlashData;
+var downFlashData;
+var upFlashData;
+var rightFlashData;
+
+var flashes = [];
+
+var flashSwaps = [];
+
+function createNote(){
+    var note:FlxSprite3D = new FlxSprite3D();
+    var image = ClientPrefs.noteSkin == 'Quants' ? "QUANTNOTE_assets" : "NOTE_assets";
+    var graphic = Paths.image("pixelUI/" + image);
+    note.loadGraphic(graphic, Math.floor(graphic.width / 4), Math.floor(graphic.height / 5));
+    note.scale.set(6, 6);
+    note.updateHitbox();
+    note.cameras = [game.camHUD];
+    note.animation.add("0", [4]);
+    note.animation.add("1", [5]);
+    note.animation.add("2", [6]);
+    note.animation.add("3", [7]);
+    note.animation.play("0", true);
+    note.visible = false;
+    note.alive = false;
+    var swap = new ColorSwap();
+    note.shader = swap.shader;
+    game.add(note);
+    notes.push(note);
+    colorSwaps.push(swap);
+    trace(note);
+    return note;
+}
+
+var _rect:FlxRect = FlxRect.get();
+
+function onDestroy(){
+    _rect.put();
+}
+
+function onCreatePost() {
+    leftFlashData = createFlash(0);
+    downFlashData = createFlash(1);
+    upFlashData = createFlash(2);
+    rightFlashData = createFlash(3);
+
+    flashes = [
+        leftFlashData[0],
+        downFlashData[0],
+        upFlashData[0],
+        rightFlashData[0]
+    ];
+
+    flashSwaps = [
+        leftFlashData[1],
+        downFlashData[1],
+        upFlashData[1],
+        rightFlashData[1]
+    ];
+
+    var toMove:Array<Note> = [];
+    for(queue in game.playerField.noteQueue){
+        for(note in queue){
+            if(note.beat >= 296 && note.beat < 304){
+                toMove.push(note);
+                createNote();
+            }
+        }
+    }
+    if(notes.length < 15){
+        for(i in 0...15){
+            createNote();
+        }
+    }
+	for(note in toMove){
+		game.playerField.unqueue(note);
+		otherField.queue(note);
+	}
+    otherField.clearStackedNotes();
+}
+
+var quants = Note.quants;
+function getQuant(beat:Float){
+    var row = Conductor.beatToNoteRow(beat);
+    for(data in quants){
+        if(row%(Conductor.ROWS_PER_MEASURE/data) == 0){
+            return data;
+        }
+    }
+    return quants[quants.length-1]; // invalid
+}
+
+
+var spacing = 64;
+var screenShakeThing:Float = 0;
+
+function theShake(beat:Float){
+    var step = beat * 4;
+
+    modManager.queueFuncOnce(step, function(event, step){
+        screenShakeThing = 40;
+    });
+
+    modManager.queueEaseFunc(step, step + 4, FlxEase.linear, function(ev, val, step){
+        screenShakeThing = 40 * (1 - val);
+    });
+    
+    modManager.queueFuncOnce(step + 4, function(e,s){
+        screenShakeThing = 0;
+    });
+
+}
+
+function spawnThingy(beat:Int, dir:Int){
+    var note = getNote();
+    note.visible = false;
+    note.animation.play(Std.string(dir), true);
+    var colorSwap = getNoteSwap(note);
+    var quant = getQuant(beat);
+    var idx = quants.indexOf(quant);
+    if(ClientPrefs.noteSkin == 'Quants'){
+        colorSwap.hue = ClientPrefs.quantHSV[idx][0] / 360;
+        colorSwap.saturation = ClientPrefs.quantHSV[idx][1] / 100;
+        colorSwap.brightness = ClientPrefs.quantHSV[idx][2] / 100;
+    }else{
+        colorSwap.hue = ClientPrefs.arrowHSV[dir % 4][0] / 360;
+        colorSwap.saturation = ClientPrefs.arrowHSV[dir % 4][1] / 100;
+        colorSwap.brightness = ClientPrefs.arrowHSV[dir % 4][2] / 100;
+    }
+    var step = beat * 4;
+
+    modManager.queueFuncOnce(step - 8, function(event, step){
+        note.visible = true;
+        note.z = -3000;
+        note.scale.set(0, 0);
+        note.screenCenter();
+        
+    });
+
+    modManager.queueEaseFunc(step - 8, step + 8, FlxEase.elasticOut, function(ev, val, step){
+        note.y = FlxMath.lerp(800, (FlxG.height - note.height) / 2, val);
+    });
+
+    modManager.queueEaseFunc(step - 8, step, FlxEase.linear, function(ev, val, step){
+        var baseX = (FlxG.width - note.width) / 2;
+        note.x = baseX + ((-spacing * 1.5) + (spacing * dir)) * val;
+        note.z = FlxMath.lerp(-3000, 900, val);
+        note.scale.set(6 * val, 6 * val);
+
+    });
+    modManager.queueFuncOnce(step, function(event, step){
+        note.visible = false;
+        note.alive = false;
+        var f = flashes[dir];
+        var s = flashSwaps[dir];
+        s.hue = colorSwap.hue;
+        s.saturation = colorSwap.saturation;
+        s.brightness = colorSwap.brightness;
+        f.alpha = 1;
+        FlxTween.cancelTweensOf(f);
+        FlxTween.tween(f, {alpha: 0}, Conductor.stepCrochet * 0.004);
+        f.animation.play("flash", true);
+    });
+}
+
+// should prob be done by reading the chart but idc
+var thingies = [
+    [296, 2, 3],
+    [297, 1, 3],
+    [298, 0, 2],
+    [299, 1, 2],
+    [300, 2, 3],
+    [301, 0, 1],
+    [302, 0, 3],
+    [303, 1, 2]
+];
+function generateModchart(){
+    modManager.queueSet(-16, "alpha", 1, 2);
+    var dir = 0;
+    for(f in flashes){
+        f.screenCenter();
+        f.x += ((-spacing * 1.5) + (spacing * dir));
+        f.z = 900;
+
+        dir += 1;
+    }
+    for(thing in thingies){
+        var beat = thing[0];
+        theShake(beat);
+        for(idx in 1...thing.length){
+            spawnThingy(beat, thing[idx]);
+        }
+    }
+}
+
+function onUpdatePost(elapsed){
+    var pN = (screenShakeThing * 0.001);
+    game.camHUD.x = FlxG.random.float(-1, 1) * pN * game.camHUD.width;
+    game.camHUD.y = FlxG.random.float(-1, 1) * pN * game.camHUD.height;
+    game.camGame.scrollOffset.x = FlxG.random.float(-1, 1) * pN * game.camGame.width;
+    game.camGame.scrollOffset.y = FlxG.random.float(-1, 1) * pN * game.camGame.height;
+}

@@ -1,0 +1,66 @@
+if(ClientPrefs.shaders != 'All' || ClientPrefs.lowQuality)
+	return;
+
+var shidGlitching = false;
+var shaders = [];
+var shadered = [];
+
+function postReceptorGeneration(){
+    for(shit in game.dadField.strumNotes){
+        var shader = newShader("glitchcolorswap");
+		shader.data.uTime.value = [0, 0, 0];
+		shader.data.flashColor.value = [1, 1, 1, 1];
+		shader.data.daAlpha.value = [1];
+		shader.data.flash.value = [0];
+        shader.data.binaryIntensity.value = [2.0];
+        shaders.push(shader);
+        shit.shader = shader;
+        shadered.push(shit);
+    }
+
+    shidGlitching = true;
+}
+
+function onCreatePost(){
+/*     game.dadField.noteRemoved.add((note:Note, field:PlayField) -> {
+        if(shaders.contains(note.shader))
+            shaders.remove(note.shader);
+
+        if(shadered.contains(note))
+            shadered.remove(note);
+    }); */
+
+    for(note in game.allNotes){
+        if(game.dadField.hasNote(note)){
+            var shader = newShader("glitchcolorswap");
+            shader.data.uTime.value = [0, 0, 0];
+            shader.data.flashColor.value = [1, 1, 1, 1];
+            shader.data.daAlpha.value = [1];
+            shader.data.flash.value = [0];
+            shader.data.binaryIntensity.value = [2.0];
+            note.shader = shader;
+            shaders.push(shader);
+            shadered.push(note);
+        }
+    }
+}
+
+function onStepHit(){
+    for(shit in shaders)
+        shit.data.binaryIntensity.value[0] = FlxG.random.float(4.0, 16.0);
+}
+
+function onUpdate(){
+    var removing = [];
+    for(shit in shadered){
+        if(shit.shader == null)
+            removing.push(shit);
+        else
+            shit.shader.data.uTime.value = shit.colorSwap.shader.uTime.value;
+    }
+    for(r in removing)
+        shadered.remove(r);
+    
+    
+
+}
