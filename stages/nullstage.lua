@@ -498,6 +498,8 @@ function onEvent(name, value1, value2)
 
     if name == 'changeBf' then
         if value1 == 'fall' then
+            startTween('hihud', 'camHUD', {alpha = 1}, 1.5, {})
+
             triggerEvent('Change Character', 'bf', 'bf-pixel-dive')
             callMethod('boyfriend.setPosition', {740 - 200, 500})
             scaleObject('boyfriend', 6, 6, false)
@@ -511,8 +513,6 @@ function onEvent(name, value1, value2)
 
             callMethod('dad.setPosition', {640 + 100, 220+25})
             scaleObject('dad', 10, 10, false)
-
-            setProperty('camHUD.alpha', 1)
 
             numAccY = -500
             numAccX = -1000
@@ -549,6 +549,8 @@ function onEvent(name, value1, value2)
 
             setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
         elseif value1 == 'altfall' then
+            startTween('hihud', 'camHUD', {alpha = 1}, 1.5, {})
+
             triggerEvent('Change Character', 'bf', 'bf-pixel-dive')
             callMethod('boyfriend.setPosition', {740 - 200, 500})
             scaleObject('boyfriend', 6, 6, false)
@@ -629,6 +631,8 @@ function onEvent(name, value1, value2)
                 game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('pixelate').shader)]);
             ]])
 
+            startTween('hihud', 'camHUD', {alpha = 1}, 3, {})
+
             triggerEvent('Change Character', 'bf', 'bf-pixelFront')
             callMethod('boyfriend.setPosition', {4000, 810})
             scaleObject('boyfriend', 13, 13, false)
@@ -682,6 +686,8 @@ function onEvent(name, value1, value2)
         elseif value1 == 'removeStatic' then
             startTween('nostatic', 'staticOverlay', {alpha = 0}, 3, {})
         else
+            startTween('hihud', 'camHUD', {alpha = 1}, 3, {})
+
             triggerEvent('Change Character', 'bf', 'bf-pixelFront')
             callMethod('boyfriend.setPosition', {770, 810})
             scaleObject('boyfriend', 13, 13, false)
