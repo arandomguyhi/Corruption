@@ -867,7 +867,7 @@ function onUpdate(elapsed)
 
     if curBg == 2 then
         timer = timer + elapsed * 0.35
-        setProperty('school.alpha', ((callMethodFromClass('flixel.math.FlxMath', 'fastSin', {timer}) * 0.5) + (getProperty('glitchBump.alpha') * 0.75)) * getProperty('dad.alpha'))
+        setProperty('school.alpha', ((math.sin(timer) * 0.5) + (getProperty('glitchBump.alpha') * 0.75)) * getProperty('dad.alpha'))
     else
         timer = 0
         setProperty('school.alpha', 0)
