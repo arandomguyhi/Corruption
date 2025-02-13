@@ -259,6 +259,11 @@ function onCreatePost()
     setProperty('video5.blend', 12)
     setProperty('video5.alpha', 0.85)
 
+    for i = 4,8 do
+        setProperty('video'..i..'.x', getProperty('video'..i..'.x') + 640/2)
+        setProperty('video'..i..'.y', getProperty('video'..i..'.y') + 360/2)
+    end
+
     makeAnimatedLuaSprite('bfSigh', path..'BfSigh')
     addAnimationByPrefix('bfSigh', 'anim', 'BfSigh', 24, false)
     playAnim('bfSigh', 'anim', true)
