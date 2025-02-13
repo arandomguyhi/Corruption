@@ -78,11 +78,10 @@ function videoPlay(tag, videoFile, shouldLoop)
     if buildTarget ~= 'android' then
         runHaxeCode([[
             var tagVideo = getVar(']]..tostring(tag)..[[');
-            ver sprite = getVar(']]..tostring(tag)..[['+'s');
             var loopVideo = ]]..tostring(shouldLoop)..[[;
 
-            video.onTextureSetup.add(function(){
-                sprite.loadGraphic(tagVideo.bitmapData);}
+            tagVideo.onTextureSetup.add(function(){
+                game.modchartSprites.get(']]..tag..[[').loadGraphic(tagVideo.bitmapData);
             });
 
             if (!loopVideo){
@@ -103,7 +102,7 @@ function videoPlay(tag, videoFile, shouldLoop)
             }
 
             tagVideo.play(Paths.video(']]..videoFile..[['), ]]..tostring(shouldLoop)..[[);
-            FlxG.game.addChild(video);
+            FlxG.game.addChild(tagVideo);
         ]])
     else
         local tagVideo = callMethodFromClass('backend.Paths', 'video', {videoFile});

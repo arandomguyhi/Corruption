@@ -2,6 +2,7 @@ local path = '../assets/stages/chkdsk/'
 
 local curBg = 0
 
+local hideJudge = false
 local numAccX = 200
 local numAccY = 0
 local numScale = 5
@@ -335,14 +336,18 @@ function onCreatePost()
     for _, i in pairs({'iconP1', 'iconP2', 'healthBar', 'healthBar.bg', 'timeBar', 'timeTxt'}) do
         setProperty(i..'.visible', false)
     end
-
     for i = 0,3 do
         setPropertyFromGroup('opponentStrums', i, 'texture', 'GLITCHNOTE_assets')
         -- not using unspawnNotes here cuz it's unoptmized
-        for v = 0, getProperty('grpNoteSplashes.length')-1 do -- i dunno what's the length
-            setProperty('grpNoteSplashes.members['..v..'].visible', false)
-        end
     end
+
+    ogOffs = getPropertyFromClass('backend.ClientPrefs', 'data.comboOffset')
+    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', {0, 0, 0, 0})
+
+    setObjectCamera('comboGroup', 'camGame')
+    setObjectOrder('comboGroup', getObjectOrder('staticOverlay')+3)
+    setProperty('comboGroup.x', -430)
+    setProperty('comboGroup.y', -60)
 end
 
 function onSpawnNote(i)
@@ -362,6 +367,12 @@ function opponentNoteHit()
         setProperty('dad.y', getRandomFloat(-175, 355))
         local scaleLol = getRandomFloat(1, 4)
         scaleObject('dad', scaleLol, scaleLol, false)
+    end
+end
+
+function goodNoteHit()
+    for v = 0, getProperty('grpNoteSplashes.length')-1 do -- i dunno what's the length
+        setPropertyFromGroup('grpNoteSplashes', v, 'visible', false)
     end
 end
 
@@ -434,9 +445,11 @@ function onEvent(name, value1, value2)
         if value1 == 'help' then
             setProperty('helpme.visible', true)
             setProperty('camHUD.alpha', 0)
+            hideJudge = true
             playAnim('helpme', 'anim', true)
         elseif value1 == 'hand' then
             setProperty('video4.visible', true)
+            hideJudge = true
             setPosition('video4', -130, -110)
             setProperty('video4.x', getProperty('video4.x') + 640/2)
             setProperty('video4.y', getProperty('video4.y') + 360/2)
@@ -448,6 +461,8 @@ function onEvent(name, value1, value2)
             setProperty('video5.y', getProperty('video5.y') + 360/2)
             playVideo('video5', 'hands loop', true)
         elseif value1 == 'intermission' then
+            hideJudge = true
+
             runHaxeCode("game.camGame.filters = [];")
             setProperty('health', 2)
 
@@ -480,6 +495,7 @@ function onEvent(name, value1, value2)
                 setProperty('video4.x', 8000)
                 setProperty('numTunnel.x', 240)
                 setProperty('numTunnel.alpha', 0.3)
+                hideJudge = false
             elseif value2 == '5' then
                 setProperty('video5.visible', false)
                 setProperty('video5.x', 8000)
@@ -487,6 +503,7 @@ function onEvent(name, value1, value2)
                 -- nothing lol
             else
                 startTween('BZL', 'helpme', {alpha = 0}, 0.2, {})
+                hideJudge = false
             end
             setProperty('camHUD.alpha', 1)
         else
@@ -649,6 +666,7 @@ function onEvent(name, value1, value2)
             setPosition('bfSigh', 754, 1055)
             playAnim('bfSigh', 'anim', true)
 
+            hideJudge = false
             setProperty('video8.visible', false)
             runHaxeCode([[
                 var video8 = buildTarget == 'windows' ? game.getLuaObject('video8') : getVar('video8');
@@ -739,6 +757,14 @@ function onBeatHit()
 end
 
 function onStepHit()
+    if curStep == 672 then
+        runHaxeCode([[
+            FlxTween.num(0.5, 0.0, (Conductor.stepCrochet/1000) * 30, null, (v:Float) -> {
+                parentLua.call('updateShaderValue', ['overlay', 'amt', v]);
+            });
+        ]])
+    end
+
     if curStep == 896 then
         runHaxeCode([[
             FlxTween.num(2, 1, (Conductor.stepCrochet/1000) * 20, null, (v:Float) -> {
@@ -747,6 +773,14 @@ function onStepHit()
 
             FlxTween.num(-1.5, -0.25, (Conductor.stepCrochet/1000) * 20, null, (v:Float) -> {
                 parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', v]);
+            });
+        ]])
+    end
+
+    if curStep == 1792 then
+        runHaxeCode([[
+            FlxTween.num(0.5, 0.0, (Conductor.stepCrochet/1000) * 38, null, (v:Float) -> {
+                parentLua.call('updateShaderValue', ['overlay', 'amt', v]);
             });
         ]])
     end
@@ -782,6 +816,9 @@ end
 local timer = 0
 
 function onUpdate(elapsed)
+    setProperty('showRating', not hideJudge)
+    setProperty('showComboNum', hideJudge)
+
     if getSongPosition() <= 0 then
         setShaderFloat('schoolShader', 'time', getShaderFloat('schoolShader', 'time') + elapsed * 0.25)
         setShaderFloat('iconShader', 'time', getShaderFloat('iconShader', 'time') + elapsed * 0.75)
@@ -841,6 +878,10 @@ function onUpdate(elapsed)
     end
 
     setShaderFloat('nullGlitch', 'glitchAmplitude', getShaderFloat('nullGlitch', 'glitchAmplitude') - 0.001 * elapsed)
+end
+
+function onDestroy()
+    setPropertyFromClass('backend.ClientPrefs', 'data.comboOffset', ogOffs)
 end
 
 function setPosition(spr, x, y)

@@ -16,7 +16,7 @@ function onCreatePost()
 
     runHaxeCode([[
         for (note in game.opponentStrums)
-            note.shader = getLuaObject('glitchColor').shader;
+            note.shader = game.getLuaObject('glitchColor').shader;
     ]])
 
     table.insert(shaders, 'glitchColor')
@@ -28,12 +28,12 @@ function onCreatePost()
 end
 
 function onSpawnNote(i)
-    if not getPropertyFromGroup('notes', i, 'mustPress') then
-        runHaxeCode([[
-            for (note in game.notes)
-                note.shader = getLuaObject('glitchColor').shader;
-        ]])
-    end
+    runHaxeCode([[
+        for (note in game.notes) {
+            if (!note.mustPress)
+                note.shader = game.getLuaObject('glitchColor').shader;
+        }
+    ]])
 end
 
 function onStepHit()
@@ -43,12 +43,14 @@ function onStepHit()
 end
 
 local removing = {}
+local bzl = 0
 function onUpdate(elapsed)
+    bzl = bzl + elapsed
     for _, shit in pairs(shadered) do
         if getProperty(shit..'.shader') == nil then
             table.insert(removing, shit)
         else
-            setShaderFloat(shit, 'uTime', elapsed)
+            setShaderFloat(shit, 'uTime', bzl)
         end
     end
 

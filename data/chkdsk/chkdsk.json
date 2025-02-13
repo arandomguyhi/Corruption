@@ -24214,6 +24214,7 @@
 		"gfVersion": "gf-pixel",
 		"hudSkin": "pixel",
 		"disableNoteRGB": true,
+		"arrowSkin": "NOTE_assets",
 		"song": "Chkdsk",
 		"validScore": true,
 		"stage": "nullstage",
