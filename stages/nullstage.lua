@@ -450,7 +450,7 @@ function onEvent(name, value1, value2)
         elseif value1 == 'hand' then
             setProperty('video4.visible', true)
             hideJudge = true
-            setPosition('video4', -130, -110)
+            setPosition('video4', -130, -60)
             setProperty('video4.x', getProperty('video4.x') + 640/2)
             setProperty('video4.y', getProperty('video4.y') + 360/2)
             playVideo('video4', 'hand transition')
