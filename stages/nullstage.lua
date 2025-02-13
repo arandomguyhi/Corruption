@@ -420,10 +420,14 @@ function onEvent(name, value1, value2)
         elseif value1 == 'hand' then
             setProperty('video4.visible', true)
             setPosition('video4', -130, -110)
+            setProperty('video4.x', getProperty('video4.x') + 640/2)
+            setProperty('video4.y', getProperty('video4.y') + 360/2)
             playVideo('video4', 'hand transition')
         elseif value1 == 'handloop' then
             setProperty('video5.visible', true)
             setPosition('video5', -130, -110)
+            setProperty('video5.x', getProperty('video5.x') + 640/2)
+            setProperty('video5.y', getProperty('video5.y') + 360/2)
             playVideo('video5', 'hands loop', true)
         elseif value1 == 'intermission' then
             runHaxeCode("game.camGame.filters = [];")
