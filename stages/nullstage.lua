@@ -439,7 +439,7 @@ function onEvent(name, value1, value2)
 
             setProperty('dad.alpha', 0)
             setProperty('boyfriend.alpha', 0)
-            setProperty('evilTrail.visible', false)
+            callMethod('evilTrail.kill', {''})
 
             setProperty('numTunnel.alpha', 0)
             setProperty('numTunnel2.alpha', 0)
@@ -486,7 +486,7 @@ function onEvent(name, value1, value2)
         addTrail('boyfriend', 0, 4, 2)
         setProperty('bfTrail.color', callMethodFromClass('psychlua.CustomFlxColor', 'fromRGB', {0,142,255,255}))
     elseif name == 'removetrail' then
-        setProperty('bfTrail.visible', false)
+        callMethod('bfTrail.kill', {''})
     end
 
     if name == 'changeBf' then
@@ -501,8 +501,8 @@ function onEvent(name, value1, value2)
 
             triggerEvent('Change Character', 'dad', 'spiritBack')
 
+            callMethod('evilTrail.kill', {''})
             addTrail('dad', 1)
-            setProperty('evilTrail.visible', true)
 
             callMethod('dad.setPosition', {640 + 100, 220+25})
             scaleObject('dad', 10, 10, false)
@@ -555,8 +555,8 @@ function onEvent(name, value1, value2)
             callMethod('dad.setPosition', {640 + 100, 220+25})
             scaleObject('dad', 10, 10, false)
 
+            callMethod('evilTrail.kill', {''})
             addTrail('dad', 1)
-            setProperty('evilTrail.visible', true)
 
             numAccY = -500
             numAccX = -1000
@@ -608,8 +608,8 @@ function onEvent(name, value1, value2)
             callMethod('dad.setPosition', {740, 45})
             scaleObject('dad', 3, 3, false)
 
+            callMethod('evilTrail.kill', {''})
             addTrail('dad', 1, 8, 5, 0.4, 0.030)
-            setProperty('evilTrail.visible', true)
 
             setProperty('numTunnel.alpha', 0)
             setProperty('numTunnel2.alpha', 0)
@@ -668,7 +668,7 @@ function onEvent(name, value1, value2)
             setProperty('numTunnel.alpha', 0)
             setProperty('numTunnel2.alpha', 0)
 
-            setProperty('evilTrail.visible', false)
+            callMethod('evilTrail.kill', {''})
 
             setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
         elseif value1 == 'showbf' then
@@ -704,8 +704,7 @@ function onEvent(name, value1, value2)
             scaleObject('dad', 6.7, 6.7, false)
             setScrollFactor('dad', 0.2, 0.2)
 
-            callMethod('evilTrail.remove', {''})
-            setProperty('evilTrail.visible', false)
+            callMethod('evilTrail.kill', {''})
             
             setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
         end
