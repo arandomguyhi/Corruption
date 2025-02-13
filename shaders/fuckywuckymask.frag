@@ -1,6 +1,5 @@
 //https://www.shadertoy.com/view/XtyXzW#
 #pragma header
-#extension GL_EXT_gpu_shader4 : enable
 
 uniform float time; // = iTime
 uniform float prob; // = 0
