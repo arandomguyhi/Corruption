@@ -446,6 +446,7 @@ function onEvent(name, value1, value2)
             setProperty('health', 2)
 
             playVideo('video8', 'glitch intermission', true)
+            setObjectOrder('video8', getObjectOrder('staticOverlay')+1)
 
             setProperty('dad.alpha', 0)
             setProperty('boyfriend.alpha', 0)
@@ -459,8 +460,8 @@ function onEvent(name, value1, value2)
             if playing2 then return end
             playing2 = true
 
-            setObjectOrder('video6s', getObjectOrder('boyfriendGroup')-1)
-            setObjectOrder('video7s', getObjectOrder('boyfriendGroup')-1)
+            setObjectOrder('video6', getObjectOrder('boyfriendGroup')-1)
+            setObjectOrder('video7', getObjectOrder('boyfriendGroup')-1)
 
             setProperty('numTunnel.x', 4000)
             setProperty('numTunnel2.x', 4000)
@@ -595,14 +596,14 @@ function onEvent(name, value1, value2)
             if value2 == 'overlay' then
                 runHaxeCode([[
                     var cu = game.getLuaObject;
-                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('pixelate').shader)]);
-                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader)]);
+                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('pixelate').shader)]);
+                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/]);
                 ]])
             elseif value2 == 'addoverlay' then
                 runHaxeCode([[
                     var cu = game.getLuaObject;
-                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
-                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('overlay').shader)]);
+                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
+                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('overlay').shader)]);
                 ]])
             else
                 setProperty('boyfriend.x', 4000)
@@ -631,7 +632,7 @@ function onEvent(name, value1, value2)
         elseif value1 == 'sigh' then
             runHaxeCode([[
                 var cu = game.getLuaObject;
-                game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('nullGlitch').shader), new ShaderFilter(cu('pixelate').shader)]);
+                game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('pixelate').shader)]);
             ]])
 
             startTween('hihud', 'camHUD', {alpha = 1}, 3, {})
@@ -737,11 +738,11 @@ function onStepHit()
         runHaxeCode([[
             FlxTween.num(2, 1, (Conductor.stepCrochet/1000) * 20, {onUpdate: (v:Float) -> {
                 parentLua.call('updateShaderValue', ['barrel', 'zoom', v]);
-            }, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'zoom', vl]); }});
+            }}, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'zoom', vl]); });
 
             FlxTween.num(-1.5, -0.25, (Conductor.stepCrochet/1000) * 20, {onUpdate: (v:Float) -> {
                 parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', v]);
-            }, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', v]); }});
+            }}, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', vl]); });
         ]])
     end
 end
