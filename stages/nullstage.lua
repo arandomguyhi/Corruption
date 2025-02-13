@@ -142,9 +142,7 @@ function onCreatePost()
     addBehindDad('numTunnel2')
 
     makeVideoSprite('video6', 0, 0, 'camGame')
-    if buildTarget == 'android' then
-        setGraphicSize('video6', 1920, 1080)
-    else
+    if buildTarget ~= 'android' then
         runHaxeCode("getVar('video6s').setGraphicSize(1920, 1080);")
     end
     setProperty('video6.scale.x', getProperty('video6.scale.x') * 1.1)
@@ -153,9 +151,7 @@ function onCreatePost()
     setProperty('video6.antialiasing', false)
 
     makeVideoSprite('video7', 0, 0, 'camGame')
-    if buildTarget == 'android' then
-        setGraphicSize('video7', 1920, 1080)
-    else
+    if buildTarget ~= 'android' then
         runHaxeCode("getVar('video7s').setGraphicSize(1920, 1080);")
     end
     setProperty('video7.scale.x', getProperty('video7.scale.x') * 1.1)
@@ -165,9 +161,7 @@ function onCreatePost()
 
     makeVideoSprite('video8', 0, 0, 'camGame')
     setPosition('video8', -130, -110)
-    if buildTarget == 'android' then
-        setGraphicSize('video8', 1920, 1080)
-    else
+    if buildTarget ~= 'android' then
         runHaxeCode("getVar('video8s').setGraphicSize(1920, 1080);")
     end
     setProperty('video8.scale.x', getProperty('video8.scale.x') * 1.4)
@@ -185,9 +179,7 @@ function onCreatePost()
     setProperty('helpme.antialiasing', false)
 
     makeVideoSprite('video4', 0, 0, 'camGame')
-    if buildTarget == 'android' then
-        setGraphicSize('video4', 1920, 1080)
-    else
+    if buildTarget ~= 'android' then
         runHaxeCode("getVar('video4s').setGraphicSize(1920, 1080);")
     end
     setProperty('video4.scale.x', getProperty('video4.scale.x') * 1.3)
@@ -196,10 +188,7 @@ function onCreatePost()
     setProperty('video4.antialiasing', false)
 
     makeVideoSprite('video5', 0, 0, 'camGame')
-    setGraphicSize('video5', 1920, 1080)
-    if buildTarget == 'android' then
-        setGraphicSize('video5', 1920, 1080)
-    else
+    if buildTarget ~= 'android' then
         runHaxeCode("getVar('video5s').setGraphicSize(1920, 1080);")
     end
     setProperty('video5.scale.x', getProperty('video5.scale.x') * 1.3)

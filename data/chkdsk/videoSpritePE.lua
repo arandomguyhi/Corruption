@@ -52,7 +52,7 @@ function makeVideoSprit(videoTag, x, y, camera)
 
         table.insert(videoSprites, videoTag)
     else
-        createInstance(videoTag, 'backend.VideoSpriteManager', {x, y})
+        createInstance(videoTag, 'backend.VideoSpriteManager', {x, y, 1920, 1080})
         setObjectCamera(videoTag, camera)
         addInstance(videoTag)
     end
@@ -82,7 +82,7 @@ function videoPlay(tag, videoFile, shouldLoop)
             var loopVideo = ]]..tostring(shouldLoop)..[[;
 
             video.onTextureSetup.add(function(){
-                sprite.loadGraphic(tagVideo.bitmapData);}  
+                sprite.loadGraphic(tagVideo.bitmapData);}
             });
 
             if (!loopVideo){
