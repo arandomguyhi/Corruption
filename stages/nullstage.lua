@@ -733,11 +733,21 @@ function onBeatHit()
 end
 
 function onStepHit()
-    if curStep >= 896 and curStep < 916 then
-        debugPrint('oi')
-        setShaderFloat('barrel', 'zoom', callMethodFromClass('flixel.math.FlxMath', 'lerp', {2, 1, (stepCrochet/1000)*20}))
-        setShaderFloat('barrel', 'distortionIntensity', callMethodFromClass('flixel.math.FlxMath', 'lerp', {-1.5, -0.25, (stepCrochet/1000)*20}))
+    if curStep == 896 then
+        runHaxeCode([[
+            FlxTween.num(2, 1, (Conductor.stepCrochet/1000) * 20, {onUpdate: (v:Float) -> {
+                parentLua.call('updateShaderValue', ['barrel', 'zoom', v]);
+            }, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'zoom', vl]); }});
+
+            FlxTween.num(-1.5, -0.25, (Conductor.stepCrochet/1000) * 20, {onUpdate: (v:Float) -> {
+                parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', v]);
+            }, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', v]); }});
+        ]])
     end
+end
+
+function updateShaderValue(s,n,v)
+    setShaderFloat(s,n,v)
 end
 
 function onGameOverStart()
