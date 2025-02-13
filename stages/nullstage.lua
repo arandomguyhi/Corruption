@@ -174,7 +174,7 @@ function onCreatePost()
     setProperty('helpme.antialiasing', false)
 
     makeVideoSprite('video4', 0, 0, 'camGame')
-    scaleObject('video4', 1.5, 1.5, false)
+    scaleObject('video4', 1.5, 1.5)
     setProperty('video4.scale.x', getProperty('video4.scale.x') * 1.3)
     setProperty('video4.scale.y', getProperty('video4.scale.y') * 1.3)
     setPosition('video4', -130, -110)
@@ -236,18 +236,18 @@ function onCreatePost()
 
     setShaderFloat('nullGlitch', 'glitchNarrowness', 25.0)
 
-    if getModSetting('shadersC') == 'All' then
+    --if getModSetting('shadersC') == 'All' then
         runHaxeCode([[
             var cu = game.getLuaObject;
             game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
             game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('overlay').shader)]);
         ]])
-    elseif getModSetting('shadersC') == 'Minimal' then
+    --[[elseif getModSetting('shadersC') == 'Minimal' then
         runHaxeCode([[
             var cu = game.getLuaObject;
             game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('pixelate').shader)]);
-        ]])
-    end
+        )
+    end]]
 
     addTrail('dad', 1, 8, 5, 0.4, 0.030)
 
@@ -273,7 +273,7 @@ function onCreatePost()
     addLuaSprite('bfSigh', true)
 
     makeAnimatedLuaSprite('handGrabEnd', path..'hand_grab_end')
-    addAnimationByPrefix('handGrabEnd', 'anim', 'hand_grab_end_idle', 15, false)
+    addAnimationByPrefix('handGrabEnd', 'anim', 'hand_grab_end idle', 15, false)
     playAnim('handGrabEnd', 'anim', true)
     updateHitbox('handGrabEnd')
     setProperty('handGrabEnd.antialiasing', false)

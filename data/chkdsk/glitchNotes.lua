@@ -1,4 +1,4 @@
-if (getModSetting('shadersC') ~= 'All' and not shadersEnabled) or lowQuality then
+if --[[getModSetting('shadersC') ~= 'All' and]] not shadersEnabled or lowQuality then
     return end
 
 local shidGlitching = false
