@@ -24213,6 +24213,7 @@
 		],
 		"gfVersion": "gf-pixel",
 		"hudSkin": "pixel",
+		"disableNoteRGB": true,
 		"song": "Chkdsk",
 		"validScore": true,
 		"stage": "nullstage",

@@ -331,6 +331,24 @@ function onCreatePost()
     screenCenter('staticOverlay')
     runHaxeCode("game.getLuaObject('staticOverlay').camera = getVar('camOverlay');")
     addLuaSprite('staticOverlay', true)
+
+    for _, i in pairs({'iconP1', 'iconP2', 'healthBar', 'healthBar.bg', 'timeBar', 'timeTxt'}) do
+        setProperty(i..'.visible', false)
+    end
+
+    for i = 0,3 do
+        setPropertyFromGroup('opponentStrums', i, 'texture', 'GLITCHNOTE_assets')
+        -- not using unspawnNotes here cuz it's unoptmized
+        for v = 0, getProperty('grpNoteSplashes.length')-1 do -- i dunno what's the length
+            setProperty('grpNoteSplashes.members['..v..'].visible', false)
+        end
+    end
+end
+
+function onSpawnNote(i)
+    if not getPropertyFromGroup('notes', i, 'mustPress') then
+        setPropertyFromGroup('notes', i, 'texture', 'GLITCHNOTE_assets')
+    end
 end
 
 function noteMiss()
