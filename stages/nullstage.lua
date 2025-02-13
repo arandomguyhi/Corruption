@@ -725,13 +725,13 @@ end
 function onStepHit()
     if curStep == 896 then
         runHaxeCode([[
-            FlxTween.num(2, 1, (Conductor.stepCrochet/1000) * 20, {onUpdate: (v:Float) -> {
+            FlxTween.num(2, 1, (Conductor.stepCrochet/1000) * 20, null, (v:Float) -> {
                 parentLua.call('updateShaderValue', ['barrel', 'zoom', v]);
-            }}, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'zoom', vl]); });
+            });
 
-            FlxTween.num(-1.5, -0.25, (Conductor.stepCrochet/1000) * 20, {onUpdate: (v:Float) -> {
+            FlxTween.num(-1.5, -0.25, (Conductor.stepCrochet/1000) * 20, null, (v:Float) -> {
                 parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', v]);
-            }}, (vl:Float) -> { parentLua.call('updateShaderValue', ['barrel', 'distortionIntensity', vl]); });
+            });
         ]])
     end
 end
