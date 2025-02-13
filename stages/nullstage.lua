@@ -176,7 +176,7 @@ function onCreatePost()
     makeVideoSprite('video4', 0, 0, 'camGame')
     scaleObject('video4', 1.5, 1.5)
     setProperty('video4.scale.x', getProperty('video4.scale.x') * 1.3)
-    setProperty('video4.scale.y', getProperty('video4.scale.y') * 1.3)
+    setProperty('video4.scale.y', getProperty('video4.scale.y') * 1.5)
     setPosition('video4', -130, -110)
     setProperty('video4.antialiasing', false)
 
@@ -399,7 +399,7 @@ function onEvent(name, value1, value2)
     if name == 'playendanim' then
         playAnim('handGrabEnd', 'anim', true)
         setPosition('handGrabEnd', 300, 200)
-        setProperty('video5s.visible', false)
+        setProperty('video5.visible', false)
     end
 
     if name == 'prob' then
