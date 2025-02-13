@@ -52,7 +52,7 @@ function makeVideoSprit(videoTag, x, y, camera)
 
         table.insert(videoSprites, videoTag)
     else
-        createInstance(videoTag, 'backend.VideoSpriteManager', {x, y, 1920, 1080})
+        createInstance(videoTag, 'backend.VideoSpriteManager', {x, y})
         setObjectCamera(videoTag, camera)
         addInstance(videoTag)
     end

@@ -142,18 +142,14 @@ function onCreatePost()
     addBehindDad('numTunnel2')
 
     makeVideoSprite('video6', 0, 0, 'camGame')
-    if buildTarget ~= 'android' then
-        runHaxeCode("getVar('video6s').setGraphicSize(1920, 1080);")
-    end
+    scaleObject('video6', 1.5, 1.5, false) -- 1920 1080
     setProperty('video6.scale.x', getProperty('video6.scale.x') * 1.1)
     setProperty('video6.scale.y', getProperty('video6.scale.y') * 1.3)
     setPosition('video6', -200, -100)
     setProperty('video6.antialiasing', false)
 
     makeVideoSprite('video7', 0, 0, 'camGame')
-    if buildTarget ~= 'android' then
-        runHaxeCode("getVar('video7s').setGraphicSize(1920, 1080);")
-    end
+    scaleObject('video7', 1.5, 1.5, false)
     setProperty('video7.scale.x', getProperty('video7.scale.x') * 1.1)
     setProperty('video7.scale.y', getProperty('video7.scale.y') * 1.3)
     setPosition('video7', -200, -100)
@@ -161,9 +157,7 @@ function onCreatePost()
 
     makeVideoSprite('video8', 0, 0, 'camGame')
     setPosition('video8', -130, -110)
-    if buildTarget ~= 'android' then
-        runHaxeCode("getVar('video8s').setGraphicSize(1920, 1080);")
-    end
+    scaleObject('video8', 1.5, 1.5, false)
     setProperty('video8.scale.x', getProperty('video8.scale.x') * 1.4)
     setProperty('video8.scale.y', getProperty('video8.scale.y') * 1.4)
     setProperty('video8.antialiasing', false)
@@ -179,18 +173,14 @@ function onCreatePost()
     setProperty('helpme.antialiasing', false)
 
     makeVideoSprite('video4', 0, 0, 'camGame')
-    if buildTarget ~= 'android' then
-        runHaxeCode("getVar('video4s').setGraphicSize(1920, 1080);")
-    end
+    scaleObject('video4', 1.5, 1.5, false)
     setProperty('video4.scale.x', getProperty('video4.scale.x') * 1.3)
     setProperty('video4.scale.y', getProperty('video4.scale.y') * 1.3)
     setPosition('video4', -130, -110)
     setProperty('video4.antialiasing', false)
 
     makeVideoSprite('video5', 0, 0, 'camGame')
-    if buildTarget ~= 'android' then
-        runHaxeCode("getVar('video5s').setGraphicSize(1920, 1080);")
-    end
+    scaleObject('video5', 1.5, 1.5, false)
     setProperty('video5.scale.x', getProperty('video5.scale.x') * 1.3)
     setProperty('video5.scale.y', getProperty('video5.scale.y') * 1.3)
     setPosition('video5', -130, -110)
@@ -449,8 +439,8 @@ function onEvent(name, value1, value2)
             if playing2 then return end
             playing2 = true
 
-            setObjectOrder('video6', getObjectOrder('boyfriendGroup')-1)
-            setObjectOrder('video7', getObjectOrder('boyfriendGroup')-1)
+            setObjectOrder('video6', getObjectOrder('dadGroup')-1)
+            setObjectOrder('video7', getObjectOrder('dadGroup')-1)
 
             setProperty('numTunnel.x', 4000)
             setProperty('numTunnel2.x', 4000)
