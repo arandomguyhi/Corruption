@@ -146,19 +146,15 @@ function glitch(cu, type, interval, target)
     end
 
     if type[1] == 'confusionOffset' then
-        numericForInterval(cu[1], cu[2] - interval, interval, function(step)
-            for i = 0,3 do
-                for _, t in pairs(targetList) do
+        for i = 0,3 do
+            for _, t in pairs(targetList) do
+                numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     if curStep == step then
                         setProperty(t:lower()..'Strums.members['..i..'].angle', getRandomFloat(1, 359))
                     end
-                end
-            end
-        end)
+                end)
 
-        if curStep == cu[2] then
-            for _, t in pairs(targetList) do
-                for i = 0,3 do
+                if curStep == cu[2] then
                     local currentTarget = t:lower()..'Strums.members['..i..']'
                     startTween('backToNormalAng'..i..' ('..t..')', currentTarget, {angle = 0}, (stepCrochet/1000)*interval, {ease = 'circOut'})
                 end
@@ -167,33 +163,29 @@ function glitch(cu, type, interval, target)
     end
 
     if type[1] == 'Z' then
-        numericForInterval(cu[1], cu[2] - interval, interval, function(step)
-            for i = 0, 3 do
-                for _, t in pairs(targetList) do
+        for i = 0, 3 do
+            for _, t in pairs(targetList) do
+                numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     if curStep == step then
                         setProperty(t:lower()..'Strums.members['..i..'].angle', getRandomFloat(-360, 360))
-                        
+
                         local randomScale = getRandomFloat(type[2][1], type[2][2])
                         scaleObject(t:lower()..'Strums.members['..i..']', strum1.scaleX + randomScale * 3, strum1.scaleY + randomScale * 3)
                     end
-                end
-            end
-        end)
+                end)
 
-        if curStep == cu[2] then
-            for i = 0, 3 do
-                for _, t in pairs(targetList) do
+                if curStep == cu[2] then
                     local currentTarget = t:lower()..'Strums.members['..i..']'
-                    startTween('backToNormalScaly'..i..' ('..t..')', currentTarget, {['scale.x'] = strum1.scaleX, ['scale.y'] = strum1.scaleY, angle = 0}, (stepCrochet/1000)*interval, {ease = 'quadOut'})
+                    startTween('backToNormalScaly'..i..' ('..t..')', currentTarget, {['scale.x'] = strum1.scaleX, ['scale.y'] = strum1.scaleY, angle = 0}, (stepCrochet/1000)*interval, {ease = 'quadOut', onUpdate = 'strumie2'})
                 end
             end
         end
     end
 
     if type[1] == 'reverse' then
-        numericForInterval(cu[1], cu[2] - interval, interval, function(step)
-            for i = 0,3 do
-                for _, t in pairs(targetList) do
+        for i = 0, 3 do
+            for _, t in pairs(targetList) do
+                numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     if curStep == step then
                         if getRandomBool(50) then
                             setPropertyFromGroup(t:lower()..'Strums', getRandomInt(0, 3), 'downScroll', true)
@@ -204,13 +196,9 @@ function glitch(cu, type, interval, target)
                         local currentTarget = t:lower()..'Strums.members['..i..']'
                         setProperty(currentTarget..'.y', getPropertyFromGroup(t:lower()..'Strums', i, 'downScroll') and 570 or 50)
                     end
-                end
-            end
-        end)
+                end)
 
-        if curStep == cu[2] then
-            for _, t in pairs(targetList) do
-                for i = 0, 3 do
+                if curStep == cu[2] then
                     local currentTarget = t:lower()..'Strums.members['..i..']'
                     setPropertyFromGroup(t:lower()..'Strums', i, 'downScroll', false)
                     startTween('backToNormalStr'..i..' ('..t..')', currentTarget, {y = _G['default'..t..'StrumY'..i]}, (stepCrochet/1000)*interval, {ease = 'bounceOut'})
@@ -220,10 +208,10 @@ function glitch(cu, type, interval, target)
     end
             
     if type[1] == 'position' then
-        numericForInterval(cu[1], cu[2] - interval, interval, function(step)
-            local direction = 'x'
-            for i = 0,3 do
-                for _, t in pairs(targetList) do
+        local direction = 'x'
+        for i = 0,3 do
+            for _, t in pairs(targetList) do
+                numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     direction = 'x'
                     if getRandomBool(50) then
                         direction = 'y' end
@@ -234,13 +222,9 @@ function glitch(cu, type, interval, target)
                         setProperty(currentTarget..'.angle', getRandomFloat(-360, 360))
                         setProperty(currentTarget..'.'..direction, _G['default'..t..'Strum'..direction:upper()..i] + getRandomFloat(type[2][1], type[2][2]))
                     end
-                end
-            end
-        end)
+                end)
 
-        if curStep == cu[2] then
-            for i=0,3 do
-                for _, t in pairs(targetList) do
+                if curStep == cu[2] then
                     local currentTarget = t:lower()..'Strums.members['..i..']'
                     startTween('backToNormalPos'..i..' ('..t..')', currentTarget, {x = _G['default'..t..'StrumX'..i], y = _G['default'..t..'StrumY'..i], angle = 0}, (stepCrochet/1000)*interval, {ease = 'quadOut'})
                 end
@@ -252,4 +236,11 @@ end
 
 function updatePoop(n,f,v)
     setShaderFloat(n,f,v)
+end
+
+function strumie2()
+    runHaxeCode([[
+        for (cu in game.opponentStrums)
+            cu.updateHitbox();
+    ]])
 end
