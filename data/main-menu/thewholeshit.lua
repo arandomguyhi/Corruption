@@ -44,6 +44,10 @@ setProperty('isCameraOnForcedPos', true)
 
 luaDebugMode = true
 
+function onPause()
+    return Function_Stop
+end
+
 function onCreate()
     runHaxeCode([[
         var middle = new FlxTypedSpriteGroup();
@@ -128,7 +132,7 @@ function onCreatePost()
         enterMain(true) end
 end
 
-function onUpdatePost(elapsed)
+function onUpdatePost()
     setShaderFloat('blur', 'strength', blurAmount)
     setShaderFloat('blur', 'angle', blurAngle)
 end
@@ -422,6 +426,7 @@ function enterFreeplay()
     maxBlur = 0.05
     blurAngle = 90
     startTween('initialTween', 'camFollow', {x = 4800}, 0.6, {ease = 'circIn', onComplete = 'easierTweenRight'})
+    
     runHaxeCode([[
         FlxTween.num(0.0, ]]..maxBlur..[[, 0.3, {ease: FlxEase.quadIn, onComplete: function(b) {
             parentLua.call('hideBlur');

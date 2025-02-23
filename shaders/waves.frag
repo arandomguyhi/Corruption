@@ -1,19 +1,18 @@
 #pragma header
-uniform float iTime;
-vec2 uv = openfl_TextureCoordv.xy;
-vec2 iResolution = openfl_TextureSize;
-vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
-uniform vec4      iMouse;   
-#define texture flixel_texture2D
+
+#define texture texture2D
 #define iChannel0 bitmap
 #define iChannel1 bitmap
 #define iChannel2 bitmap
 #define fragColor gl_FragColor
 #define mainImage main
 
+uniform float iTime;
+
 const vec4 u_WaveStrengthX=vec4(0.0,0.0,0.000,0.00);
 const vec4 u_WaveStrengthY=vec4(2.54,6.33,0.00102,0.0025);
-vec2 dist(vec2 uv) { 
+
+vec2 dist(vec2 uv) {
     float uTime = iTime * 0.05;
     if(uTime==0.0) uTime=0.15*iTime;
     float noise = texture(iChannel1, uTime + uv).r;
@@ -24,8 +23,12 @@ vec2 dist(vec2 uv) {
         (sin((uv.y + uTime) * 45.0) * u_WaveStrengthX.w);
     return uv;
 }
-void mainImage(  )
+
+void mainImage()
 {
+    vec2 iResolution = openfl_TextureSize;
+    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = fragCoord/iResolution.xy;
 

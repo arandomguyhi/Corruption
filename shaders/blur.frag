@@ -1,13 +1,11 @@
 #pragma header
-vec2 uv = openfl_TextureCoordv.xy;
-vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
-vec2 iResolution = openfl_TextureSize;
-uniform float iTime;
+
 #define iChannel0 bitmap
-#define texture flixel_texture2D
+#define texture texture2D
 #define fragColor gl_FragColor
 #define mainImage main
 
+uniform float iTime;
 uniform float strength = 0.00;
 uniform float angle;
 
@@ -27,8 +25,11 @@ vec4 dirBlur(vec2 uv, vec2 angle)
 }
 
 
-void mainImage(  )
+void mainImage()
 {
+    vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
+    vec2 iResolution = openfl_TextureSize;
+
     vec2 uv = fragCoord / iResolution.xy;
     
     float r = radians(angle);
