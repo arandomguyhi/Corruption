@@ -1,4 +1,14 @@
+-- NOT THE CURRENT ONEEEE!!!!!!!!!
+
 luaDebugMode = true
+
+local function math_fastCos(insanaMatematica)
+    return callMethodFromClass('flixel.math.FlxMath', 'fastCos', {insanaMatematica})
+end
+
+local function math_fastSin(insanaMatematica)
+    return callMethodFromClass('flixel.math.FlxMath', 'fastSin', {insanaMatematica})
+end
 
 function onCreatePost()
     if shadersEnabled then
@@ -35,6 +45,7 @@ function numericForInterval(start, endie, interval, func)
     end
 end
 
+local f = 1
 function onStepHit()
     if curStep == 60 then
         for i = 0, 3 do
@@ -51,11 +62,22 @@ function onStepHit()
             end
         end
     end
+
+    if curStep >= 927 and curStep < 960 and curStep % 2 == 0 then
+        applyTipsy('Y', 1 * f, 1)
+
+        for v = 0,3 do
+            cancelTween('untipsy'..v)
+            startTween('untipsy'..v, 'playerStrums.members['..v..']', {y = _G['defaultPlayerStrumY'..v]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+        end
+        f = f * -1
+    end
 end
 
 local counter = -1
 local counter2 = -1
-function onUpdate()
+local f = 1
+function onUpdate(elapsed)
     setShaderFloat('poop', 'iTime', getSongPosition() * 0.001)
 
     bump(0, 4, "Y", 50, 'bounceOut', 2)
@@ -75,17 +97,37 @@ function onUpdate()
     glitch({188, 192}, {'shader', {0.05, 0.3}}, 0.5)
     glitch({188, 192}, {'reverse'}, 0.5, 2)
 
+    --if curStep == 192 then
+        applyTipsy('Y', 0.625, 1)
+    --end
+    --queueEase(0, 3, 'tipsy', 'Y', 0.625)
+
     glitch({214, 220}, {'shader', {0.05, 0.3}}, 0.5)
     glitch({214, 220}, {'confusionOffset'}, 0.5, -1)
 
-    numericForInterval(224, 256, 2, function(curStep)
+
+    numericForInterval(224, 256, 2, function(step)
         counter = counter * -1
-        bump(curStep, 2, 'X', 32.5 * counter, 'linear', -1)
+        bump(step, 2, 'X', 32.5 * counter, 'linear', -1)
     end)
-    numericForInterval(240, 256, 1, function(curStep)
+    numericForInterval(240, 256, 1, function(step)
         counter2 = counter2 * -1
-        bump(curStep, 2, 'X', 32.5 * counter2, 'linear', -1)
+        bump(step, 2, 'X', 32.5 * counter2, 'linear', -1)
     end)
+
+    --[[numericForInterval(288, 544, 2, function(i)
+        if curStep == i then
+            applyTipsy('Y', 1 * f, 1)
+
+            if curStep == i+4 then
+            for v = 0,3 do
+                cancelTween('untipsy'..v)
+                startTween('untipsy'..v, 'playerStrums.members['..v..']', {y = _G['defaultPlayerStrumY'..v]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+            end
+            end
+            f = f * -1
+        end
+    end)]]
 
     glitch({318, 320}, {'reverse'}, 0.5, 1)
     glitch({342, 346}, {'shader', {0.05, 0.3}}, 0.5)
@@ -105,6 +147,61 @@ function onUpdate()
 end
 
 local targets = {'Player', 'Opponent'}
+
+local currentTipsy = nil
+function queueEase(step, endStep, modifier, axis, val, leease, line)
+    local leTargets = {}
+
+    if leease == nil then
+        leease = 'linear' end
+    if line == nil then
+        line = -1 end
+
+    if line == -1 then
+        leTargets = targets
+    else
+        leTargets = {targets[line]}
+    end
+
+    if modifier == 'tipsy' then
+        for i = 0,3 do
+            for _, t in ipairs(leTargets) do
+                local currentTarget = t:lower()..'Strums.members['..i..']'
+
+                local songPos = (getSongPosition()/1000)
+                local defaultPos = _G['default'..t..'Strum'..axis..i]
+                local swagWidth = getPropertyFromClass('objects.Note', 'swagWidth')
+                local noteOffset = getProperty(currentTarget..'.offset.'..axis:lower())
+
+                local tipsy = defaultPos + (math_fastCos((songPos * ((val*1.2) + .9) + i * ((noteOffset * .8) -1.35*(-math.pi)))) * swagWidth * .4)
+
+                if curStep >= step and curStep < endStep then
+                    currentTipsy = tipsy
+                    startTween('tipsyTween'..i..' ( '..t..')', currentTarget, {y = currentTipsy}, (stepCrochet/1000)*(endStep-step), {ease = leease})
+                end
+
+                if curStep >= endStep then
+                    setProperty(currentTarget..'.'..axis:lower(), tipsy)
+                end
+            end
+        end
+    end
+    -- ok this was something
+end
+
+function applyTipsy(axis, time, pl)
+    for i = 0, 3 do
+        local songPos = (getSongPosition()/1000)
+        local swagWidth = getPropertyFromClass('objects.Note', 'swagWidth')
+        local defaultPos = _G['default'..targets[pl]..'Strum'..axis..i]
+
+        local currentTarget = targets[pl]:lower()..'Strums.members['..i..']'
+        local noteOffset = getProperty(currentTarget..'.offset.'..axis:lower())
+        local tipsy = i * (math_fastCos((songPos * ((1*1.2) + 1.2) + time * ((noteOffset * 1)))) * swagWidth * .4)
+        --local tipsy = defaultPos + (math_fastCos((songPos * ((time*1.2) + 1.2) + noteOffset * ((i * 1.8) + 1.8))) * swagWidth * .4)
+        setProperty(currentTarget..'.'..axis:lower(), tipsy)
+    end
+end
 
 function bump(step, steplength, modifier, amnt, leease, line)
     local targetList = {}
@@ -188,9 +285,9 @@ function glitch(cu, type, interval, target)
                 numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     if curStep == step then
                         if getRandomBool(50) then
-                            setPropertyFromGroup(t:lower()..'Strums', getRandomInt(0, 3), 'downScroll', true)
+                            setPropertyFromGroup(t:lower()..'Strums', getRandomInt(0, 3), 'downScroll', not downscroll)
                         else
-                            setPropertyFromGroup(t:lower()..'Strums', getRandomInt(0, 3), 'downScroll', false)
+                            setPropertyFromGroup(t:lower()..'Strums', getRandomInt(0, 3), 'downScroll', downscroll)
                         end
 
                         local currentTarget = t:lower()..'Strums.members['..i..']'
@@ -200,7 +297,7 @@ function glitch(cu, type, interval, target)
 
                 if curStep == cu[2] then
                     local currentTarget = t:lower()..'Strums.members['..i..']'
-                    setPropertyFromGroup(t:lower()..'Strums', i, 'downScroll', false)
+                    setPropertyFromGroup(t:lower()..'Strums', i, 'downScroll', downscroll)
                     startTween('backToNormalStr'..i..' ('..t..')', currentTarget, {y = _G['default'..t..'StrumY'..i]}, (stepCrochet/1000)*interval, {ease = 'bounceOut'})
                 end
             end

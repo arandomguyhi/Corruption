@@ -1,0 +1,16 @@
+{
+	"song": {
+		"player1": null,
+		"events": [],
+		"gfVersion": null,
+		"notes": [],
+		"player2": null,
+		"player3": null,
+		"song": null,
+		"stage": "menu",
+		"needsVoices": false,
+		"validScore": false,
+		"bpm": 102,
+		"speed": 1
+	}
+}
