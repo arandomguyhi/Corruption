@@ -1,12 +1,9 @@
 #pragma header
 
 #define iChannel0 bitmap
-#define texture texture2D
-#define fragColor gl_FragColor
-#define mainImage main
 
 uniform float iTime;
-uniform float strength = 0.00;
+uniform float strength;
 uniform float angle;
 
 const int samples = 50;
@@ -18,14 +15,14 @@ vec4 dirBlur(vec2 uv, vec2 angle)
     const float delta = 2.0 / float(samples);
     for(float i = -1.0; i <= 1.0; i += delta)
     {
-        acc += texture(iChannel0, uv - vec2(angle.x * i, angle.y * i)).rgb * delta * .5;
+        acc += texture2D(iChannel0, uv - vec2(angle.x * i, angle.y * i)).rgb * delta * .5;
     }
     
     return vec4(acc, 1.0);  
 }
 
 
-void mainImage()
+void main()
 {
     vec2 fragCoord = openfl_TextureCoordv*openfl_TextureSize;
     vec2 iResolution = openfl_TextureSize;
@@ -35,7 +32,7 @@ void mainImage()
     float r = radians(angle);
     vec2 direction = vec2(sin(r), cos(r));
     
-    fragColor = dirBlur(uv, strength*direction);
+    gl_FragColor = dirBlur(uv, strength*direction);
     //fragColor = texture(iChannel0, uv);
 }
 

@@ -70,7 +70,7 @@ function onCreate()
 
     addMiddleShit()
     addRightShit()
-    --addExtraShit()
+    addExtraShit()
     addTextShit()
     addFreeplayText()
 
@@ -233,6 +233,10 @@ function onUpdate(elapsed)
     setShaderFloat('lens', 'iTime', increaseTime)
     setShaderFloat('blur', 'iTime', increaseTime)
 
+    if keyboardJustPressed('SPACE') then
+        restartSong()
+    end
+
     inputShit()
 
     if curMenu ~= 'freeplay' then return end
@@ -274,6 +278,26 @@ end
 
 function easierTweenRight()
     startTween('initialTween', 'camFollow', {x = 5221, y = 570}, 0.8, {ease = 'backOut'})
+end
+
+function easierTweenLeft()
+    startTween('initialTween', 'camFollow', {x = 951, y = 570}, 1.2, {ease = 'backOut'})
+end
+
+function easierTweenDown()
+    setProperty('camFollow.y', -370)
+    setProperty('bfFloat.alpha', 0)
+    setProperty('bfFloatRed.alpha', 1)
+    startTween('initialTween', 'camFollow', {y = 570}, 1.2, {ease = 'backOut'})
+end
+
+function easierTweenUp()
+    setProperty('camFollow.y', -370)
+    setProperty('bfFloat.alpha', 1)
+    setProperty('bfFloatRed.alpha', 0)
+    startTween('initialTween', 'camFollow', {y = 570}, 1.2, {ease = 'backOut'})
+    doTweenAlpha('fadeBlack', 'blackFade', 1, 1, 'sineOut')
+    doTweenAlpha('blackBg', 'fullBlack', 1, 1, 'sineOut')
 end
 
 function inputShit()
@@ -341,7 +365,7 @@ function inputShit()
     end
 
     if keyJustPressed('right') then
-        if curMenu == 'extra' then
+        if curMenu == 'extras' then
             playSound('scrollMenu')
             curSelectedExtra = curSelectedExtra + 1
             if curSelectedExtra > 1 then
@@ -364,7 +388,7 @@ function inputShit()
     end
 
     if keyJustPressed('left') then
-        if curMenu == 'extra' then
+        if curMenu == 'extras' then
             playSound('scrollMenu')
             curSelectedExtra = curSelectedExtra - 1
             if curSelectedExtra < 0 then
@@ -420,6 +444,25 @@ function checkSelection(curSelect)
     playSound('confirmMenu')
 end
 
+function backOut()
+    canSelect = false
+    runTimer('canSelect', 1)
+
+    if curMenu ~= 'options' then
+        playSound('cancelMenu')
+    end
+
+    if curMenu == 'freeplay' then
+        leaveFreeplay()
+    elseif curMenu == 'options' then
+        leaveSettings()
+    elseif curMenu == 'extras' then
+        leaveExtras()
+    end
+    playMusic('menu0')
+    curMenu = 'main'
+end
+
 function enterFreeplay()
     runTimer('clock update', 0.75)
 
@@ -429,9 +472,94 @@ function enterFreeplay()
     
     runHaxeCode([[
         FlxTween.num(0.0, ]]..maxBlur..[[, 0.3, {ease: FlxEase.quadIn, onComplete: function(b) {
-            parentLua.call('hideBlur');
+            parentLua.call('hideBlur', []);
         }}, function(hi) {
-            parentLua.call('blurAmount', [hi]);
+            parentLua.call('amountBlur', [hi]);
+        });
+    ]])
+end
+
+function leaveFreeplay()
+    maxBlur = 0.05
+    blurAngle = 90
+
+    startTween('initialTween', 'camFollow', {x = 1951}, 0.6, {ease = 'circIn', onComplete = 'easierTweenLeft'})
+    runHaxeCode([[
+        FlxTween.num(0.0, ]]..maxBlur..[[, 0.3, {ease: FlxEase.quadIn, onComplete: function(b) {
+            parentLua.call('hideBlur', []);
+        }}, function(hi) {
+            parentLua.call('amountBlur', [hi]);
+        });
+    ]])
+end
+
+function enterExtras()
+    maxBlur = 0.1
+    blurAngle = 90.0
+    doTweenAlpha('fadeBlack', 'blackFade', 0, 1, 'sineOut')
+    doTweenAlpha('blackTween', 'fullBlack', 0, 1, 'sineOut')
+    startTween('byebf', 'bfFloat', {x = 453, y = 313, alpha = 0}, 1, {ease = 'sineOut'})
+    startTween('redbf', 'bfFloatRed', {x = 453, y = 313}, 1, {ease = 'sineOut'})
+    doTweenAlpha('redBg', 'bgRed', 1, 1, 'sineOut')
+    startTween('redBuild', 'buildingRed', {angle = 0, alpha = 1}, 1, {ease = 'sineOut'})
+    doTweenAngle('layertween', 'layer2', 15, 1, 'sineOut')
+    startTween('redChain', 'chainRed', {angle = 170, alpha = 1}, 1, {ease = 'sineOut'})
+
+    startTween('ST3', 'selectedText.members[3]', {alpha = 0}, 1, {ease = 'sineOut'})
+    startTween('OB3', 'optionBg.members[3]', {alpha = 0}, 1, {ease = 'sineOut'})
+    startTween('OT1', 'optionText.members[1]', {alpha = 0}, 1, {ease = 'sineOut'})
+    startTween('OT2', 'optionText.members[2]', {alpha = 0}, 1, {ease = 'sineOut'})
+    startTween('OT0', 'optionText.members[0]', {alpha = 0}, 1, {ease = 'sineOut'})
+    startTween('OT4', 'optionText.members[4]', {alpha = 0}, 1, {ease = 'sineOut'})
+
+    runTimer('option update', 0.5)
+
+    startTween('initialTween', 'camFollow', {y = 1700}, 0.6, {ease = 'circIn', onComplete = 'easierTweenDown'})
+
+    runHaxeCode([[
+        FlxTween.num(90.0, 0.0, 0.6, {ease: FlxEase.quadIn, onComplete: function(a) {
+            parentLua.call('hideBlur', []);
+        }}, function(hi) {
+           parentLua.call('angleBlur', [hi]); 
+        });
+
+        FlxTween.num(0.0, ]]..maxBlur..[[, 0.5, {ease: FlxEase.quadOut, onComplete: function(a) {
+            parentLua.call('hideBlur', []);
+        }}, function(hi) {
+           parentLua.call('amountBlur', [hi]); 
+        });
+    ]])
+end
+
+function leaveExtras()
+    maxBlur = 0.1
+    blurAngle = 90.0
+
+    startTween('hibf', 'bfFloat', {x = 574, y = 200}, 1, {ease = 'sineOut'})
+    startTween('byeredbf', 'bfFloatRed', {x = 574, y = 200, alpha = 0}, 1, {ease = 'sineOut'})
+    doTweenAlpha('noRedBg', 'bgRed', 0, 1, 'sineOut')
+    startTween('noRedBuild', 'buildingRed', {angle = -14, alpha = 0}, 1, {ease = 'sineOut'})
+    doTweenAngle('nolayer', 'layer2', 0, 1, 'sineOut')
+    startTween('noredchain', 'chainRed', {angle = 144, alpha = 0}, 1, {ease = 'sineOut'})
+
+    runTimer('leave extra', 0.5)
+
+    startTween('initialTween', 'camFollow', {y = 1700}, 0.6, {ease = 'circIn', onComplete = 'easierTweenUp'})
+
+    runHaxeCode([[
+        FlxTween.num(90.0, 0.0, 0.6, {
+            ease: FlxEase.quadIn,
+            onComplete: function(twn:FlxTween) {
+                parentLua.call('hideBlur', []);
+            }
+        }, function(hi) {
+                parentLua.call('angleBlur', [hi]); 
+        });
+
+        FlxTween.num(0.0, ]]..maxBlur..[[, 0.5, {ease: FlxEase.quadOut, onComplete: function(twn:FlxTween) {
+            game.callOnLuas('hideBlur', []);
+        }}, function(hi) {
+           parentLua.call('amountBlur', [hi]); 
         });
     ]])
 end
@@ -439,13 +567,16 @@ end
 function hideBlur()
     runHaxeCode([[
         FlxTween.num(]]..maxBlur..[[, 0.0, 0.5, null, function(hi) {
-           parentLua.call('blurAmount', [hi]); 
+           parentLua.call('amountBlur', [hi]); 
         });
     ]])
 end
 
-function blurAmount(val)
+function amountBlur(val)
     blurAmount = val
+end
+function angleBlur(val)
+    blurAngle = val
 end
 
 function updateOption()
@@ -457,7 +588,7 @@ function updateOption()
 
             setProperty('sidestoryBg.alpha', 0)
             setProperty('sidestorySelected.alpha', 0)
-            setProperty('sidestoryText.alpha', 0)
+            setProperty('sidestoryText.alpha', 0.2)
         else
             setProperty('ifBg.alpha', 0)
             setProperty('ifSelected.alpha', 0)
@@ -707,19 +838,19 @@ end
 
 function addExtraShit()
     makeLuaSprite('bgRed', path..'mainmenu/RedBg', 54, -336)
-    addLuaSprite('bgRed')
+    addLuaSprite('bgRed', true)
     setScrollFactor('bgRed', 0, 0)
     scaleObject('bgRed', 2, 2, false)
     setProperty('bgRed.alpha', 0)
 
     makeLuaSprite('buildingRed', path..'mainmenu/RedBuildings', -36, -196)
-    addLuaSprite('buildingRed')
+    addLuaSprite('buildingRed', true)
     setScrollFactor('buildingRed', 0, 0.1)
     scaleObject('buildingRed', 1.8, 1.8, false)
     setProperty('buildingRed.alpha', 0)
 
     makeLuaSprite('chainRed', path..'mainmenu/chainRed', -276, -1116)
-    addLuaSprite('chainRed')
+    addLuaSprite('chainRed', true)
     setScrollFactor('chainRed', 0, 0.3)
     scaleObject('chainRed', 1.8, 1.8, false)
     setProperty('chainRed.alpha', 0)
@@ -731,36 +862,36 @@ function addExtraShit()
     setProperty('bfFloatRed.angle', 180)
     setProperty('bfFloatRed.antialiasing', true)
     setPosition('bfFloatRed', 574, 210)
-    addLuaSprite('bfFloatRed')
+    addLuaSprite('bfFloatRed', true)
     setProperty('bfFloatRed.alpha', 0)
 
     makeLuaSprite('ifBg', path..'title/ifBg', -307, 503)
     setProperty('ifBg.alpha', 0)
-    addLuaSprite('ifBg')
+    addLuaSprite('ifBg', true)
 
     makeLuaSprite('ifText', path..'title/ifText', -300, 503-10)
     scaleObject('ifText', 0.9, 0.9, false)
     setProperty('ifText.alpha', 0)
-    addLuaSprite('ifText')
+    addLuaSprite('ifText', true)
 
     makeLuaSprite('ifSelected', path..'title/ifSelected', -307, 503)
-    addLuaSprite('ifSelected')
+    addLuaSprite('ifSelected', true)
     setProperty('ifSelected.alpha', 0)
 
     makeLuaSprite('sidestoryBg', path..'title/sidestoryBg', 883, 504)
     scaleObject('sidestoryBg', 0.9, 0.9, false)
     setProperty('sidestoryBg.alpha', 0)
-    addLuaSprite('sidestoryBg')
+    addLuaSprite('sidestoryBg', true)
 
     makeLuaSprite('sidestoryText', path..'title/sidestoryText', 890, 504-10)
     scaleObject('sidestoryText', 0.8, 0.8, false)
     setProperty('sidestoryText.alpha', 0)
-    addLuaSprite('sidestoryText')
+    addLuaSprite('sidestoryText', true)
 
     makeLuaSprite('sidestorySelected', path..'title/sidestorySelected', 883, 504)
     scaleObject('sidestorySelected', 0.9, 0.9, false)
     setProperty('sidestorySelected.alpha', 0)
-    addLuaSprite('sidestorySelected')
+    addLuaSprite('sidestorySelected', true)
 end
 
 function addMiddleShit()
@@ -986,6 +1117,10 @@ function onTimerCompleted(tag)
         updateClock(curSelectedFreeplay)
     end
 
+    if tag == 'option update' then
+        updateOption()
+    end
+
     if tag == 'destroy bubbles' then
         setProperty('bubbles.alpha', 0)
         setProperty('bubbles2.alpha', 0)
@@ -1019,6 +1154,22 @@ function onTimerCompleted(tag)
     elseif tag == 'reveal6' then
         canSelect = true
         menuRevealed = true
+    end
+
+    if tag == 'leave extra' then
+        setProperty('ifSelected.alpha', 0)
+        setProperty('ifBg.alpha', 0)
+        setProperty('ifText.alpha', 0)
+        setProperty('sidestoryBg.alpha', 0)
+        setProperty('sidestorySelected.alpha', 0)
+        setProperty('sidestoryText.alpha', 0)
+
+        startTween('ST3', 'selectedText.members[3]', {alpha = 1}, 0.5, {ease = 'sineOut'})
+        startTween('OB3', 'optionBg.members[3]', {alpha = 0.2}, 0.5, {ease = 'sineOut'})
+        startTween('OT1', 'optionText.members[1]', {alpha = 0.2}, 0.5, {ease = 'sineOut'})
+        startTween('OT2', 'optionText.members[2]', {alpha = 0.2}, 0.5, {ease = 'sineOut'})
+        startTween('OT0', 'optionText.members[0]', {alpha = 0.2}, 0.5, {ease = 'sineOut'})
+        startTween('OT4', 'optionText.members[4]', {alpha = 0.2}, 0.5, {ease = 'sineOut'})
     end
 end
 
