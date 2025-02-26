@@ -1,0 +1,165 @@
+import flixel.math.FlxMath;
+import openfl.filters.ShaderFilter;
+import openfl.Lib;
+import flixel.addons.display.FlxBackdrop;
+
+
+var video;
+var playing:Bool = false;
+
+var hideJudge:Bool = true;
+var prevJudgeOpacity:Float = 0;
+var prevHpOpacity:Float = 0;
+var prevHudOpacity:Float = 0;
+
+var whichOne:Bool = false;
+
+
+function onCreate(){
+	game.worldCombos = false;
+    game.introSnds = [null,null,null,null];
+    game.introAlts = [null,null,null,null];
+
+    if (FlxG.save.data.seenOpening == null){
+        FlxG.save.data.seenOpening = false;
+    }
+
+    if (FlxG.save.data.seenOpening == false){ // make sure ppl restarting dont gotta keep changing settings
+        FlxG.save.data.seenOpening = true;
+        changeVisible(false);
+        whichOne = false;
+    } else {
+        changeVisible(true);
+        whichOne = true;
+    }
+}
+
+var underlay:FlxSprite;
+
+
+function postModifierRegister()modManager.setValue('opponentSwap', 0.5);
+
+
+function onCreatePost(){
+    FlxSprite.defaultAntialiasing = true;
+
+	underlay = new FlxSprite().makeGraphic(1, 1, FlxColor.BLACK);
+	underlay.scale.set(Note.swagWidth * 4, 960);
+	underlay.updateHitbox();
+	underlay.screenCenter();
+	underlay.alpha = 0.75;
+	underlay.cameras = [game.camHUD];
+	game.insert(game.members.indexOf(game.hud) - 1, underlay);
+
+    game.instaRespawn = true;
+
+	// omfg im so lazy
+	game.isPixelPrefix = "silent";
+
+    game.dadField.noteField.visible = false;
+
+    blackTop = new FlxSprite(0,0).makeGraphic(1, 1, FlxColor.BLACK);
+    blackTop.scale.set(1280 * 2, 720 * 2);
+	blackTop.updateHitbox();
+    blackTop.scrollFactor.set(0,0);
+    blackTop.alpha = 1;
+    game.add(blackTop);
+
+    video = new MP4Sprite();
+	video.bitmap.onFormatSetup.add(function():Void
+	{
+		video.setGraphicSize(1280, 720);
+		video.updateHitbox();
+
+		video.scale.x = 1.45;
+		video.scale.y = 1.45;
+		video.setPosition(0,0);
+	});
+    video.scrollFactor.set(0,0);
+	video.bitmap.onEndReached.add(video.destroy);
+	video.load(Paths.video('opening'));
+	video.antialiasing = false;
+	game.add(video);
+
+    game.zoomEveryBeat = 0;
+	
+	iconP2 = game.hud.iconP2;
+	
+	game.hud.remove(iconP2);
+	game.hud.remove(game.hud.iconP1);
+
+	object = video;
+}
+
+function changeVisible(which:Bool){
+    if (which){
+        //game.playerField.noteField.visible = true;
+		game.showRating = true;
+		game.showComboNum = true;
+        game.camHUD.alpha = 1;
+    } else {
+        //game.playerField.noteField.visible = false;
+		game.showRating = false;
+		game.showComboNum = false;
+        game.camHUD.alpha = 0;
+    }
+}
+
+function onEndSong(){
+	FlxG.save.data.seenCutscene = false;
+    game.endingSong = true;
+    game.camGame.setFilters([]);
+    game.camHUD.setFilters([]);
+}
+
+function onGameOver(){
+    game.camGame.setFilters([]);
+    game.camHUD.setFilters([]);
+}
+
+function onEvent(eventName, value1, value2, time){
+    if (game.endingSong == true){return;}
+    switch(eventName){
+        case 'playvideo':
+            if(playing)return;
+            playing = true;
+            if(hxvlc != "0")
+                video.play();
+            else if(hxcodec == "3.0.0")
+                video.play(Paths.video('opening'));
+            else
+                video.playVideo(Paths.video('opening'));
+    }
+}
+
+function onPause(){
+    FlxG.game.setFilters([]);
+    video.pause();
+}
+
+function onResume(){
+    //FlxG.game.setFilters([new ShaderFilter(scanline)]);
+    video.bitmap.time = game.inst.time;
+    video.resume();
+}
+
+function onDestroy(){
+    video.destroy();
+}
+
+function destroyVid(video){
+	return ()->{
+		trace("dead");
+		game.remove(video);
+		video.destroy();
+	}
+}
+
+function onUpdatePost(elapsed){
+	game.health = 1000; // invincible1!!!!
+
+    if (FlxG.keys.justPressed.SPACE){
+        whichOne = !whichOne;
+        changeVisible(whichOne);
+    }
+}

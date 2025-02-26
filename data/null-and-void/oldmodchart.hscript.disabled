@@ -1,0 +1,348 @@
+function numericForInterval(start, end, interval, func){
+    var index = start;
+    while(index < end){
+        func(index);
+        index += interval;
+    }
+}
+
+
+var evilBumps = [0, 6, 32, 38, 64, 70, 95, 102];
+function generateModchart(){
+    modManager.queueEase(0, 2, "flip", 0.25, 'sineOut', 1);
+    modManager.queueEase(0, 2, "invert", -0.75, 'sineOut', 1);
+
+    modManager.queueEase(6, 8, "flip", 1, 'sineOut', 1);
+    modManager.queueEase(6, 8, "invert", 0, 'sineOut', 1);
+ 
+    modManager.queueSet(16, "flip", 0);
+    modManager.queueSet(16, "localrotateZ", 90);
+    modManager.queueSet(16, "confusionOffset", -90);
+    modManager.queueSet(22, "localrotateZ", -90);
+    modManager.queueSet(22, "confusionOffset", 90);
+
+    modManager.queueSet(26, "localrotateZ", 0);
+    modManager.queueSet(26, "confusionOffset", 0);
+    modManager.queueSet(26, "reverse", 1);
+    if(ClientPrefs.downscroll)
+        modManager.queueSet(26, "transformY", -200);
+    else   
+        modManager.queueSet(26, "transformY", 200);
+
+    modManager.queueEase(26, 32, "transformY", 0, 'backOut');
+
+    modManager.queueEase(32, 34, "flip", 0.25, 'sineOut', 1);
+    modManager.queueEase(32, 34, "invert", -0.75, 'sineOut', 1);   
+
+    modManager.queueEase(38, 40, "flip", 0.25, 'sineOut', 1);
+    modManager.queueEase(38, 40, "invert", 1.25, 'sineOut', 1);   
+
+    modManager.queueSet(54, "localrotateY", 3.6);
+    modManager.queueEase(54, 58, "localrotateY", 0, 'circOut');
+    modManager.queueEase(54, 58, 'flip', 0, 'linear', 1);
+    modManager.queueEase(54, 58, 'invert', 0, 'linear', 1);
+
+    if(ClientPrefs.downscroll)
+        modManager.queueSet(60, "transformY", 200);
+    else   
+        modManager.queueSet(60, "transformY", -200);
+    modManager.queueSet(60, "reverse", 0);
+    modManager.queueEase(60, 64, "transformY", 0, 'backOut');
+
+    modManager.queueEase(112, 127, "beat", 0.75, 'quadInOut');
+
+    var shit = Song.loadFromJson("drums", "null-and-void");
+    var noteData = shit.notes;
+
+    var f:Float = 1;
+
+    for(sexion in noteData){
+        for(data in sexion.sectionNotes){
+            f *= -1;
+            var time:Float = data[0];
+            var type:Int = Std.int(data[1] % 4);
+            var step = Conductor.getStep(time);
+            if(type == 0){
+                modManager.queueSet(step, "confusionOffset", 11.25 * f);
+                modManager.queueSet(step, "tipsy", 0.5);
+                modManager.queueEase(step, step+4, "confusionOffset", 0, "quadOut");
+                modManager.queueEase(step, step+4, "tipsy", 0, "quadOut");
+                modManager.queueSet(step, "xmod", 0.9);
+                modManager.queueEase(step, step+4, "xmod", 1, "quadOut");
+            }else if(type == 1){
+                modManager.queueSet(step, "confusionOffset", 22.5* f);
+                modManager.queueSet(step, "drunk", 0.1);
+                modManager.queueSet(step, "tipsyZ", 3);
+                modManager.queueEase(step, step + 4, "confusionOffset", 0, "quadOut");
+                modManager.queueEase(step, step + 4, "drunk", 0, "quadOut");
+                modManager.queueEase(step, step + 4, "tipsyZ", 0, "quadOut");
+                modManager.queueSet(step, "xmod", 0.9);
+                modManager.queueEase(step, step + 4, "xmod", 1, "quadOut");
+            }
+        }
+    }
+
+    var counter:Int=-1;
+/*     numericForInterval(128, 384, 16, function(step){
+        counter*=-1;
+        modManager.queueSet(step, "confusionOffset", 11.25 * counter);
+        modManager.queueSet(step, "tipsy", 0.5);
+        modManager.queueEase(step, step+4, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step, step+4, "tipsy", 0, "quadOut");
+        modManager.queueSet(step, "xmod", 0.9);
+        modManager.queueEase(step, step+4, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+4, "confusionOffset", 22.5* counter);
+        modManager.queueSet(step+4, "drunk", 0.1);
+        modManager.queueSet(step+4, "tipsyZ", 3);
+        modManager.queueEase(step+4, step+8, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+4, step+8, "drunk", 0, "quadOut");
+        modManager.queueEase(step+4, step+8, "tipsyZ", 0, "quadOut");
+        modManager.queueSet(step+4, "xmod", 0.9);
+        modManager.queueEase(step+4, step+8, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+6, "confusionOffset", 11.25* counter);
+        modManager.queueSet(step+6, "tipsy", 0.5);
+        modManager.queueEase(step+6, step+10, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+6, step+10, "tipsy", 0, "quadOut");
+        modManager.queueSet(step+6, "xmod", 0.9);
+        modManager.queueEase(step+6, step+10, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+12, "confusionOffset", 22.5* counter);
+        modManager.queueSet(step+12, "drunk", 0.1);
+        modManager.queueSet(step+12, "tipsyZ", 3);
+        modManager.queueEase(step+12, step+16, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+12, step+16, "drunk", 0, "quadOut");
+        modManager.queueEase(step+12, step+16, "tipsyZ", 0, "quadOut");
+        modManager.queueSet(step+12, "xmod", 0.9);
+        modManager.queueEase(step+12, step+16, "xmod", 1, "quadOut");
+    }); */
+    modManager.queueEase(384, 390, "beat", 0.125, 'quadOut');
+
+/*     var counter:Int=-1;
+    numericForInterval(448, 512, 16, function(step){
+        counter*=-1;
+        modManager.queueSet(step, "confusionOffset", 11.25 * counter);
+        modManager.queueSet(step, "tipsy", 0.5);
+        modManager.queueEase(step, step+4, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step, step+4, "tipsy", 0, "quadOut");
+        modManager.queueSet(step, "xmod", 0.9);
+        modManager.queueEase(step, step+4, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+4, "confusionOffset", 22.5* counter);
+        modManager.queueSet(step+4, "drunk", 0.1);
+        modManager.queueSet(step+4, "tipsyZ", 3);
+        modManager.queueEase(step+4, step+8, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+4, step+8, "drunk", 0, "quadOut");
+        modManager.queueEase(step+4, step+8, "tipsyZ", 0, "quadOut");
+        modManager.queueSet(step+4, "xmod", 0.9);
+        modManager.queueEase(step+4, step+8, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+6, "confusionOffset", 11.25* counter);
+        modManager.queueSet(step+6, "tipsy", 0.5);
+        modManager.queueEase(step+6, step+10, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+6, step+10, "tipsy", 0, "quadOut");
+        modManager.queueSet(step+6, "xmod", 0.9);
+        modManager.queueEase(step+6, step+10, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+12, "confusionOffset", 22.5* counter);
+        modManager.queueSet(step+12, "drunk", 0.1);
+        modManager.queueSet(step+12, "tipsyZ", 3);
+        modManager.queueEase(step+12, step+16, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+12, step+16, "drunk", 0, "quadOut");
+        modManager.queueEase(step+12, step+16, "tipsyZ", 0, "quadOut");
+        modManager.queueSet(step+12, "xmod", 0.9);
+        modManager.queueEase(step+12, step+16, "xmod", 1, "quadOut");
+    }); */
+    modManager.queueEase(448, 452, "beat", 0.75, 'quadInOut');
+    modManager.queueEase(448, 452, "alpha", 0.25, 'backOut', 0);
+    modManager.queueEase(448, 452, "stealth", 0.25, 'backOut', 0);
+    var a = 0.5;
+    var lCD:Int = -1;
+    modManager.queueFunc(448, 512, function(event, cDS)
+    {
+        if(lCD == -1)
+            lCD = cDS;
+        
+        a = a + (cDS - lCD);
+        lCD = cDS;
+        var val = Math.cos(a / 4);
+        var val2 = Math.sin(a / 4);
+        modManager.setValue("opponentSwap", 0.5 - (0.5 * val), 0);
+        modManager.setValue("transformZ", 96 * val2, 0);
+
+        modManager.setValue("opponentSwap", ((0.5 * val) * -1) + 0.5, 1);
+        modManager.setValue("transformZ", (96 * val2) * -1, 1);
+    });
+    modManager.queueEase(512, 516, "beat", 0.125, 'quadInOut');
+    modManager.queueEase(512, 516, "alpha", 0, 'backOut', 0);
+    modManager.queueEase(512, 516, "transformZ", 0, 'backOut', 0);
+    modManager.queueEase(512, 516, "transformZ", 0, 'backOut', 1);
+    modManager.queueEase(512, 516, "stealth", 0, 'backOut', 0);
+    modManager.queueEase(512, 516, "opponentSwap", 1, "quadOut");
+
+    modManager.queueEase(575, 579, "beat", 0.75, 'quadInOut');
+    modManager.queueEase(575, 579, "alpha", 0.25, 'backOut', 1);
+    modManager.queueEase(575, 579, "stealth", 0.25, 'backOut', 1);
+    var a = 0.5;
+    var lCD:Int = -1;
+    modManager.queueFunc(575, 639, function(event, cDS)
+    {
+        if(lCD == -1)
+            lCD = cDS;
+        
+        a = a + (cDS - lCD);
+        lCD = cDS;
+        var val = Math.cos(a / 4) * -1;
+        var val2 = Math.sin(a / 4) * -1;
+        // FlxG.log.add(val);
+        modManager.setValue("opponentSwap", 0.5 - (0.5 * val), 0);
+        modManager.setValue("transformZ", 96 * val2, 0);
+
+        // modManager.setValue("centerrotateZ", (val * 0.5) * -1, 0);
+        // modManager.setValue("centerrotateZ", (val * 0.5), 1);
+
+        modManager.setValue("opponentSwap", ((0.5 * val) * -1) + 0.5, 1);
+        modManager.setValue("transformZ", (96 * val2) * -1, 1);
+    });
+
+    modManager.queueEase(639, 643, "beat", 0.125, 'quadInOut');
+    modManager.queueEase(639, 643, "alpha", 0, 'backOut', 1);
+    modManager.queueEase(639, 643, "stealth", 0, 'backOut', 1);
+    modManager.queueEase(639, 643, "opponentSwap", 0, "quadOut");
+    modManager.queueEase(639, 643, "transformZ", 0, 'backOut', 0);
+    modManager.queueEase(639, 643, "transformZ", 0, 'backOut', 1);
+    modManager.queueEase(639, 643, "sudden", 1, 'quadInOut');
+
+    modManager.queueEase(699, 706, "reverse", 1, 'bounceOut');
+
+    modManager.queueEase(767, 772, "reverse", 0, 'bounceOut', 0);
+    modManager.queueEase(767, 772, "sudden", 0, 'bounceOut');
+    modManager.queueEase(767, 772, "centered", 1, 'bounceOut');
+    modManager.queueEase(767, 772, "opponentSwap", 0.5, 'bounceOut', 0);
+    modManager.queueEase(767, 772, "alpha", 0.5, 'quadOut', 1);
+    modManager.queueEase(767, 772, "stealth", 0.5, 'quadOut', 1);
+
+    modManager.queueEase(767, 772, "invert", .25,'bounceOut',1);
+    modManager.queueEase(767, 772, "flip", -.75,'bounceOut',1);
+    modManager.queueEase(767, 772, "flip", -.25,'bounceOut',0);
+    modManager.queueEase(767, 772, "invert", -.25,'bounceOut',0);
+
+    modManager.queueEase(767, 772, "split", 1, 'bounceOut');
+    
+    modManager.queueEase(799, 803, "invert", .25,'bounceOut',0);
+    modManager.queueEase(799, 803, "flip", -.75,'bounceOut',0);
+    modManager.queueEase(799, 803, "flip", -.25,'bounceOut',1);
+    modManager.queueEase(799, 803, "invert", -.25,'bounceOut',1);
+
+    modManager.queueEase(831, 835, "invert", .25,'bounceOut',1);
+    modManager.queueEase(831, 835, "flip", -.75,'bounceOut',1);
+    modManager.queueEase(831, 835, "flip", -.25,'bounceOut',0);
+    modManager.queueEase(831, 835, "invert", -.25,'bounceOut',0);
+
+    modManager.queueSet(863, "flip", -.375);
+    modManager.queueSet(863, "invert", .125);
+
+    modManager.queueSet(870, "transformY", 100, 0);
+    modManager.queueSet(870, "transformY", -100, 1);
+    modManager.queueSet(870, "split", 0);
+    modManager.queueSet(870, "reverse", 1, 0);
+    modManager.queueSet(870, "reverse", 0, 1);
+
+    modManager.queueSet(876, "transformY", -100, 0);
+    modManager.queueSet(876, "transformY", 100, 1);
+    modManager.queueSet(876, "reverse", 0, 0);
+    modManager.queueSet(876, "reverse", 1, 1);
+
+    modManager.queueEase(890, 894, "reverse", 0, 'quadOut');
+    modManager.queueEase(890, 894, "invert", 0, 'quadOut');
+    modManager.queueEase(890, 894, "flip", 0, 'quadOut');
+    modManager.queueEase(890, 894, "centered", 0, 'quadOut');
+    modManager.queueEase(890, 894, "transformY", 0, 'quadOut');
+
+/*     modManager.queueEase(895, 907, "localrotateZ", -4.7125, 'quadOut', 0);
+    modManager.queueEase(895, 907, "localrotateZ", 4.7125, 'quadOut', 1);
+    modManager.queueEase(895, 907, "confusionOffset", -90, 'quadOut', 1);
+    modManager.queueEase(895, 907, "confusionOffset", 90, 'quadOut', 0); */
+    modManager.queueEase(896, 908, "sudden", 0, 'quadOut');
+    modManager.queueEase(896, 908, "stealth", 0, 'quadOut');
+    modManager.queueEase(896, 908, "alpha", 0, 'quadOut');
+    modManager.queueSet(896, "opponentSwap", 0.5, 1);
+    modManager.queueEase(896, 908, "opponentSwap", 0, 'quadOut');
+/*     modManager.queueEase(895, 907, "transformX", -200,'quadOut', 1);
+    modManager.queueEase(895, 907, "transformX", -100,'quadOut', 0); */
+
+    modManager.queueSet(1023, "transformX", 0, 0);
+    modManager.queueSet(1023, "transformX", 0, 1);
+    modManager.queueSet(1023, "localrotateZ", 0);
+    modManager.queueSet(1023, "confusionOffset", 0);
+    modManager.queueSet(1023, "sudden", 0);
+    modManager.queueSet(1023, "stealth", 0, 1);
+    modManager.queueSet(1023, "alpha", 0, 1);
+    modManager.queueSet(1023, "opponentSwap", 0);
+    modManager.queueSet(1023, "squish", 0.25);
+    modManager.queueEase(1023, 1026, "squish", 0, 'circOut');
+    modManager.queueEase(1023, 1048, "tipsy", 0.75, 'quadInOut');
+    modManager.queueEase(1023, 1048, "drunk", 0.75, 'quadInOut');
+
+    modManager.queueEase(1049, 1051, "drunk", 0, 'quadOut');
+    modManager.queueEase(1049, 1051, "tipsy", 0, 'quadOut');
+
+    modManager.queueSet(1049, "confusionOffset", 22.5* counter);
+    modManager.queueSet(1049, "drunk", 0.1);
+    modManager.queueSet(1049, "tipsyZ", 3);
+    modManager.queueEase(1049, 1053, "confusionOffset", 0, "quadOut");
+    modManager.queueEase(1049, 1053, "drunk", 0, "quadOut");
+    modManager.queueEase(1049, 1053, "tipsyZ", 0, "quadOut");
+    modManager.queueSet(1049, "xmod", 0.9);
+    modManager.queueEase(1049, 1053, "xmod", 1, "quadOut");
+
+    modManager.queueSet(1051, "confusionOffset", 11.25* counter);
+    modManager.queueSet(1051, "tipsy", 0.5);
+    modManager.queueEase(1051, 1055, "confusionOffset", 0, "quadOut");
+    modManager.queueEase(1051, 1055, "tipsy", 0, "quadOut");
+    modManager.queueSet(1051, "xmod", 0.9);
+    modManager.queueEase(1051, 1055, "xmod", 1, "quadOut");
+    modManager.queueEase(1055, 1059, "beat", 0.75, 'quadInOut');
+
+
+
+/*     var counter:Int=-1;
+    numericForInterval(1055, 1279, 16, function(step){
+        counter*=-1;
+        modManager.queueSet(step, "confusionOffset", 11.25 * counter);
+        modManager.queueSet(step, "tipsy", 0.5);
+        modManager.queueEase(step, step+4, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step, step+4, "tipsy", 0, "quadOut");
+        modManager.queueSet(step, "xmod", 0.9);
+        modManager.queueEase(step, step+4, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+4, "confusionOffset", 22.5* counter);
+        modManager.queueSet(step+4, "drunk", 0.1);
+        modManager.queueSet(step+4, "tipsyZ", 3);
+        modManager.queueEase(step+4, step+8, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+4, step+8, "drunk", 0, "quadOut");
+        modManager.queueEase(step+4, step+8, "tipsyZ", 0, "quadOut");
+        modManager.queueSet(step+4, "xmod", 0.9);
+        modManager.queueEase(step+4, step+8, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+6, "confusionOffset", 11.25* counter);
+        modManager.queueSet(step+6, "tipsy", 0.5);
+        modManager.queueEase(step+6, step+10, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+6, step+10, "tipsy", 0, "quadOut");
+        modManager.queueSet(step+6, "xmod", 0.9);
+        modManager.queueEase(step+6, step+10, "xmod", 1, "quadOut");
+
+        modManager.queueSet(step+12, "confusionOffset", 22.5* counter);
+        modManager.queueSet(step+12, "drunk", 0.1);
+        modManager.queueSet(step+12, "tipsyZ", 3);
+        modManager.queueEase(step+12, step+16, "confusionOffset", 0, "quadOut");
+        modManager.queueEase(step+12, step+16, "drunk", 0, "quadOut");
+        modManager.queueEase(step+12, step+16, "tipsyZ", 0, "quadOut");
+        modManager.queueSet(step+12, "xmod", 0.9);
+        modManager.queueEase(step+12, step+16, "xmod", 1, "quadOut");
+    }); */
+
+    modManager.queueEase(1279, 1311, "alpha", 1, 'quadInOut');
+
+}

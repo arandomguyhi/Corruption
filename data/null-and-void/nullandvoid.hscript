@@ -1,0 +1,668 @@
+import flixel.math.FlxMath;
+import openfl.filters.ShaderFilter;
+import openfl.Lib;
+
+// TRIVIA: The song Null and Void was completed March 2022 (1 year and 8 months before the video released!)
+// It is a crazy feeling listening to a banger song for that long without being able to tell anyone about it...
+
+var video;
+var object:FlxSprite;
+var game;
+var curBg:Int = 1;
+var glitchBump:FlxSprite;
+var school:FlxSprite;
+var bgField:ProxyField;
+var hurtBlack:FlxSprite; // red, im still lazy
+var playIntro:Bool = false;
+var scanlinesFake:FlxSprite;
+
+var hasGameOvered:Bool = false;
+
+var chroma = newShader("null-and-void/chroma");
+function setChroma(chromeOffset){
+    chroma.data.rOffset.value = [chromeOffset];
+    chroma.data.gOffset.value = [0.0];
+    chroma.data.bOffset.value = [chromeOffset * -1];
+}
+
+var scanline = newShader("null-and-void/scanlines", "", 130);
+/* scanline.data.lockAlpha.value = false;
+scanline.data.scale.value = [1.0];
+scanline.data.realAlpha.value = [1.0];
+ */
+var bloom = newShader("null-and-void/bloom");
+bloom.data.blurSize.value = [0.01];
+bloom.data.intensity.value = [0.1];
+
+var nullGlitch = newShader("null-and-void/nullglitchshader");
+nullGlitch.data.glitchAmplitude.value = [2.0]; // increase this
+nullGlitch.data.glitchNarrowness.value = [1.0];
+nullGlitch.data.glitchBlockiness.value = [4.0];
+nullGlitch.data.glitchMinimizer.value = [5.0]; // decrease this
+nullGlitch.data.iResolution.value = [Lib.current.stage.stageWidth,Lib.current.stage.stageHeight];
+nullGlitch.data.iTime.value=[0.0];
+
+var pixelate = newShader("pixelate", "", 130);
+pixelate.data.pixelSize.value = [1];
+
+var pixelateAmount:Float = 1;
+var hurtAmountBlack:Float = 0; // actually red, yes im that lazy
+
+var barrel = newShader("barrel");
+barrel.data.chromaticIntensity.value = [0.25];
+barrel.data.distortionIntensity.value = [-0.25];
+barrel.data.offset.value = [0, 0];
+barrel.data.angle.value = [0];
+barrel.data.mirrorX.value = [false];
+barrel.data.mirrorY.value = [false];
+barrel.data.zoom.value=[1.0];
+var schoolShader = newShader("fuckywucky", "", 130);
+schoolShader.data.time.value = [250];
+schoolShader.data.prob.value = [0.15];
+schoolShader.data.glitchScale.value = [0.025];
+
+var vignette = newShader("fuckywuckymask", "", 130);
+vignette.data.time.value = [250];
+vignette.data.prob.value = [0.75];
+vignette.data.glitchScale.value = [0.5];
+vignette.data.maskMix.value = [true];
+vignette.data.mask.input = Paths.image("vignette").bitmap;
+
+/* var iconShader = newShader("glitchcolorswap");
+iconShader.data.uTime.value = [0, 0, 0];
+iconShader.data.flashColor.value = [1, 1, 1, 1];
+iconShader.data.daAlpha.value = [1];
+iconShader.data.flash.value = [0];
+iconShader.data.binaryIntensity.value = [4.0]; */
+
+var iconShader = newShader("fuckywucky", "", 130);
+iconShader.data.time.value = [250];
+iconShader.data.prob.value = [0.75];
+iconShader.data.glitchScale.value = [0.75];
+game = PlayState.instance;
+/* function onAddSpriteGroups(){
+    game.hud = hud = HScriptedHUD.fromFile(
+		game.boyfriend.healthIcon,
+        game.dad.healthIcon, 
+        PlayState.SONG.song,
+		game.stats, 
+		"VanillaHUD"
+	);
+}
+ */
+function onCreate(){
+    //game.isPixelPrefix = "pixel";
+	if (PlayState.isStoryMode){
+        game.skipCountdown = true;
+    } else {
+        playIntro = true;
+        game.skipCountdown = false;
+    }
+
+}
+function onCreatePost() {
+	game.judgeScale = 6;
+	game.comboScale = 10;
+    FlxSprite.defaultAntialiasing = false;
+	game.worldComboOrigin.x -= 400;
+	game.worldComboOrigin.y += 90;
+    game.instaRespawn = true;
+
+	video = new MP4Sprite();
+	video.bitmap.onFormatSetup.add(function():Void
+	{
+		video.setGraphicSize(1920, 1080);
+		video.updateHitbox();
+
+		video.scale.x *= 1.1;
+		video.scale.y *= 1.4;
+		video.setPosition(-200,-160);
+	});
+	video.bitmap.onEndReached.add(video.destroy);
+	video.load(Paths.video('SenpaiIdle'));
+	video.antialiasing = false;
+	game.addBehindBF(video);
+
+
+    game.boyfriend.setPosition(1260,600);
+    game.dad.setPosition(-4000,310);
+    game.dad.scale.set(6,6);
+
+    game.customCamera.set(810, 420);
+    game.addCameraPoint(game.customCamera);
+
+    /*     game.camFollowAtAll = false; */
+    game.defaultCamZoom = 0.5;
+    game.camGame.zoom = game.defaultCamZoom;
+    
+    bgField = new ProxyField(game.dadField.noteField);
+	bgField.cameras = [game.camGame];
+	bgField.scrollFactor.set(0.8, 0.8);
+    game.addBehindBF(bgField);
+    
+    school = new FlxSprite();
+    school.frames = Paths.getSparrowAtlas('animatedEvilSchool');
+    school.animation.addByIndices("idle", 'background 2 instance 1', [1], 12, true);
+    school.animation.play("idle", true);
+    school.scrollFactor.set(1, 1);
+    school.scale.set(8, 8);
+    school.antialiasing = false;
+    school.updateHitbox();
+    school.shader = schoolShader;
+    school.x = -1220;
+    school.y = -1790;
+    game.addBehindDad(school);
+    
+
+    glitchBump = new FlxSprite();
+    glitchBump.frames = Paths.getSparrowAtlas('senpaiBump');
+    glitchBump.animation.addByPrefix('anim', 'SenpaiBump', 24, true);
+    glitchBump.animation.play('anim');
+    glitchBump.scrollFactor.set();
+    glitchBump.alpha = 0;
+    glitchBump.updateHitbox();
+    glitchBump.screenCenter();
+    glitchBump.scale.set(1.9,1.9);
+    game.add(glitchBump);
+
+    bgField.visible = false;
+
+    // Shader shit
+    setChroma(0.002);
+ 
+    // ^ scan lines will be used in demo, but they fuck up the bitrate of the video so leaving them out
+
+    bloom.data.blurSize.value = [0.01];
+	bloom.data.intensity.value = [0.1];
+
+    nullGlitch.data.glitchNarrowness.value = [25.0];
+
+	if(ClientPrefs.shaders == 'All'){
+		game.camGame.setFilters([new ShaderFilter(barrel), new ShaderFilter(vignette), new ShaderFilter(chroma),new ShaderFilter(bloom),new ShaderFilter(nullGlitch), new ShaderFilter(pixelate)]);
+		game.camHUD.setFilters([new ShaderFilter(chroma),new ShaderFilter(bloom),new ShaderFilter(nullGlitch)]);
+	}else if(ClientPrefs.shaders == 'Minimal')
+		game.camGame.setFilters([new ShaderFilter(barrel), new ShaderFilter(pixelate)]);
+	
+    //FlxG.game.setFilters([
+    //     new ShaderFilter(scanline)
+    //]);
+
+    iconP2 = game.hud.iconP2;
+	
+	game.hud.remove(iconP2);
+	game.hud.remove(game.hud.iconP1);
+/*     game.camHUD.setFilters([new ShaderFilter(vignette)]); */
+    var girlExplosion = new FlxTypedEmitter();
+    girlExplosion.clear();
+    girlExplosion.color.active = false;
+    var girlColours = [0xFFA4B6F2, 0xFFA4B6F2, 0xFFA4B6F2, 0xFFFFF5FC, 0xFFFFF5FC];
+    for(i in 0...1200){
+        var p:FlxParticle = new FlxParticle();
+        p.makeGraphic(16, 16, 0xFFFFFFFF);
+        p.color = girlColours[FlxG.random.int(0, girlColours.length-1)];
+        p.exists=false;
+        girlExplosion.add(p);
+    }
+    girlExplosion.lifespan.set(0.3, 0.9);
+/*     girlExplosion.x += 300;
+    girlExplosion.y += 300; */
+    girlExplosion.alpha.set(1, 1, 0, 0);
+    girlExplosion.speed.set(
+        240,
+        500
+    );
+    
+/*     girlExplosion.start(true, 0, 50); */
+    game.add(girlExplosion);
+
+    var shit = Song.loadFromJson("girls", "null-and-void");
+    var noteData = shit.notes;
+    trace(game.boyfriend.x);
+
+    for(sexion in noteData){
+        for(data in sexion.sectionNotes){
+            var time:Float = data[0];
+            var step = Conductor.getStep(time);
+            var girl = new FlxSprite(760 + FlxG.random.float(-600, 600), game.boyfriend.y - FlxG.random.float(1600, 2000));
+
+            var ranbool:Bool = FlxG.random.bool(50);
+
+            if (ranbool == true){
+                girl.x = FlxG.random.float(10, 500);
+            } else {
+                girl.x = FlxG.random.float(1200, 1650);
+            }
+
+            
+            girl.frames = Paths.getSparrowAtlas("bgGirlGlitch");
+            girl.animation.addByPrefix('idle', 'BackgroundGirlFall', 24, true);
+            girl.animation.addByPrefix('wait', 'BackgroundGirlFall', 0, true);
+            girl.animation.play("wait", true);
+            girl.scale.set(2, 2);
+            girl.scrollFactor.set(1, 1);
+            girl.updateHitbox();
+            girl.offset.x += 200;
+            girl.offset.y += 100;
+            girl.antialiasing = false;
+            
+            modManager.queueFuncOnce(step - 8, function(e, s){
+                girl.animation.play("idle", true);
+                girl.velocity.y = FlxG.random.float(1200, 1400);
+                girl.acceleration.y = 5000;
+                girl.maxVelocity.set(20000, 20000);
+                game.add(girl);
+
+            });
+
+            modManager.queueFuncOnce(step, function(e, s){
+                girlExplosion.x = girl.x;
+                girlExplosion.y = girl.y;
+                girlExplosion.start(true, 0, 150);
+                game.remove(girl);
+                girl.kill();
+            });
+        }
+    }
+
+    game.isPixelPrefix = "pixel";
+
+    scanlinesFake = new FlxSprite();
+    scanlinesFake.frames = Paths.getSparrowAtlas("ScanlinesThin");
+    scanlinesFake.animation.addByPrefix("anim", "ScanlinesThin idle", 24, true);
+    scanlinesFake.animation.play("anim", true);
+    scanlinesFake.updateHitbox();
+    scanlinesFake.antialiasing = true;
+    scanlinesFake.alpha = 0.1;
+    scanlinesFake.blend = 9;
+    scanlinesFake.setPosition(280,170);
+    scanlinesFake.scale.set(1.9,1.9);
+    scanlinesFake.scrollFactor.set(0,0);
+    scanlinesFake.cameras = [game.camOverlay];
+    game.add(scanlinesFake);
+
+    hurtBlack = new FlxSprite(0,0).makeGraphic(1, 1, FlxColor.RED);
+    hurtBlack.scale.set(1280 * 3, 720 * 3);
+	hurtBlack.updateHitbox();
+    hurtBlack.scrollFactor.set(0,0);
+	hurtBlack.screenCenter();
+    hurtBlack.alpha = 0;
+    game.add(hurtBlack);
+    lowVin = new FlxSprite(-300,-170).loadGraphic(Paths.image('lowHealthPixel'));
+    lowVin.scale.set(0.7,0.7);
+    lowVin.antialiasing = true;
+    lowVin.scrollFactor.set(0, 0);
+    lowVin.alpha = 0;
+    lowVin.screenCenter();
+	lowVin.blend = 0;
+	lowVin.cameras = [game.camOverlay];
+	game.add(lowVin);
+
+    object = school;
+    FlxG.debugger.track(object);
+}
+
+function destroy()
+    FlxG.game.setFilters([]);
+
+function switchingState()
+    FlxG.game.setFilters([]);
+
+
+/* function onReceptorGenerationPost(){
+    for(strum in game.dadField.strumNotes)
+        strum.animation.add('confirm', [strum.noteData], 0, false);
+    
+} */
+
+function opponentNoteHit(){
+    nullGlitch.data.glitchAmplitude.value = [FlxG.random.float(0.0,1.0)];
+    if (curBg == 2){return;}
+    video.x = -5000;
+    game.dad.x = 640;
+    
+}
+
+/* function onStepHit(){
+    iconShader.data.binaryIntensity.value[0]= FlxG.random.float(4, 12);
+} */
+
+function onPause(){
+    FlxG.game.setFilters([]);
+    video.pause();
+}
+
+function onResume(){
+    //FlxG.game.setFilters([new ShaderFilter(scanline)]);
+    video.bitmap.time = game.inst.time;
+    video.resume();
+}
+
+function onDestroy(){
+    video.destroy();
+}
+
+function generateModchart(){
+    modManager.queueFuncOnce(896, function(ev, step){
+        barrel.data.offset.value = [0, 0];
+    });
+    modManager.queueFuncOnce(912, function(ev, step){
+        barrel.data.angle.value[0] = 0;
+    });
+
+/*     modManager.queueEaseFunc(896, 916, FlxEase.quadOut, function(ev, val, step){
+        barrel.data.angle.value[0] = FlxMath.lerp(0, 360 * 4, val);
+    });
+ */
+    modManager.queueEaseFunc(890, 896, FlxEase.quartOut, function(ev, val, step){
+        barrel.data.zoom.value[0] = FlxMath.lerp(1/16, 1/128, val);
+        barrel.data.distortionIntensity.value[0] = FlxMath.lerp(-0.25, -0.75, val);
+    });
+
+    modManager.queueEaseFunc(896, 916, FlxEase.elasticOut, function(ev, val, step){
+        barrel.data.zoom.value[0] = FlxMath.lerp(2, 1, val);
+        barrel.data.distortionIntensity.value[0] = FlxMath.lerp(-1.5, -0.25, val);
+    });
+}
+function onGameOver(){
+   // if (hasGameOvered==false){
+    lowVin.alpha = 0;
+    hurtAmountBlack = 0;
+
+    hasGameOvered = true;
+    game.camGame.setFilters([]);
+    game.zoomEveryBeat = 0;
+    game.camHUD.setFilters([]);
+    //    return Function_Stop;
+    //} else {
+    //    return Function_Continue;
+    //}
+}
+
+function onEndSong(){
+    game.endingSong = true;
+    game.zoomEveryBeat = 0;
+    game.camGame.setFilters([]);
+    game.camHUD.setFilters([]);
+    scanlinesFake.alpha = 0;
+
+	FlxSprite.defaultAntialiasing = true;
+}
+
+
+var storedCombo:Int = 0;
+
+function onApplyJudgmentDataPost(judgeData, diff, bot, show){
+    if(judgeData.comboBehaviour == -1)storedCombo = 0;
+}
+var playing = false;
+var alpha:Float =0.0;
+
+function backshotSenpai(){
+	modManager.setValue("fieldX", 400, 1); 
+	modManager.setValue("noteSpawnTime", 3000);
+	modManager.setValue("fieldY", -200, 1); 
+	modManager.setValue("fieldZ", 0, 1); 
+	modManager.setValue("opponentSwap", 0, 1); 
+	game.dadField.noteField.visible = false;
+	bgField.visible = true;
+}
+
+function onEvent(eventName, value1, value2, time){
+    if (game.endingSong == true){return;}
+    switch(eventName){
+        case 'storecombo':
+            storedCombo += game.stats.combo;
+            game.stats.combo = 0;
+        case 'restorecombo':
+            game.stats.combo += storedCombo;
+            storedCombo = 0;
+        case 'Song Event':
+            if(value1 == 'zoom'){
+                barrel.data.offset.value = [640, 360];
+                barrel.data.zoom.value[0] = 1 / Std.parseFloat(value2);
+            }
+        case 'removechars':
+            glitchBump.alpha = 0.25;
+            FlxG.camera.zoom += 0.08;
+			game.camHUD.zoom += 0.075;
+            
+            FlxTween.tween(game.dad, {alpha: 0}, 1.0);
+            FlxTween.tween(game.boyfriend, {alpha: 0}, 1.0);
+        case 'playendanim':
+            //senpaiEvil.animation.play('idle',true);
+            //FlxTween.tween(senpaiEvil, {alpha: 1}, 0.3);
+        case 'specialbump':
+            glitchBump.alpha = 0.25;
+            FlxG.camera.zoom += 0.08;
+			game.camHUD.zoom += 0.05;
+        case 'playvideo':
+            if(playing)return;
+            playing = true;
+            if(hxvlc != "0")
+                video.play();
+            else if(hxcodec == "3.0.0")
+                video.play(Paths.video('SenpaiIdle'));
+            else
+                video.playVideo(Paths.video('SenpaiIdle'));
+            
+            glitchBump.alpha = 0.25;
+            FlxG.camera.zoom += 0.08;
+			game.camHUD.zoom += 0.10;
+        case 'changeBf':
+            if (value1 == "1"){ // visualizer view
+                game.dadField.noteField.visible = true;
+
+
+                modManager.setValue("fieldX", 0, 1); 
+                modManager.setValue("noteSpawnTime", 1500);
+                modManager.setValue("fieldY", 0, 1); 
+                bgField.visible = false;
+                game.changeCharacter("bf-pixel", 0);
+                game.boyfriend.setPosition(1260,600);
+                game.boyfriend.scale.set(6,6);
+
+                game.changeCharacter("senpaiNull", 1);
+                game.dad.setPosition(-4000,310);
+                game.dad.scale.set(6,6);
+                curBg = 1;
+                game.dad.scrollFactor.set(1,1);
+
+                video.visible = true;
+
+                nullGlitch.data.glitchAmplitude.value = [10.0];
+            } else{ // front view
+                
+
+
+                game.changeCharacter("bf-pixelFront", 0);
+                game.boyfriend.setPosition(770,710);
+                game.boyfriend.scale.set(9,9);
+
+                if (value2 == "1"){
+					backshotSenpai();
+                    game.changeCharacter("senpaiBackFirst", 1);
+                } else{
+                    game.changeCharacter("senpaiBack", 1);
+                }
+                curBg = 2;
+                game.dad.scale.set(14.6,14.6);
+                game.dad.setPosition(630,140);
+                game.dad.scrollFactor.set(0.2,0.2);
+
+                video.visible = false;
+
+                nullGlitch.data.glitchAmplitude.value = [10.0];
+                object = game.dad;
+                FlxG.debugger.track(object);
+            }
+            glitchBump.alpha = 0.75;
+            FlxG.camera.zoom += 0.08;
+			game.camHUD.zoom += 0.10;
+            
+    }
+}
+
+function onBeatHit(){
+    if (curBeat % 4 == 0){
+        nullGlitch.data.glitchAmplitude.value = [FlxG.random.float(1.0,5.0)];
+    }
+    
+}
+
+function noteMiss(note:Note, field:PlayField){
+    pixelateAmount += 2.0;
+    hurtAmountBlack += 0.05;
+}
+
+function noteMissPress(direction:Int){
+    pixelateAmount += 2.0;
+    hurtAmountBlack += 0.05;
+}
+
+var trans = false;
+function onStartCountdown(){
+    if (!playIntro){return;}
+    if(trans)return;
+    
+    trans = true;
+
+	if(PlayState.startOnTime > 0)
+		return Function_Continue;
+
+	game.camHUD.visible = false;
+	
+    var pixels = game.boyfriend._frame.parent.bitmap;
+    var frame = game.boyfriend._frame.frame;
+
+    var createdPixels:Array<FlxSprite> = [];
+    for(x in frame.x...frame.x + frame.width){
+        createdPixels[x - frame.x] = [];
+        for (y in frame.y...frame.y + frame.height){
+            var pixel = pixels.getPixel32(x, y);
+            var alpha = ((pixel >> 24) & 0xff) / 255;
+            
+            var newPixel = new FlxSprite();
+            newPixel.makeGraphic(1, 1, 0xFFFFFFFF);
+            newPixel.color = pixel;
+            newPixel.scale.set(game.boyfriend.scale.x, game.boyfriend.scale.y);
+            newPixel.updateHitbox();
+            newPixel.alpha = alpha;
+            newPixel.x = game.boyfriend.x + ((x - frame.x) * 6);
+            newPixel.y = game.boyfriend.y + ((y - frame.y) * 6);
+            newPixel.x -= game.boyfriend.origin.x * newPixel.scale.x;
+            newPixel.y -= game.boyfriend.origin.y * newPixel.scale.y;
+            newPixel.x += game.boyfriend.offset.x * newPixel.scale.x;
+            newPixel.y += game.boyfriend.offset.y * newPixel.scale.y;
+            newPixel.x -= 12;
+            newPixel.y += 36;
+            createdPixels[x - frame.x].push(newPixel);
+            game.add(newPixel);
+        }
+    } 
+
+    for(r in 0...createdPixels.length){
+        for(c in 0...createdPixels[r].length){
+            var shit = createdPixels[r][c];
+            var y = shit.y;
+            shit.y -= 4000;
+            shit.y -= (r + c) * 10;
+
+            FlxTween.tween(shit, {y: y}, 3 - (r / 50) - (c / 100), {
+                ease: FlxEase.quadInOut,
+            });
+        } 
+    }
+    new FlxTimer().start(2.5, function(){
+        for(r in 0...createdPixels.length){
+            for(c in 0...createdPixels[r].length){
+                var shit = createdPixels[r][c];
+                shit.destroy();
+            } 
+        }
+        game.boyfriend.visible = true;
+        game.boyfriend.animation.curAnim.curFrame = 0;
+        game.camHUD.visible = true;
+        game.startCountdown();
+    }); 
+    game.boyfriend.visible = false;
+
+    return Function_Stop; 
+}
+
+function onDisplayJudgment(image)
+	return 'pixelUI/' + image + "-pixel";
+
+function onDisplayComboNumber(image, num)
+	return 'pixelUI/num' + num + "-pixel";
+
+var timer:Float = 0;
+
+function onUpdate(elapsed){
+    if( Conductor.songPosition <= 0){
+        schoolShader.data.time.value[0] += elapsed * 0.25;
+        iconShader.data.time.value[0] += elapsed * 0.75;
+        vignette.data.time.value[0] += elapsed * 0.5;
+        nullGlitch.data.iTime.value[0] += elapsed;
+    }else{
+        schoolShader.data.time.value[0] = Conductor.songPosition * 0.001 * 0.25;
+        iconShader.data.time.value[0] = Conductor.songPosition * 0.001 * 0.75;
+        nullGlitch.data.iTime.value[0] = Conductor.songPosition * 0.001;
+        vignette.data.time.value[0] = Conductor.songPosition * 0.001 * 0.5;
+
+    }
+
+    if (hurtAmountBlack > 0){
+        hurtAmountBlack -= 0.2 * elapsed;
+    } else if (hurtAmountBlack < 0){
+        hurtAmountBlack = 0;
+    }
+
+    hurtBlack.alpha = hurtAmountBlack;
+	if (!hasGameOvered){
+        if (game.health <= 0.4){
+            if (lowVin.alpha < 0.8){
+                lowVin.alpha += 0.4 * elapsed;
+            } else {
+                lowVin.alpha = 0.8;
+            }
+        } else {
+            if (lowVin.alpha > 0){
+                lowVin.alpha -= 0.4 * elapsed;
+            }
+        }
+    }
+
+
+    if (game.dad.animation.curAnim.name == "idle" && curBg == 1){
+        video.x = -200;
+        game.dad.x = -4000;
+    }
+
+    if(curBg == 2){
+        timer += elapsed * 0.35;
+        school.alpha = ((FlxMath.fastSin(timer) * 0.5) + (glitchBump.alpha * 0.75)) * game.dad.alpha;
+    }else{
+        timer = 0;
+        school.alpha = 0;
+    }
+
+    if (glitchBump.alpha > 0){
+        glitchBump.alpha -= elapsed;
+    }
+
+    pixelate.data.pixelSize.value = [Std.int(pixelateAmount)];
+
+    if (pixelateAmount > 1){
+        pixelateAmount -= 2 * elapsed;
+    } else if (pixelateAmount < 1){
+        pixelateAmount = 1;
+    }
+	
+    
+    //if(nullGlitch.data.glitchAmplitude.value > [0.0]){
+    nullGlitch.data.glitchAmplitude.value -= [0.001 * elapsed];
+    //}
+    
+    //PlayState.instance.camFollow.set(object.x,object.y);
+    //video.playVideo(Paths.video('SenpaiIdle'));
+}
