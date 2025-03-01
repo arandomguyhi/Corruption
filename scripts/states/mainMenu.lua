@@ -1,10 +1,12 @@
-addHaxeLibrary('FlxTypedGroup', 'flixel.group')
+luaDebugMode = true
+
 addHaxeLibrary('FlxTypedSpriteGroup', 'flixel.group')
-addHaxeLibrary('FlxSound', 'flixel.system')
+addHaxeLibrary('MusicBeatState', 'backend')
+addHaxeLibrary('OptionsState', 'options')
 
 addLuaScript('scripts/substates/difficultySelector')
 
-showTitle = true -- idk why this is here
+showTitle = true -- idk why this is here, but ill let it
 
 local curSelected = 0
 local curSelectedFreeplay = 0
@@ -28,8 +30,6 @@ local menuRevealed = false
 local path = '../assets/menus/'
 
 precacheImage(path..'mainmenu/bubbles')
-
-luaDebugMode = true
 
 function onCreate()
     runHaxeCode([[
@@ -492,6 +492,21 @@ function backOut()
     curMenu = 'main'
 end
 
+function enterSettings()
+    startTween('initialTween', 'camFollow', {x = 951, y = 1995}, 1, {ease = 'backIn'})
+    maxBlur = 0.05
+    blurAngle = 0
+    runHaxeCode([[
+        FlxTween.num(0.0, ]]..maxBlur..[[, 1, {ease: FlxEase.quadIn, onComplete: function(b) {
+            parentLua.call('hideBlur', []);
+        }}, function(hi) {
+            parentLua.call('amountBlur', [hi]);
+        });
+    ]])
+
+    runTimer('enter settings', 1)
+end
+
 function enterCredits()
     startTween('initialTween', 'camFollow', {x = 951, y = 1995}, 1, {ease = 'backIn'})
     maxBlur = 0.05
@@ -543,8 +558,13 @@ function onConfirm() -- diff selector thing
     else
         closeCustomSubstate()
 
-        setPropertyFromClass('backend.Difficulty', 'list', {'safe', '', ''})
-        loadSong('opening', getVar('selectedDiff')) -- first song
+        if getVar('selectedDiff') == 0 then
+            setPropertyFromClass('backend.Difficulty', 'list', {'safe'})
+            setPropertyFromClass('states.PlayState', 'storyDifficulty', 0)
+            loadSong('opening', 0)
+        else
+            loadSong('opening')
+        end
     end
 end
 
@@ -1245,7 +1265,11 @@ function onTimerCompleted(tag)
 
         local chartId = {'safe', 'normal', 'normal'}
 
-        setPropertyFromClass('backend.Difficulty', 'list', {'safe', 'normal', 'normal'})
+        if curDiff == 0 then
+            setPropertyFromClass('backend.Difficulty', 'list', {'safe'})
+        else
+            curDiff = -1
+        end
         if curSelectedFreeplay == 0 then
             loadSong('null-and-void', curDiff)
         elseif curSelectedFreeplay == 1 then
@@ -1255,6 +1279,18 @@ function onTimerCompleted(tag)
         elseif curSelectedFreeplay == 3 then
             loadSong('access-denied', curDiff)
         end
+    end
+
+    if tag == 'enter settings' then
+        runHaxeCode([[
+            game.paused = true;
+            MusicBeatState.switchState(new OptionsState());
+
+            if (ClientPrefs.data.pauseMusic != 'None')
+                parentLua.call('updateMusic', [2]);
+
+            OptionsState.onPlayState = true;
+        ]])
     end
 
     if tag == 'start credits' then

@@ -4,7 +4,7 @@ setProperty('skipCountdown', true)
 setProperty('isCameraOnForcedPos', true)
 
 if getDataFromSave('corruptMenu', 'main') then
-    addLuaScript('scripts/states/menu')
+    addLuaScript('scripts/states/mainMenu')
 end
 
 if getDataFromSave('corruptMenu', 'credits') then

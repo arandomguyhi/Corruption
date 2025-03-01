@@ -1,5 +1,8 @@
 -- NOT THE CURRENT ONEEEE!!!!!!!!!
 
+if getDataFromSave('corruptMenu', 'modcharts') == 'None' then
+    return end
+
 luaDebugMode = true
 
 local function math_fastCos(insanaMatematica)
@@ -63,7 +66,7 @@ function onStepHit()
         end
     end
 
-    if curStep >= 927 and curStep < 960 and curStep % 2 == 0 then
+    if curStep >= 288 and curStep < 544 and curStep % 2 == 0 then
         applyTipsy('Y', 1 * f, 1)
 
         for v = 0,3 do
@@ -98,7 +101,7 @@ function onUpdate(elapsed)
     glitch({188, 192}, {'reverse'}, 0.5, 2)
 
     --if curStep == 192 then
-        applyTipsy('Y', 0.625, 1)
+        applyTipsy('Y', 0.5, 2)
     --end
     --queueEase(0, 3, 'tipsy', 'Y', 0.625)
 
@@ -197,8 +200,9 @@ function applyTipsy(axis, time, pl)
 
         local currentTarget = targets[pl]:lower()..'Strums.members['..i..']'
         local noteOffset = getProperty(currentTarget..'.offset.'..axis:lower())
-        local tipsy = i * (math_fastCos((songPos * ((1*1.2) + 1.2) + time * ((noteOffset * 1)))) * swagWidth * .4)
+        --local tipsy = i * (math_fastCos((songPos * ((1*1.2) + 1.2) + time * ((noteOffset * 1)))) * swagWidth * .4)
         --local tipsy = defaultPos + (math_fastCos((songPos * ((time*1.2) + 1.2) + noteOffset * ((i * 1.8) + 1.8))) * swagWidth * .4)
+        local tipsy = defaultPos*math.cos((songPos+i*time)*math.pi)+defaultPos
         setProperty(currentTarget..'.'..axis:lower(), tipsy)
     end
 end

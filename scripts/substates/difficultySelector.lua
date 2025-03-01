@@ -121,6 +121,9 @@ end
 
 local anims = {'easy', 'normal', 'hard'}
 
+local diffs = {'safe', 'normal', 'canon'}
+local modcharts = {'None', 'Simple', 'Full'}
+
 function onCustomSubstateUpdate(name, elapsed)
     if name == 'diffSelector' then
         if not getVar('settingStory') then
@@ -159,6 +162,7 @@ function onCustomSubstateUpdate(name, elapsed)
             end
             playSound('scrollMenu')
         end
+        
         setVar('selectedDiff', selectedDiff)
 
         if selectedDiff < 0 then
@@ -206,6 +210,11 @@ function onCustomSubstateUpdate(name, elapsed)
 
         if whichSelected == 2 then
             if getProperty('controls.ACCEPT') then
+                setDataFromSave('corruptMenu', 'modcharts', modcharts[selectedModDiff+1])
+                if getVar('settingStory') then
+                    setDataFromSave('corruptMenu', 'difficulty', diffs[selectedDiff+1])
+                end
+                
                 playSound('confirmMenu')
                 closeCustomSubstate()
                 callOnLuas('onConfirm')
