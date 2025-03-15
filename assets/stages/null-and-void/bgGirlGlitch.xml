@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="bgGirlGlitch.png">
+	<!-- Created with Adobe Animate version 22.0.1.105 -->
+	<!-- http://www.adobe.com/products/animate.html -->
+	<SubTexture name="BackgroundGirlFall0000" x="8" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0001" x="8" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0002" x="8" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0003" x="8" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0004" x="229" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0005" x="229" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0006" x="229" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0007" x="229" y="8" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0008" x="8" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0009" x="8" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0010" x="8" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0011" x="8" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0012" x="229" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0013" x="229" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0014" x="229" y="136" width="213" height="120"/>
+	<SubTexture name="BackgroundGirlFall0015" x="229" y="136" width="213" height="120"/>
+</TextureAtlas>
