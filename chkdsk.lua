@@ -1,3 +1,5 @@
+-- letting it here since ALL senpai's songs has the same stage :sob:
+
 local path = '../assets/stages/chkdsk/'
 
 local curBg = 0
@@ -357,7 +359,9 @@ function onSpawnNote(i)
 end
 
 function noteMiss()
-    pixelateAmount = pixelateAmount + 2
+    pixelateAmount = pixelateAmount + 1
+    if pixelateAmount > 5 then
+        pixelateAmunt = 5 end
     hurtAmountBlack = hurtAmountBlack + 0.05
 end
 

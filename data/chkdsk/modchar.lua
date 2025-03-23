@@ -9,8 +9,6 @@ addHaxeLibrary('SwagSection', 'backend')
 if getDataFromSave('corruptMenu', 'modcharts') ~= 'Full' then
     return end
 
-setProperty('skipArrowStartTween', true)
-
 local function math_fastCos(insanaMatematica)
     return callMethodFromClass('flixel.math.FlxMath', 'fastCos', {insanaMatematica})
 end
@@ -24,7 +22,9 @@ local function scale(x,l1,h1,l2,h2)
 end
 
 local yPl = 0
-local yOp
+local yOp = 0
+
+setProperty('skipArrowStartTween', true)
 
 function onCreatePost()
     if shadersEnabled then
@@ -50,9 +50,16 @@ function onCreatePost()
             scaleX = getProperty('playerStrums.members['..i..'].scale.x'),
             scaleY = getProperty('playerStrums.members['..i..'].scale.y')
         }
+
+        setVar('defaultPlayerX'..i, _G['defaultPlayerStrumX'..i])
+        setVar('defaultPlayerY'..i, _G['defaultPlayerStrumY'..i])
+
+        setVar('defaultOpponentX'..i, _G['defaultOpponentStrumX'..i])
+        setVar('defaultOpponentY'..i, _G['defaultOpponentStrumY'..i])
     end
 
-    debugPrint(strum2.scaleX)
+    swagWidth = getPropertyFromClass('objects.Note', 'swagWidth')
+    halfWidth = getPropertyFromClass('objects.Note', 'swagWidth') / 2
 
     runHaxeCode([[
         var arrowCam = new FlxCamera();
@@ -97,47 +104,51 @@ function numericForInterval(start, endie, interval, func)
 end
 
 local f = 1
-function onStepHit()
-    for i = 1, #drumSteps do
-        for v = 1, #stepType do
-            if curStep == drumSteps[i] then
-                f = f * -1
+function onEvent(name, value1, value2)
+    if name == 'chkdskthing' then
+        f = f * -1
 
-                -- i sadly can't change the cam scroll :sob:
-                startTween('fieldY', 'arrowCam', {y = -75}, (stepCrochet/1000)*2, {ease = 'quadOut'})
+        -- i sadly can't change the cam scroll :sad_spongebob:
+        startTween('fieldY', 'arrowCam', {y = -75}, (stepCrochet/1000)*2, {ease = 'quadOut'})
 
-                cancelTimer('unfield')
-                runTimer('unfield', (stepCrochet/1000)*2)
-                onTimerCompleted = function(tag)
-                    if tag == 'unfield' then
-                        startTween('fieldY', 'arrowCam', {y = 0}, (stepCrochet/1000)*2, {ease = 'quadIn'})
-                    end
-                end
+        cancelTimer('unfield')
+        runTimer('unfield', (stepCrochet/1000)*2)
+        onTimerCompleted = function(tag)
+            if tag == 'unfield' then
+                startTween('fieldY', 'arrowCam', {y = 0}, (stepCrochet/1000)*2, {ease = 'quadIn'})
+            end
+        end
 
-                setProperty('arrowCam.angle', 7*f)
-                startTween('normalAng', 'arrowCam', {angle = 0}, (stepCrochet/1000)*4, {ease = 'quadInOut'})
+        setProperty('arrowCam.angle', 7*f)
+        startTween('normalAng', 'arrowCam', {angle = 0}, (stepCrochet/1000)*4, {ease = 'quadInOut'})
 
-                if stepType[v] == 2 then
-                    applyDrunk(0.3 * f, 1)
-                    applyTipsy(3, 1)
+        if value1 == '0' then
+            applyDrunk(1 * f, 1)
+            for i = 0, 3 do
+                setProperty('playerStrums.members['..i..'].angle', 11.25 * f)
+                startTween('uncoiso'..i, 'playerStrums.members['..i..']', {angle = 0, x = 412+(i*112)}, (stepCrochet/1000)*4, {ease = 'quadOut'})
+            end
+        elseif value1 == '2' then
+            applyDrunk(0.3 * f, 1)
+            applyTipsy(3, 1)
 
-                    for c = 0, 3 do
-                        setProperty('playerStrums.members['..c..'].angle', 22.5*f)
-                        startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
-                    end
-                elseif stepType[v] == 1 then
-                    applyDrunk(1.5 * f, 1)
-                    applyTipsy(2, 1)
+            for c = 0, 3 do
+                setProperty('playerStrums.members['..c..'].angle', 22.5*f)
+                startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+            end
+        elseif value1 == '1' then
+            applyDrunk(1.5 * f, 1)
+            applyTipsy(2, 1)
 
-                    for c = 0, 3 do
-                        setProperty('playerStrums.members['..c..'].angle', 30*f)
-                        startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
-                    end
-                end
+            for c = 0, 3 do
+                setProperty('playerStrums.members['..c..'].angle', 30*f)
+                startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
             end
         end
     end
+end
 
+function onStepHit()
     if curStep == 60 then
         for i = 0, 3 do
             setProperty('playerStrums.members['..i..'].scale.y', 0.75)
@@ -181,6 +192,8 @@ function onStepHit()
     if curStep == 544 then
         local dur = (stepCrochet/1000)*16
         for i = 0, 3 do
+            setVar('defaultPlayerX'..i, _G['defaultPlayerStrumX'..i])
+
             startTween('plX'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, dur, {ease = 'quadOut'})
             startTween('opAlpha'..i, 'opponentStrums.members['..i..']', {alpha = 1}, dur, {ease = 'quadOut'})
         end
@@ -188,6 +201,8 @@ function onStepHit()
 
     if curStep == 928 then
         for i = 0, 3 do
+            setVar('defaultPlayerX'..i, 412+(i*112))
+
             startTween('cuO'..i, 'opponentStrums.members['..i..']', {alpha = 0, x = 412+(i*112)}, (stepCrochet/1000)*16, {ease = 'quartOut'})
             startTween('cuP'..i, 'playerStrums.members['..i..']', {x = 412+(i*112)}, (stepCrochet/1000)*16, {ease = 'quartOut'})
         end
@@ -222,6 +237,8 @@ function onStepHit()
         end
     elseif curStep == 1268 then
         for i = 0, 3 do
+            setVar('defaultPlayerX'..i, _G['defaultPlayerStrumX'..i])
+
             setProperty('playerStrums.members['..i..'].x', _G['defaultPlayerStrumX'..i])
             setProperty('opponentStrums.members['..i..'].x', _G['defaultOpponentStrumX'..i]-500)
 
@@ -239,24 +256,80 @@ function onStepHit()
             yPl = 75
             yOp = 0
 
-            startTween('plC'..i, 'playerStrums.members['..i..']', {['scale.x'] = 6*0.76, ['scale.y'] = 6*0.76, x = 472+(i*92), y = _G['defaultPlayerStrumY'..i]+yPl}, (stepCrochet/1000)*4, {ease = 'quadOut', onUpdate = 'updateStrumHitbox'})
-            startTween('opC'..i, 'opponentStrums.members['..i..']', {alpha = 0.2, ['scale.x'] = 6/0.76, ['scale.y'] = 6/0.76, x = 412+(i*142)}, (stepCrochet/1000)*4, {ease = 'quadOut', onUpdate = 'updateStrumHitbox'})
+            cancelTween('tipsy'..i..' (Player)')
+            cancelTween('tipsy'..i..' (Opponent)')
+
+            setVar('defaultPlayerX'..i, 457+(i*97))
+            setVar('defaultOpponentX'..i, 392+(i*137))
+            setVar('defaultOpponentY'..i, 570)
+
+            startTween('plC'..i, 'playerStrums.members['..i..']', {['scale.x'] = 6*0.85, ['scale.y'] = 6*0.85, x = 457+(i*97), y = _G['defaultPlayerStrumY'..i]+yPl}, (stepCrochet/1000)*4, {ease = 'quadOut', onUpdate = 'updateStrumHitbox'})
+            startTween('opC'..i, 'opponentStrums.members['..i..']', {alpha = 0.2, ['scale.x'] = 6/0.85, ['scale.y'] = 6/0.85, x = 392+(i*137)}, (stepCrochet/1000)*4, {ease = 'quadOut', onUpdate = 'updateStrumHitbox'})
 
             startTween('reverseOp'..i, 'opponentStrums.members['..i..']', {y = 570+yOp}, (stepCrochet/1000)*4, {ease = 'bounceOut', onComplete = 'reverse'})
             startTween('plY'..i, 'playerStrums.members['..i..']', {y = _G['defaultPlayerStrumY'..i]+75}, (stepCrochet/1000)*4, {ease = 'quadOut'})
         end
     end
 
+    if curStep == 1664 then
+        for i = 0, 3 do
+            yPl = 0
+            yOp = -75
+
+            setVar('defaultPlayerX'..i, 392+(i*137))
+            setVar('defaultOpponentX'..i, 457+(i*97))
+
+            startTween('plC'..i, 'playerStrums.members['..i..']', {['scale.x'] = 6/0.85, ['scale.y'] = 6/0.85, x = 392+(i*137), y = _G['defaultPlayerStrumY'..i]+yPl}, (stepCrochet/1000)*4, {ease = 'bounceOut', onUpdate = 'updateStrumHitbox'})
+            startTween('opC'..i, 'opponentStrums.members['..i..']', {['scale.x'] = 6*0.85, ['scale.y'] = 6*0.85, x = 457+(i*97)}, (stepCrochet/1000)*4, {ease = 'bounceOut', onUpdate = 'updateStrumHitbox'})
+        end
+    end
+
+    if curStep == 1728 then
+        for i = 0, 3 do
+            yOp = 0
+
+            setVar('defaultPlayerX'..i, 412+(i*112))
+            setVar('defaultOpponentX'..i, 412+(i*112))
+
+            -- doing like this so i can read xD
+            startTween('plC'..i, 'playerStrums.members['..i..']', {
+                ['scale.x'] = strum2.scaleX,
+                ['scale.y'] = strum2.scaleY,
+                x = 412+(i*112),
+                y = _G['defaultPlayerStrumY']
+            }, (stepCrochet/1000)*6, {
+                ease = 'quadOut'
+            })
+
+            startTween('opC'..i, 'opponentStrums.members['..i..']', {
+                ['scale.x'] = strum1.scaleX,
+                ['scale.y'] = strum1.scaleY,
+                x = 412+(i*112),
+                y = 570
+            }, (stepCrochet/1000)*6, {
+                ease = 'quadOut'
+            })
+        end
+    end
+
+    if curStep == 1792 then
+        for i = 0, 3 do
+            setVar('defaultPlayerX'..i, _G['defaultPlayerStrumX'..i])
+            setVar('defaultOpponentX'..i, _G['defaultOpponentStrumX'..i])
+            setVar('defaultOpponentY'..i, _G['defaultOpponentStrumY'..i])
+
+            startTween('opT'..i, 'opponentStrums.members['..i..']', {x = _G['defaultOpponentStrumX'..i], alpha = 1}, (stepCrochet/1000)*12, {ease = 'quadOut'})
+            startTween('plT'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*12, {ease = 'quadOut'})
+        end
+    end
+
     if curStep >= 1536 and curStep < 1792 and curStep % 4 == 0 then
         for i = 0, 3 do
-            setVar('defaultPlayerX'..i, 472+(i*92))
+            applyTipsy(1 * f, 1) applyTipsy(1 * f, 2)
+            applyDrunk(1 * f, 1) applyDrunk(1 * f, 2)
 
-            applyTipsy(1 * f, 1)
-            applyDrunk(1 * f, 1)
-
-            for v = 0,3 do
-                startTween('uncoisar'..v, 'playerStrums.members['..v..']', {x = 472+(v*92), y = _G['defaultPlayerStrumY'..v]+yPl}, (stepCrochet/1000)*4, {ease = 'quartOut'})
-            end
+            startTween('uncoisar'..i, 'playerStrums.members['..i..']', {x = getVar('defaultPlayerX'..i), y = _G['defaultPlayerStrumY'..i]+yPl}, (stepCrochet/1000)*4, {ease = 'quartOut'})
+            startTween('uncoisardois'..i, 'opponentStrums.members['..i..']', {x = getVar('defaultOpponentX'..i), y = getVar('defaultOpponentY'..i)+yOp}, (stepCrochet/1000)*4, {ease = 'quartOut'})
             drunkOffset = math.cos(curStep*0.75)
             f = f * -1
         end
@@ -270,6 +343,12 @@ function onStepHit()
         end
         f = f * -1
     end
+
+    if curStep == 2432 then
+        for i = 0, 7 do
+            noteTweenAlpha('endd'..i, i, 0, (stepCrochet/1000)*16, 'quadOut')
+        end
+    end
 end
 
 local counter = -1
@@ -277,14 +356,16 @@ local counter2 = -1
 local f = 1
 
 local lastScroll = 0
-
 local drunkOffset = 0
+
 function onUpdate(elapsed)
     songPosition = getSongPosition()/1000
 
     setShaderFloat('poop', 'iTime', getSongPosition() * 0.001)
 
     setProperty('arrowCam.zoom', getProperty('camHUD.zoom'))
+    --runHaxeCode("getVar('arrowCam').filters = camHUD.filters;")
+
     for i = 0, getProperty('notes.length')-1 do
         for f = 0, 3 do
             if getPropertyFromGroup('notes', i, 'mustPress') then
@@ -348,9 +429,31 @@ function onUpdate(elapsed)
     glitch({608, 672}, {'position', {-112, 112}}, 0.5, 2)
     glitch({656, 672}, {'reverse'}, 0.5, 2)
 
-    if curStep >= 1268 and curStep < 1531 then
-        applyTipsy(0.5, -1, 2, 'backOut')
+    if curStep >= 1268 and curStep < 1532 then
+        applyTipsy(0.5, -1, 22, 'backOut')
     end
+
+    glitch({2048, 2080}, {'reverse'}, 0.5, 2)
+    glitch({2048, 2080}, {'position', {-112, 112}}, 0.5, 2)
+    glitch({2048, 2178}, {'shader', {0.05, 0.125}}, 2)
+    glitch({2080, 2096}, {'confusionOffset'}, 0.5, 2)
+    glitch({2080, 2096}, {'reverse'}, 0.5, 2)
+    glitch({2108, 2176}, {'Z', {-.5, .5}}, 0.5, 2)
+    glitch({2108, 2176}, {'position', {-112, 112}}, 0.5, 2)
+    glitch({2160, 2176}, {'reverse'}, 0.5, 2)
+
+    glitch({2238, 2240}, {'shader', {0.05,0.3}}, 0.5, 1)
+    glitch({2238, 2240}, {'confusionOffset'}, 0.5, 1)
+    glitch({2262, 2266}, {'position', {-112, 112}}, 0.5, 1)
+    glitch({2262, 2266}, {'Z', {-.25, .25}}, 0.5, 1)
+    glitch({2302, 2304}, {'shader', {0.05,0.3}}, 0.5, 1)
+    glitch({2326, 2330}, {'shader', {0.05,0.3}}, 0.5, 1)
+    glitch({2366, 2368}, {'confusionOffset'}, 0.5, 1)
+    glitch({2366, 2368}, {'position', {-112, 112}}, 0.5, 1)
+    glitch({2366, 2368}, {'Z', {-.25, .25}}, 0.5, 1)
+
+    glitch({2390, 2394}, {'position', {-112, 112}}, 0.5, 1)
+    glitch({2390, 2394}, {'Z', {-.5, .5}}, 0.5, 1)
 end
 
 local targets = {'Player', 'Opponent'}
@@ -373,9 +476,9 @@ function applyTipsy(perc, pl, dur, curease)
             local currentTarget = t:lower()..'Strums.members['..i..']'
 
             local songPos = (getSongPosition()/1000)
-            local defaultPos = _G['default'..t..'StrumY'..i]+(pl ~= -1 and (pl == 1 and yPl or yOp) or 0)
+            local defaultPos = getVar('default'..t..'Y'..i)+(pl ~= -1 and (pl == 1 and yPl or yOp) or 0)
 
-            ypos = defaultPos + perc * (math_fastCos((songPos * ((1 * 1.2) + 1.2) + i*((0*1.8)+1.8)))*112*.4)
+            ypos = defaultPos + perc * (math_fastCos((songPos * ((1 * 1.2) + 1.2) + i*((0*1.8)+1.8)))*swagWidth*.4)
 
             if dur == nil then
                 setProperty(currentTarget..'.y', ypos)
@@ -401,14 +504,10 @@ function applyDrunk(perc, pl)
 
             local songPos = (getSongPosition()/1000)
             local defaultPos = 0
-            if curStep >= 288 and curStep < 544 or curStep >= 928 and curStep < 1268 or curStep >= 1532 and curStep < 1792 then
-                defaultPos = getVar('defaultPlayerX'..i)
-            else
-                defaultPos = _G['default'..t..'StrumX'..i]
-            end
+            defaultPos = getVar('default'..t..'X'..i)
 
             local angle = songPos * (1 + 1)+i*((drunkOffset*0.2)+0.2) + 1 * ((1*10)+10) / screenHeight
-            xpos = defaultPos + perc * (math_fastCos(angle) * (112/2))
+            xpos = defaultPos + perc * (math_fastCos(angle) * halfWidth)
             setProperty(currentTarget..'.x', xpos)
         end
     end
@@ -483,7 +582,7 @@ function glitch(cu, type, interval, target)
 
                         local randomScale = getRandomFloat(type[2][1], type[2][2])
                         local escala = 1280 / (1280 + randomScale*1280)
-                        scaleObject(t:lower()..'Strums.members['..i..']', escala*4, escala*4)
+                        scaleObject(t:lower()..'Strums.members['..i..']', escala*6, escala*6)
                     end
                 end)
 
@@ -514,7 +613,7 @@ function glitch(cu, type, interval, target)
                 if curStep == cu[2] then
                     local currentTarget = t:lower()..'Strums.members['..i..']'
                     setPropertyFromGroup(t:lower()..'Strums', i, 'downScroll', downscroll)
-                    startTween('backToNormalStr'..i..' ('..t..')', currentTarget, {y = _G['default'..t..'StrumY'..i]}, (stepCrochet/1000)*interval, {ease = 'bounceOut'})
+                    startTween('backToNormalStr'..i..' ('..t..')', currentTarget, {y = getVar('default'..t..'Y'..i)}, (stepCrochet/1000)*interval, {ease = 'bounceOut'})
                 end
             end
         end
@@ -533,23 +632,13 @@ function glitch(cu, type, interval, target)
                         direction = 'y' end
 
                     if curStep == step then
-                        local currentTarget = t:lower()..'Strums.members['..i..']'
                         setProperty(currentTarget..'.angle', getRandomFloat(-360, 360))
-
-                        if (curStep >= 288 and curStep < 544 or curStep >= 928 and curStep < 1268) and target == 1 then
-                            setProperty(currentTarget..'.'..direction, getVar('defaultPlayerX'..i) + getRandomFloat(type[2][1], type[2][2]))
-                        else
-                            setProperty(currentTarget..'.'..direction, _G['default'..t..'Strum'..direction:upper()..i] + getRandomFloat(type[2][1], type[2][2]))
-                        end
+                        setProperty(currentTarget..'.'..direction, getVar('default'..t..direction:upper()..i) + getRandomFloat(type[2][1], type[2][2]))
                     end
                 end)
 
                 if curStep == cu[2] then
-                    if (curStep >= 288 and curStep < 544 or curStep >= 928 and curStep < 1268) and target == 1 then
-                        startTween('backToNormalPos'..i..' ('..t..')', currentTarget, {x = getVar('defaultPlayerX'..i), y = _G['defaultPlayerStrumY'..i], angle = 0}, (stepCrochet/1000)*interval, {ease = 'quadOut'})
-                    else
-                        startTween('backToNormalPos'..i..' ('..t..')', currentTarget, {x = _G['default'..t..'StrumX'..i], y = _G['default'..t..'StrumY'..i], angle = 0}, (stepCrochet/1000)*interval, {ease = 'quadOut'})
-                    end
+                    startTween('backToNormalPos'..i..' ('..t..')', currentTarget, {x = getVar('default'..t..'X'..i), y = _G['default'..t..'StrumY'..i], angle = 0}, (stepCrochet/1000)*interval, {ease = 'quadOut'})
                 end
             end
         end
@@ -566,10 +655,9 @@ function onSpawnNote(i)
 end
 
 function strumie2()
-    runHaxeCode([[
-        for (cu in game.opponentStrums)
-            cu.updateHitbox();
-    ]])
+    for i = 0, 3 do
+        updateHitboxFromGroup('opponentStrums', i)
+    end
 end
 
 function reverse()
