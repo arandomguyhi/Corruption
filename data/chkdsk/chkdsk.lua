@@ -216,7 +216,9 @@ function onCreatePost()
     playAnim('school', 'idle', true)
     scaleObject('school', 8, 8)
     setProperty('school.antialiasing', false)
-    runHaxeCode("game.getLuaObject('school').shader = game.getLuaObject('schoolShader').shader")
+    if shadersEnabled then
+        runHaxeCode("game.getLuaObject('school').shader = game.getLuaObject('schoolShader').shader")
+    end
     setProperty('school.x', -1220)
     setProperty('school.y', -1790)
     addBehindDad('school')
@@ -231,25 +233,29 @@ function onCreatePost()
     scaleObject('glitchBump', 1.9, 1.9, false)
     addLuaSprite('glitchBump', true)
 
-    setChroma(0.002)
+    if shadersEnabled then
+        setChroma(0.002)
+    end
 
-    setShaderFloat('bloom', 'blurSize', 0.01)
-    setShaderFloat('bloom', 'intensity', 0.1)
+    if shadersEnabled then
+        setShaderFloat('bloom', 'blurSize', 0.01)
+        setShaderFloat('bloom', 'intensity', 0.1)
 
-    setShaderFloat('nullGlitch', 'glitchNarrowness', 25.0)
+        setShaderFloat('nullGlitch', 'glitchNarrowness', 25.0)
 
-    --if getModSetting('shadersC') == 'All' then
-        runHaxeCode([[
-            var cu = game.getLuaObject;
-            game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
-            game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('overlay').shader)]);
-        ]])
-    --[[elseif getModSetting('shadersC') == 'Minimal' then
-        runHaxeCode([[
-            var cu = game.getLuaObject;
-            game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('pixelate').shader)]);
-        )
-    end]]
+        --if getModSetting('shadersC') == 'All' then
+            runHaxeCode([[
+                var cu = game.getLuaObject;
+                game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
+                game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader), new ShaderFilter(cu('overlay').shader)]);
+            ]])
+        --[[elseif getModSetting('shadersC') == 'Minimal' then
+            runHaxeCode([[
+                var cu = game.getLuaObject;
+                game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('pixelate').shader)]);
+            )
+        end]]
+    end
 
     addTrail('dad', 1, 8, 5, 0.4, 0.030)
 
@@ -332,7 +338,7 @@ function onCreatePost()
     scaleObject('staticOverlay', 1.7, 1.7, false)
     setProperty('staticOverlay.antialiasing', false)
     screenCenter('staticOverlay')
-    runHaxeCode("game.getLuaObject('staticOverlay').camera = getVar('camOverlay');")
+    setObjectCamera('staticOverlay', 'hud')
     addLuaSprite('staticOverlay', true)
 
     for _, i in pairs({'iconP1', 'iconP2', 'healthBar', 'healthBar.bg', 'timeBar', 'timeTxt'}) do
@@ -407,8 +413,10 @@ function onEvent(name, value1, value2)
     end
 
     if name == 'prob' then
-        setShaderFloat('bigGlitch', 'prob', value1)
-        setShaderFloat('bigGlitch', 'time', getRandomFloat(0.0, 999.0))
+        if shadersEnabled then
+            setShaderFloat('bigGlitch', 'prob', value1)
+            setShaderFloat('bigGlitch', 'time', getRandomFloat(0.0, 999.0))
+        end
     end
 
     if name == 'specialbump' then
@@ -437,7 +445,9 @@ function onEvent(name, value1, value2)
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.1)
             setProperty('camHUD.zoom', getProperty('camHUD.zoom') + 0.5)
         elseif value1 == 'glitch' then
-            setShaderFloat('bigGlitch', 'time', getRandomFloat(0.0, 999.0))
+            if shadersEnabled then
+                setShaderFloat('bigGlitch', 'time', getRandomFloat(0.0, 999.0))
+            end
         else
             setProperty('glitchBump.alpha', 0.25)
             setProperty('camGame.zoom', getProperty('camGame.zoom') + 0.08)
@@ -471,7 +481,7 @@ function onEvent(name, value1, value2)
             setProperty('health', 2)
 
             playVideo('video8', 'glitch intermission', true)
-            setObjectOrder('video8', getObjectOrder('staticOverlay')+1)
+            setObjectOrder('video8', getObjectOrder('comboGroup'))
 
             setProperty('dad.alpha', 0)
             setProperty('boyfriend.alpha', 0)
@@ -578,7 +588,8 @@ function onEvent(name, value1, value2)
             setProperty('numTunnel.alpha', 0.3)
             setProperty('numTunnel.x', 240)
 
-            setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
+            if shadersEnabled then
+                setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0) end
         elseif value1 == 'altfall' then
             startTween('hihud', 'camHUD', {alpha = 1}, 1.5, {})
 
@@ -618,20 +629,25 @@ function onEvent(name, value1, value2)
             setProperty('video6.visible', true)
             setProperty('video7.visible', true)
 
-            setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
+            if shadersEnabled then
+                setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0) end
         elseif value1 == 'remove' then
             if value2 == 'overlay' then
-                runHaxeCode([[
-                    var cu = game.getLuaObject;
-                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('pixelate').shader)]);
-                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/]);
-                ]])
+                if shadersEnabled then
+                    runHaxeCode([[
+                        var cu = game.getLuaObject;
+                        game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('pixelate').shader)]);
+                        game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/]);
+                    ]])
+                end
             elseif value2 == 'addoverlay' then
-                runHaxeCode([[
-                    var cu = game.getLuaObject;
-                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
-                    game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('overlay').shader)]);
-                ]])
+                if shadersEnabled then
+                    runHaxeCode([[
+                        var cu = game.getLuaObject;
+                        game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('overlay').shader), new ShaderFilter(cu('pixelate').shader)]);
+                        game.camHUD.setFilters([new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('overlay').shader)]);
+                    ]])
+                end
             else
                 setProperty('boyfriend.x', 4000)
             end
@@ -652,15 +668,18 @@ function onEvent(name, value1, value2)
             setProperty('numTunnel.alpha', 0)
             setProperty('numTunnel2.alpha', 0)
 
-            setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
+            if shadersEnabled then
+                setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0) end
 
             cancelTween('dadTweenX')
             cancelTween('dadTweenY')
         elseif value1 == 'sigh' then
-            runHaxeCode([[
-                var cu = game.getLuaObject;
-                game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('pixelate').shader)]);
-            ]])
+            if shadersEnabled then
+                runHaxeCode([[
+                    var cu = game.getLuaObject;
+                    game.camGame.setFilters([new ShaderFilter(cu('barrel').shader), new ShaderFilter(cu('vignette').shader), new ShaderFilter(cu('bigGlitch').shader), new ShaderFilter(cu('chroma').shader), new ShaderFilter(cu('bloom').shader)/*, new ShaderFilter(cu('nullGlitch').shader)*/, new ShaderFilter(cu('pixelate').shader)]);
+                ]])
+            end
 
             startTween('hihud', 'camHUD', {alpha = 1}, 3, {})
 
@@ -683,12 +702,14 @@ function onEvent(name, value1, value2)
 
             arrT = {0.0,0.0,255.0}
             arrR = {0.0,0.0,255.0}
-            setShaderFloat('overlay', 'rT', arrT[1]/255)
-            setShaderFloat('overlay', 'gT', arrT[2]/255)
-            setShaderFloat('overlay', 'bT', arrT[3]/255)
-            setShaderFloat('overlay', 'rR', arrR[1]/255)
-            setShaderFloat('overlay', 'gR', arrR[2]/255)
-            setShaderFloat('overlay', 'bR', arrR[3]/255)
+            if shadersEnabled then
+                setShaderFloat('overlay', 'rT', arrT[1]/255)
+                setShaderFloat('overlay', 'gT', arrT[2]/255)
+                setShaderFloat('overlay', 'bT', arrT[3]/255)
+                setShaderFloat('overlay', 'rR', arrR[1]/255)
+                setShaderFloat('overlay', 'gR', arrR[2]/255)
+                setShaderFloat('overlay', 'bR', arrR[3]/255)
+            end
 
             if value2 == '1' then
                 triggerEvent('Change Character', 'dad', 'senpaiBackFirst')
@@ -709,7 +730,8 @@ function onEvent(name, value1, value2)
 
             callMethod('evilTrail.kill', {''})
 
-            setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
+            if shadersEnabled then
+                setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0) end
         elseif value1 == 'showbf' then
             callMethod('boyfriend.setPosition', {770, 810})
             setPosition('bfSigh', 4000, 1055)
@@ -745,7 +767,8 @@ function onEvent(name, value1, value2)
 
             callMethod('evilTrail.kill', {''})
             
-            setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0)
+            if shadersEnabled then
+                setShaderFloat('nullGlitch', 'glitchAmplitude', 10.0) end
         end
 
         setProperty('glitchBump.alpha', 0.75)
@@ -756,7 +779,9 @@ end
 
 function onBeatHit()
     if curBeat % 4 == 0 then
-        setShaderFloat('nullGlitch', 'glitchAmplitude', getRandomFloat(1.0,5.0))
+        if shadersEnabled then
+            setShaderFloat('nullGlitch', 'glitchAmplitude', getRandomFloat(1.0,5.0))
+        end
     end
 end
 
@@ -791,7 +816,9 @@ function onStepHit()
 end
 
 function updateShaderValue(s,n,v)
-    setShaderFloat(s,n,v)
+    if shadersEnabled then
+        setShaderFloat(s,n,v)
+    end
 end
 
 function onGameOverStart()
@@ -824,15 +851,19 @@ function onUpdate(elapsed)
     setProperty('showComboNum', hideJudge)
 
     if getSongPosition() <= 0 then
-        setShaderFloat('schoolShader', 'time', getShaderFloat('schoolShader', 'time') + elapsed * 0.25)
-        setShaderFloat('iconShader', 'time', getShaderFloat('iconShader', 'time') + elapsed * 0.75)
-        setShaderFloat('vignette', 'time', getShaderFloat('vignette', 'time') + elapsed * 0.5)
-        setShaderFloat('nullGlitch', 'iTime', getShaderFloat('nullGlitch', 'iTime') + elapsed)
+        if shadersEnabled then
+            setShaderFloat('schoolShader', 'time', getShaderFloat('schoolShader', 'time') + elapsed * 0.25)
+            setShaderFloat('iconShader', 'time', getShaderFloat('iconShader', 'time') + elapsed * 0.75)
+            setShaderFloat('vignette', 'time', getShaderFloat('vignette', 'time') + elapsed * 0.5)
+            setShaderFloat('nullGlitch', 'iTime', getShaderFloat('nullGlitch', 'iTime') + elapsed)
+        end
     else
-        setShaderFloat('schoolShader', 'time', getSongPosition() * 0.001 * 0.25)
-        setShaderFloat('iconShader', 'time', getSongPosition() * 0.001 * 0.75)
-        setShaderFloat('nullGlitch', 'iTime', getSongPosition() * 0.001)
-        setShaderFloat('vignette', 'time', getSongPosition() * 0.001 * 0.5)
+        if shadersEnabled then
+            setShaderFloat('schoolShader', 'time', getSongPosition() * 0.001 * 0.25)
+            setShaderFloat('iconShader', 'time', getSongPosition() * 0.001 * 0.75)
+            setShaderFloat('nullGlitch', 'iTime', getSongPosition() * 0.001)
+            setShaderFloat('vignette', 'time', getSongPosition() * 0.001 * 0.5)
+        end
     end
 
     if hurtAmountBlack > 0 then
@@ -843,7 +874,8 @@ function onUpdate(elapsed)
 
     setProperty('hurtBlack.alpha', hurtAmountBlack)
 
-    setShaderInt('pixelate', 'pixelSize', tonumber(pixelateAmount))
+    if shadersEnabled then
+        setShaderInt('pixelate', 'pixelSize', tonumber(pixelateAmount))end
 
     if pixelateAmount > 1 then
         pixelateAmount = pixelateAmount - 2 * elapsed
@@ -881,7 +913,9 @@ function onUpdate(elapsed)
         setProperty('glitchBump.alpha', getProperty('glitchBump.alpha') - elapsed)
     end
 
-    setShaderFloat('nullGlitch', 'glitchAmplitude', getShaderFloat('nullGlitch', 'glitchAmplitude') - 0.001 * elapsed)
+    if shadersEnabled then
+        setShaderFloat('nullGlitch', 'glitchAmplitude', getShaderFloat('nullGlitch', 'glitchAmplitude') - 0.001 * elapsed)
+    end
 end
 
 function onDestroy()

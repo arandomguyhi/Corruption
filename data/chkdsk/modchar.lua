@@ -1,13 +1,19 @@
 -- everything here looks messy!!!!! remaking apart of it later
 
+if getDataFromSave('corruptMenu', 'modcharts') ~= 'Full' then
+    return end
+
 luaDebugMode = true
 
 addHaxeLibrary('Song', 'backend')
 addHaxeLibrary('SwagSong', 'backend')
 addHaxeLibrary('SwagSection', 'backend')
 
-if getDataFromSave('corruptMenu', 'modcharts') ~= 'Full' then
-    return end
+local counter = -1
+local counter2 = -1
+
+local yPl = 0
+local yOp = 0
 
 local function math_fastCos(insanaMatematica)
     return callMethodFromClass('flixel.math.FlxMath', 'fastCos', {insanaMatematica})
@@ -20,9 +26,6 @@ end
 local function scale(x,l1,h1,l2,h2)
     return (((x) - (l1)) * ((h2) - (l2)) / ((h1) - (l1)) + (l2))
 end
-
-local yPl = 0
-local yOp = 0
 
 setProperty('skipArrowStartTween', true)
 
@@ -89,6 +92,7 @@ function onCreatePost()
 
         for (strum in game.strumLineNotes)
             strum.camera = arrowCam;
+
         setVar('arrowCam', arrowCam);
     ]])
     drumSteps = getVar('drumSteps')
@@ -196,6 +200,35 @@ function onStepHit()
 
             startTween('plX'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, dur, {ease = 'quadOut'})
             startTween('opAlpha'..i, 'opponentStrums.members['..i..']', {alpha = 1}, dur, {ease = 'quadOut'})
+        end
+    end
+
+    if curStep >= 672 and curStep < 928 then
+        local s = (counter == -1 and 2.5 or 9.5)
+        local s2 = (counter == -1 and 9.5 or 2.5)
+
+        if curStep % 2 == 0 then
+            counter = counter * -1
+
+            scaleObject('playerStrums.members[0]',s,s) scaleObject('opponentStrums.members[0]',s,s)
+            scaleObject('playerStrums.members[3]',s,s) scaleObject('opponentStrums.members[3]',s,s)
+            setProperty('playerStrums.members[0].angle', 90*counter) setProperty('opponentStrums.members[0].angle', 90*counter)
+            setProperty('playerStrums.members[3].angle', 90*counter) setProperty('opponentStrums.members[3].angle', 90*counter)
+
+            for _,bzl in pairs({'playerStrums', 'opponentStrums'}) do
+                startTween('coisoum'.._, bzl..'.members[0]', {['scale.x'] = 6, ['scale.y'] = 6, angle = 0}, (stepCrochet/1000)*2, {ease = 'circOut', onUpdate = 'updateStrumHitbox'})
+                startTween('angledois'.._, bzl..'.members[3]', {['scale.x'] = 6, ['scale.y'] = 6, angle = 0}, (stepCrochet/1000)*2, {ease = 'circOut', onUpdate = 'updateStrumHitbox'})
+            end
+
+            scaleObject('playerStrums.members[1]',s2,s2) scaleObject('opponentStrums.members[1]',s2,s2)
+            scaleObject('playerStrums.members[2]',s2,s2) scaleObject('opponentStrums.members[2]',s2,s2)
+            setProperty('playerStrums.members[1].angle', -90*counter) setProperty('opponentStrums.members[1].angle', -90*counter)
+            setProperty('playerStrums.members[2].angle', -90*counter) setProperty('opponentStrums.members[2].angle', -90*counter)
+
+            for _,bzl in pairs({'playerStrums', 'opponentStrums'}) do
+                startTween('coisodoisum'.._, bzl..'.members[1]', {['scale.x'] = 6, ['scale.y'] = 6, angle = 0}, (stepCrochet/1000)*2, {ease = 'circOut', onUpdate = 'updateStrumHitbox'})
+                startTween('coisodoisdois'.._, bzl..'.members[2]', {['scale.x'] = 6, ['scale.y'] = 6, angle = 0}, (stepCrochet/1000)*2, {ease = 'circOut', onUpdate = 'updateStrumHitbox'})
+            end
         end
     end
 
@@ -335,12 +368,50 @@ function onStepHit()
         end
     end
 
+    if curStep == 1856 then
+        for i = 0, 3 do
+            noteTweenAlpha('sudden'..i, i, 0, (stepCrochet/1000)*4, 'quadOut')
+        end
+    end
+
     if curStep >= 1856 and curStep < 2048 and curStep % 2 == 0 then
         applyDrunk(0.5 * f, 1)
         drunkOffset = curDecBeat * 0.01 * f
         for i = 0, 3 do
             startTween('undrunk'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
         end
+        f = f * -1
+    end
+
+    if curStep == 2048 then
+        for i = 0, 3 do
+            noteTweenAlpha('sudden'..i, i, 1, (stepCrochet/1000)*4, 'quadOut')
+        end
+    end
+    if curStep >= 2048 and curStep < 2160 then
+        applyDrunk(1.5 * f, 1)
+        drunkOffset = math.sin(curStep * 0.75)
+        for i = 0, 3 do
+            startTween('undrunk'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
+        end
+    end
+
+    if curStep >= 2176 and curStep < 2432 and curStep % 2 == 0 then
+        applyDrunk(0.25 * f, -1)
+        for i = 0, 3 do
+            startTween('undrunk'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*16, {ease = 'cubeOut'})
+            startTween('opdrunk'..i, 'opponentStrums.members['..i..']', {x = _G['defaultOpponentStrumX'..i]}, (stepCrochet/1000)*16, {ease = 'cubeOut'})
+        end
+
+        applyInvert(0.2, -1)
+        for i = 0, 3 do
+            setProperty('playerStrums.members['..i..'].angle', -25 * f)
+            setProperty('opponentStrums.members['..i..'].angle', -25 * f)
+
+            startTween('uncoiso'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i], angle = 0}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
+            startTween('uncoisoop'..i, 'opponentStrums.members['..i..']', {x = _G['defaultOpponentStrumX'..i], angle = 0}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
+        end
+
         f = f * -1
     end
 
@@ -351,17 +422,21 @@ function onStepHit()
     end
 end
 
-local counter = -1
-local counter2 = -1
 local f = 1
 
 local lastScroll = 0
 local drunkOffset = 0
 
+local el = 0
 function onUpdate(elapsed)
+    el = el + elapsed
     songPosition = getSongPosition()/1000
 
-    setShaderFloat('poop', 'iTime', getSongPosition() * 0.001)
+    --setShaderFloat('para', 'x', ((el/10)*7)*-1)
+
+    if shadersEnabled then
+        setShaderFloat('poop', 'iTime', getSongPosition() * 0.001)
+    end
 
     setProperty('arrowCam.zoom', getProperty('camHUD.zoom'))
     --runHaxeCode("getVar('arrowCam').filters = camHUD.filters;")
@@ -432,6 +507,22 @@ function onUpdate(elapsed)
     if curStep >= 1268 and curStep < 1532 then
         applyTipsy(0.5, -1, 22, 'backOut')
     end
+
+    numericForInterval(2160, 2170, 0.5, function(i)
+        if curStep == i then
+            applyTipsy(1.25 * f, -1)
+            applyDrunk(1.75 * f, -1)
+
+            for f = 0, 3 do
+                startTween('uncoiso'..f, 'playerStrums.members['..f..']', {x = _G['defaultPlayerStrumX'..f], y = _G['defaultPlayerStrumY'..f]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+                startTween('uncoisoop'..f, 'opponentStrums.members['..f..']', {x = _G['defaultOpponentStrumX'..f], y = _G['defaultOpponentStrumY'..f]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+            end
+
+            drunkOffset = math.sin(i * 1.25)
+
+            f = f * -1
+        end
+    end)
 
     glitch({2048, 2080}, {'reverse'}, 0.5, 2)
     glitch({2048, 2080}, {'position', {-112, 112}}, 0.5, 2)
@@ -513,6 +604,31 @@ function applyDrunk(perc, pl)
     end
 end
 
+function sign(x)
+    return x == 0 and 0 or (x <= -1 and -1 or 1)
+end
+
+function applyInvert(perc, pl)
+    local leTargets = {}
+    if pl == -1 then
+        leTargets = targets
+    else
+        leTargets = {targets[pl]}
+    end
+
+    for i = 0, 3 do
+        for _, t in ipairs(leTargets) do
+            local currentTarget = t:lower()..'Strums.members['..i..']'
+
+            local songPos = (getSongPosition()/1000)
+            local defaultPos = getVar('default'..t..'X'..i)
+
+            local distance = swagWidth * ((i % 2 == 0) and 1 or -1)
+            setProperty(currentTarget..'.x', defaultPos + distance * perc)
+        end
+    end
+end
+
 function bump(step, steplength, modifier, amnt, leease, line)
     local targetList = {}
     if line == -1 then
@@ -544,7 +660,7 @@ function glitch(cu, type, interval, target)
         targetList = {targets[target]}
     end
 
-    if type[1] == 'shader' then
+    if type[1] == 'shader' and shadersEnabled then
         numericForInterval(cu[1], cu[2] - interval, interval, function(step)
             if curStep == step then
                 setShaderFloat('poop', 'AMT', getRandomFloat(type[2][1], type[2][2]))
@@ -647,7 +763,9 @@ function glitch(cu, type, interval, target)
 end
 
 function updatePoop(n,f,v)
-    setShaderFloat(n,f,v)
+    if shadersEnabled then
+        setShaderFloat(n,f,v)
+    end
 end
 
 function onSpawnNote(i)
@@ -663,5 +781,12 @@ end
 function reverse()
     for i = 0, 3 do
         setPropertyFromGroup('opponentStrums', i, 'downScroll', true)
+    end
+end
+
+function updateStrumHitbox()
+    for i = 0, 3 do
+        updateHitboxFromGroup('opponentStrums',i)
+        updateHitboxFromGroup('playerStrums',i)
     end
 end
