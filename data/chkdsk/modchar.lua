@@ -130,7 +130,7 @@ function onEvent(name, value1, value2)
             applyDrunk(1 * f, 1)
             for i = 0, 3 do
                 setProperty('playerStrums.members['..i..'].angle', 11.25 * f)
-                startTween('uncoiso'..i, 'playerStrums.members['..i..']', {angle = 0, x = 412+(i*112)}, (stepCrochet/1000)*4, {ease = 'quadOut'})
+                startTween('uncoiso'..i, 'playerStrums.members['..i..']', {angle = 0, x = 412+(i*112), y = _G['defaultPlayerStrumY'..i]}, (stepCrochet/1000)*4, {ease = 'quadOut'})
             end
         elseif value1 == '2' then
             applyDrunk(0.3 * f, 1)
@@ -146,6 +146,13 @@ function onEvent(name, value1, value2)
 
             for c = 0, 3 do
                 setProperty('playerStrums.members['..c..'].angle', 30*f)
+                startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+            end
+        elseif value1 == '3' then
+            applyDrunk(0.3, 1)
+
+            for c = 0, 3 do
+                setProperty('playerStrums.members['..c..'].angle', 35*f)
                 startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
             end
         end
