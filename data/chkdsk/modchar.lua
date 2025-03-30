@@ -9,6 +9,8 @@ addHaxeLibrary('Song', 'backend')
 addHaxeLibrary('SwagSong', 'backend')
 addHaxeLibrary('SwagSection', 'backend')
 
+local modManager = require('mods/'..currentModDirectory..'/scripts/modchart/modifiers')
+
 local counter = -1
 local counter2 = -1
 
@@ -127,33 +129,62 @@ function onEvent(name, value1, value2)
         startTween('normalAng', 'arrowCam', {angle = 0}, (stepCrochet/1000)*4, {ease = 'quadInOut'})
 
         if value1 == '0' then
-            applyDrunk(1 * f, 1)
+            modManager:drunk(1 * f, 1)
+            xmod(0.7, 1)
+
             for i = 0, 3 do
-                setProperty('playerStrums.members['..i..'].angle', 11.25 * f)
+                modManager:confusionOffset(11.25 * f, i, 1)
                 startTween('uncoiso'..i, 'playerStrums.members['..i..']', {angle = 0, x = 412+(i*112), y = _G['defaultPlayerStrumY'..i]}, (stepCrochet/1000)*4, {ease = 'quadOut'})
             end
+
+            for i = 0, getProperty('notes.length')-1 do
+                if getPropertyFromGroup('notes', i, 'mustPress') then
+                    --runHaxeCode("FlxTween.tween(game.notes.members["..i.."], {multSpeed: 0.9}, (Conductor.stepCrochet/1000)*4, {ease: FlxEase.quadOut});")
+                end
+            end
         elseif value1 == '2' then
-            applyDrunk(0.3 * f, 1)
-            applyTipsy(3, 1)
+            modManager:drunk(0.3 * f, 1)
+            modManager:tipsy(3, 1)
+            xmod(0.75, 1)
 
             for c = 0, 3 do
-                setProperty('playerStrums.members['..c..'].angle', 22.5*f)
+                modManager:confusionOffset(22.5*f, c, 1)
                 startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+            end
+
+            for i = 0, getProperty('notes.length')-1 do
+                if getPropertyFromGroup('notes', i, 'mustPress') then
+                    --runHaxeCode("FlxTween.tween(game.notes.members["..i.."], {multSpeed: 0.9}, (Conductor.stepCrochet/1000)*4, {ease: FlxEase.quadOut});")
+                end
             end
         elseif value1 == '1' then
-            applyDrunk(1.5 * f, 1)
-            applyTipsy(2, 1)
+            modManager:drunk(1.5 * f, 1)
+            modManager:tipsy(2, 1)
+            xmod(0.75, 1)
 
             for c = 0, 3 do
-                setProperty('playerStrums.members['..c..'].angle', 30*f)
+                modManager:confusionOffset(30*f, c, 1)
                 startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
             end
+
+            for i = 0, getProperty('notes.length')-1 do
+                if getPropertyFromGroup('notes', i, 'mustPress') then
+                    --runHaxeCode("FlxTween.tween(game.notes.members["..i.."], {multSpeed: 0.9}, (Conductor.stepCrochet/1000)*4, {ease: FlxEase.quadOut});")
+                end
+            end
         elseif value1 == '3' then
-            applyDrunk(0.3, 1)
+            modManager:drunk(0.3, 1)
+            xmod(0.75, 1)
 
             for c = 0, 3 do
-                setProperty('playerStrums.members['..c..'].angle', 35*f)
+                modManager:confusionOffset(35*f, c, 1)
                 startTween('uncoiso'..c, 'playerStrums.members['..c..']', {angle = 0, x = 412+(c*112), y = _G['defaultPlayerStrumY'..c]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
+            end
+
+            for i = 0, getProperty('notes.length')-1 do
+                if getPropertyFromGroup('notes', i, 'mustPress') then
+                   -- runHaxeCode("FlxTween.tween(game.notes.members["..i.."], {multSpeed: 0.9}, (Conductor.stepCrochet/1000)*4, {ease: FlxEase.quadOut});")
+                end
             end
         end
     end
@@ -190,8 +221,8 @@ function onStepHit()
     end
 
     if (curStep >= 288 and curStep < 544 or curStep >= 960 and curStep < 976) and curStep % 2 == 0 then
-        applyTipsy(1 * f, 1)
-        applyDrunk(1 * f, 1)
+        modManager:tipsy(1 * f, 1)
+        modManager:drunk(1 * f, 1)
 
         for v = 0,3 do
             cancelTween('uncoisar'..v)
@@ -219,8 +250,8 @@ function onStepHit()
 
             scaleObject('playerStrums.members[0]',s,s) scaleObject('opponentStrums.members[0]',s,s)
             scaleObject('playerStrums.members[3]',s,s) scaleObject('opponentStrums.members[3]',s,s)
-            setProperty('playerStrums.members[0].angle', 90*counter) setProperty('opponentStrums.members[0].angle', 90*counter)
-            setProperty('playerStrums.members[3].angle', 90*counter) setProperty('opponentStrums.members[3].angle', 90*counter)
+            modManager:confusionOffset(90*counter, 0, -1)
+            modManager:confusionOffset(90*counter, 3, -1)
 
             for _,bzl in pairs({'playerStrums', 'opponentStrums'}) do
                 startTween('coisoum'.._, bzl..'.members[0]', {['scale.x'] = 6, ['scale.y'] = 6, angle = 0}, (stepCrochet/1000)*2, {ease = 'circOut', onUpdate = 'updateStrumHitbox'})
@@ -229,8 +260,8 @@ function onStepHit()
 
             scaleObject('playerStrums.members[1]',s2,s2) scaleObject('opponentStrums.members[1]',s2,s2)
             scaleObject('playerStrums.members[2]',s2,s2) scaleObject('opponentStrums.members[2]',s2,s2)
-            setProperty('playerStrums.members[1].angle', -90*counter) setProperty('opponentStrums.members[1].angle', -90*counter)
-            setProperty('playerStrums.members[2].angle', -90*counter) setProperty('opponentStrums.members[2].angle', -90*counter)
+            modManager:confusionOffset(-90*counter, 1, -1)
+            modManager:confusionOffset(-90*counter, 2, -1)
 
             for _,bzl in pairs({'playerStrums', 'opponentStrums'}) do
                 startTween('coisodoisum'.._, bzl..'.members[1]', {['scale.x'] = 6, ['scale.y'] = 6, angle = 0}, (stepCrochet/1000)*2, {ease = 'circOut', onUpdate = 'updateStrumHitbox'})
@@ -249,8 +280,8 @@ function onStepHit()
     end
 
     if curStep >= 944 and curStep < 960 and curStep % 4 == 0 then
-        applyTipsy(1 * f, 1)
-        applyDrunk(1 * f, 1)
+        modManager:tipsy(1 * f, 1)
+        modManager:drunk(1 * f, 1)
 
         for v = 0,3 do
             cancelTween('uncoisar'..v)
@@ -260,8 +291,8 @@ function onStepHit()
     end
 
     if curStep >= 976 and curStep < 992 then
-        applyTipsy(1 * f, 1)
-        applyDrunk(1 * f, 1)
+        modManager:tipsy(1 * f, 1)
+        modManager:drunk(1 * f, 1)
 
         for v = 0,3 do
             cancelTween('uncoisar'..v)
@@ -365,12 +396,12 @@ function onStepHit()
 
     if curStep >= 1536 and curStep < 1792 and curStep % 4 == 0 then
         for i = 0, 3 do
-            applyTipsy(1 * f, 1) applyTipsy(1 * f, 2)
-            applyDrunk(1 * f, 1) applyDrunk(1 * f, 2)
+            modManager:tipsy(1 * f, -1)
+            modManager:drunk(1 * f, -1)
 
             startTween('uncoisar'..i, 'playerStrums.members['..i..']', {x = getVar('defaultPlayerX'..i), y = _G['defaultPlayerStrumY'..i]+yPl}, (stepCrochet/1000)*4, {ease = 'quartOut'})
             startTween('uncoisardois'..i, 'opponentStrums.members['..i..']', {x = getVar('defaultOpponentX'..i), y = getVar('defaultOpponentY'..i)+yOp}, (stepCrochet/1000)*4, {ease = 'quartOut'})
-            drunkOffset = math.cos(curStep*0.75)
+            modManager.drunkOffset = math.cos(curStep*0.75)
             f = f * -1
         end
     end
@@ -382,8 +413,8 @@ function onStepHit()
     end
 
     if curStep >= 1856 and curStep < 2048 and curStep % 2 == 0 then
-        applyDrunk(0.5 * f, 1)
-        drunkOffset = curDecBeat * 0.01 * f
+        modManager:drunk(0.5 * f, 1)
+        modManager.drunkOffset = curDecBeat * 0.01 * f
         for i = 0, 3 do
             startTween('undrunk'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
         end
@@ -396,15 +427,15 @@ function onStepHit()
         end
     end
     if curStep >= 2048 and curStep < 2160 then
-        applyDrunk(1.5 * f, 1)
-        drunkOffset = math.sin(curStep * 0.75)
+        modManager:drunk(1.5 * f, 1)
+        modManager.drunkOffset = math.sin(curStep * 0.75)
         for i = 0, 3 do
             startTween('undrunk'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
         end
     end
 
     if curStep >= 2176 and curStep < 2432 and curStep % 2 == 0 then
-        applyDrunk(0.25 * f, -1)
+        modManager:drunk(0.25 * f, 1)
         for i = 0, 3 do
             startTween('undrunk'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i]}, (stepCrochet/1000)*16, {ease = 'cubeOut'})
             startTween('opdrunk'..i, 'opponentStrums.members['..i..']', {x = _G['defaultOpponentStrumX'..i]}, (stepCrochet/1000)*16, {ease = 'cubeOut'})
@@ -412,8 +443,7 @@ function onStepHit()
 
         applyInvert(0.2, -1)
         for i = 0, 3 do
-            setProperty('playerStrums.members['..i..'].angle', -25 * f)
-            setProperty('opponentStrums.members['..i..'].angle', -25 * f)
+            modManager:confusionOffset(-25*f, i, -1)
 
             startTween('uncoiso'..i, 'playerStrums.members['..i..']', {x = _G['defaultPlayerStrumX'..i], angle = 0}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
             startTween('uncoisoop'..i, 'opponentStrums.members['..i..']', {x = _G['defaultOpponentStrumX'..i], angle = 0}, (stepCrochet/1000)*4, {ease = 'cubeOut'})
@@ -432,7 +462,6 @@ end
 local f = 1
 
 local lastScroll = 0
-local drunkOffset = 0
 
 local el = 0
 function onUpdate(elapsed)
@@ -479,7 +508,7 @@ function onUpdate(elapsed)
 
     if curStep >= 192 and curStep < 288 then
         for i = 0, 7 do
-            applyTipsy(0.625, -1, 8)
+            modManager:tipsy(0.625, -1, 8)
         end
     end
 
@@ -512,20 +541,20 @@ function onUpdate(elapsed)
     glitch({656, 672}, {'reverse'}, 0.5, 2)
 
     if curStep >= 1268 and curStep < 1532 then
-        applyTipsy(0.5, -1, 22, 'backOut')
+        modManager:tipsy(0.5, -1, 22, 'backOut')
     end
 
     numericForInterval(2160, 2170, 0.5, function(i)
         if curStep == i then
-            applyTipsy(1.25 * f, -1)
-            applyDrunk(1.75 * f, -1)
+            modManager:tipsy(1.25 * f, -1)
+            modManager:drunk(1.75 * f, 1)
 
             for f = 0, 3 do
                 startTween('uncoiso'..f, 'playerStrums.members['..f..']', {x = _G['defaultPlayerStrumX'..f], y = _G['defaultPlayerStrumY'..f]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
                 startTween('uncoisoop'..f, 'opponentStrums.members['..f..']', {x = _G['defaultOpponentStrumX'..f], y = _G['defaultOpponentStrumY'..f]}, (stepCrochet/1000)*4, {ease = 'expoOut'})
             end
 
-            drunkOffset = math.sin(i * 1.25)
+            modManager.drunkOffset = math.sin(i * 1.25)
 
             f = f * -1
         end
@@ -556,63 +585,18 @@ end
 
 local targets = {'Player', 'Opponent'}
 
-local ypos = 0
-function applyTipsy(perc, pl, dur, curease)
-    local leTargets = {}
-    if pl == -1 then
-        leTargets = targets
-    else
-        leTargets = {targets[pl]}
-    end
-
-    if curease == nil then
-        curease = 'linear'
-    end
-
-    for i = 0, 3 do
-        for _, t in ipairs(leTargets) do
-            local currentTarget = t:lower()..'Strums.members['..i..']'
-
-            local songPos = (getSongPosition()/1000)
-            local defaultPos = getVar('default'..t..'Y'..i)+(pl ~= -1 and (pl == 1 and yPl or yOp) or 0)
-
-            ypos = defaultPos + perc * (math_fastCos((songPos * ((1 * 1.2) + 1.2) + i*((0*1.8)+1.8)))*swagWidth*.4)
-
-            if dur == nil then
-                setProperty(currentTarget..'.y', ypos)
-            else
-                startTween('tipsy'..i..' ('..t..')', currentTarget, {y = ypos}, (stepCrochet/1000)*dur, {ease = curease})
-            end
+function xmod(perc, pl)
+    --[[
+        leaving this as a comment atm, i'll try to fix it lately
+    for i = 0, getProperty('notes.length')-1 do
+        if pl == -1 then
+            setPropertyFromGroup('notes', i, 'multSpeed', perc)
+        elseif pl == 1 and getPropertyFromGroup('notes', i, 'mustPress') then
+            setPropertyFromGroup('notes', i, 'multSpeed', perc)
+        elseif pl == 2 and not getPropertyFromGroup('notes', i, 'mustPress') then
+            setPropertyFromGroup('notes', i, 'multSpeed', perc)
         end
-    end
-end
-
-local xpos = 0
-function applyDrunk(perc, pl)
-    local leTargets = {}
-    if pl == -1 then
-        leTargets = targets
-    else
-        leTargets = {targets[pl]}
-    end
-
-    for i = 0, 3 do
-        for _, t in ipairs(leTargets) do
-            local currentTarget = t:lower()..'Strums.members['..i..']'
-
-            local songPos = (getSongPosition()/1000)
-            local defaultPos = 0
-            defaultPos = getVar('default'..t..'X'..i)
-
-            local angle = songPos * (1 + 1)+i*((drunkOffset*0.2)+0.2) + 1 * ((1*10)+10) / screenHeight
-            xpos = defaultPos + perc * (math_fastCos(angle) * halfWidth)
-            setProperty(currentTarget..'.x', xpos)
-        end
-    end
-end
-
-function sign(x)
-    return x == 0 and 0 or (x <= -1 and -1 or 1)
+    end]]
 end
 
 function applyInvert(perc, pl)
@@ -684,7 +668,7 @@ function glitch(cu, type, interval, target)
             for _, t in pairs(targetList) do
                 numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     if curStep == step then
-                        setProperty(t:lower()..'Strums.members['..i..'].angle', getRandomFloat(1, 359))
+                        modManager:confusionOffset(getRandomFloat(1, 359), i, target)
                     end
                 end)
 
@@ -701,7 +685,7 @@ function glitch(cu, type, interval, target)
             for _, t in pairs(targetList) do
                 numericForInterval(cu[1], cu[2] - interval, interval, function(step)
                     if curStep == step then
-                        setProperty(t:lower()..'Strums.members['..i..'].angle', getRandomFloat(-360, 360))
+                        modManager:confusionOffset(getRandomFloat(-360, 360), i, target)
 
                         local randomScale = getRandomFloat(type[2][1], type[2][2])
                         local escala = 1280 / (1280 + randomScale*1280)
@@ -755,7 +739,7 @@ function glitch(cu, type, interval, target)
                         direction = 'y' end
 
                     if curStep == step then
-                        setProperty(currentTarget..'.angle', getRandomFloat(-360, 360))
+                        modManager:confusionOffset(getRandomFloat(-360, 360), i, target)
                         setProperty(currentTarget..'.'..direction, getVar('default'..t..direction:upper()..i) + getRandomFloat(type[2][1], type[2][2]))
                     end
                 end)
