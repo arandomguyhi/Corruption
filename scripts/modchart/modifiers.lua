@@ -1,11 +1,11 @@
 local modifier = {
-    targets = {'Player', 'Opponent'},
     swagWidth = getPropertyFromClass('objects.Note', 'swagWidth'),
     halfWidth = getPropertyFromClass('objects.Note', 'swagWidth') / 2,
+    targets = {'Player', 'Opponent'},
     drunkOffset = 0
 }
 
-local tipsy, drunk
+local tipsy, drunk  
 
 function modifier:confusionOffset(perc, idx, pl)
     local leTargets = (pl == -1) and self.targets or {self.targets[pl]}
@@ -44,8 +44,7 @@ function modifier:drunk(perc, pl)
             local currentTarget = t:lower()..'Strums.members['..i..']'
 
             local songPos = (getSongPosition()/1000)
-            local defaultPos = 0
-            defaultPos = getVar('default'..t..'X'..i)
+            local defaultPos = getVar('default'..t..'X'..i)
 
             local angle = songPos * (1 + 1)+i*((self.drunkOffset*0.2)+0.2) + 1 * ((1*10)+10) / screenHeight
             drunk = defaultPos + perc * (fastCos(angle) * self.halfWidth)

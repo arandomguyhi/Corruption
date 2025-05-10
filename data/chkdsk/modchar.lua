@@ -242,8 +242,8 @@ function onStepHit()
     end
 
     if curStep >= 672 and curStep < 928 then
-        local s = (counter == -1 and 2.5 or 9.5)
-        local s2 = (counter == -1 and 9.5 or 2.5)
+        local s = (counter == -1 and 3 or 9)
+        local s2 = (counter == -1 and 9 or 3)
 
         if curStep % 2 == 0 then
             counter = counter * -1
@@ -364,19 +364,15 @@ function onStepHit()
 
             -- doing like this so i can read xD
             startTween('plC'..i, 'playerStrums.members['..i..']', {
-                ['scale.x'] = strum2.scaleX,
-                ['scale.y'] = strum2.scaleY,
-                x = 412+(i*112),
-                y = _G['defaultPlayerStrumY']
+                ['scale.x'] = strum2.scaleX, ['scale.y'] = strum2.scaleY,
+                x = 412+(i*112), y = _G['defaultPlayerStrumY']
             }, (stepCrochet/1000)*6, {
                 ease = 'quadOut'
             })
 
             startTween('opC'..i, 'opponentStrums.members['..i..']', {
-                ['scale.x'] = strum1.scaleX,
-                ['scale.y'] = strum1.scaleY,
-                x = 412+(i*112),
-                y = 570
+                ['scale.x'] = strum1.scaleX, ['scale.y'] = strum1.scaleY,
+                x = 412+(i*112), y = 570
             }, (stepCrochet/1000)*6, {
                 ease = 'quadOut'
             })
@@ -583,8 +579,6 @@ function onUpdate(elapsed)
     glitch({2390, 2394}, {'Z', {-.5, .5}}, 0.5, 1)
 end
 
-local targets = {'Player', 'Opponent'}
-
 function xmod(perc, pl)
     --[[
         leaving this as a comment atm, i'll try to fix it lately
@@ -600,12 +594,7 @@ function xmod(perc, pl)
 end
 
 function applyInvert(perc, pl)
-    local leTargets = {}
-    if pl == -1 then
-        leTargets = targets
-    else
-        leTargets = {targets[pl]}
-    end
+    local leTargets = (pl == -1) and modManager.targets or {modManager.targets[pl]}
 
     for i = 0, 3 do
         for _, t in ipairs(leTargets) do
@@ -621,12 +610,7 @@ function applyInvert(perc, pl)
 end
 
 function bump(step, steplength, modifier, amnt, leease, line)
-    local targetList = {}
-    if line == -1 then
-        targetList = targets
-    else
-        targetList = {targets[line]}
-    end
+    local targetList = (line == -1) and modManager.targets or {modManager.targets[line]}
 
     if curStep == step then
         for i = 0,3 do
@@ -644,12 +628,7 @@ function bump(step, steplength, modifier, amnt, leease, line)
 end
 
 function glitch(cu, type, interval, target)
-    local targetList = {}
-    if target == -1 then
-        targetList = targets
-    else
-        targetList = {targets[target]}
-    end
+    local targetList = (target == -1) and modManager.targets or {modManager.targets[target]}
 
     if type[1] == 'shader' and shadersEnabled then
         numericForInterval(cu[1], cu[2] - interval, interval, function(step)
